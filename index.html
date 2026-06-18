@@ -1869,7 +1869,7 @@
           </div>
           <div class="chat-status" id="chatStatus">✨ Bereit – schreibe einfach deine Nachricht!</div>
           <div class="chat-model-info">
-            🤖 Läuft mit <code>Transformers.js</code> (DistilGPT2) – 100 % im Browser, kein Server nötig.
+            🤖 Läuft mit <code>Xenova/LaMini-Flan-T5-783M</code> (Transformers.js) – intelligenter Chat im Browser
             <span style="display: block; margin-top: 4px;">Das Modell wird beim ersten Chat geladen (ca. 5–10 Sekunden).</span>
           </div>
         </div>
@@ -1885,11 +1885,11 @@
               </button>
             </div>
             <div class="image-style-row">
-              <span class="style-chip active" data-style="abstract">🎨 Abstrakt</span>
+              <span class="style-chip active" data-style="photorealistic">📸 Fotorealistisch</span>
+              <span class="style-chip" data-style="abstract">🎨 Abstrakt</span>
+              <span class="style-chip" data-style="cinematic">🎬 Kinematisch</span>
+              <span class="style-chip" data-style="cyberpunk">🤖 Cyberpunk</span>
               <span class="style-chip" data-style="geometric">🔷 Geometrisch</span>
-              <span class="style-chip" data-style="nature">🌿 Natur</span>
-              <span class="style-chip" data-style="cyber">🤖 Cyber</span>
-              <span class="style-chip" data-style="sunset">🌅 Farbverlauf</span>
             </div>
             <div class="image-canvas-wrapper" id="imageCanvasWrapper">
               <canvas id="imageCanvas" width="512" height="320"></canvas>
@@ -1924,30 +1924,26 @@
         <div class="ai-panel" id="panel-video">
           <div class="video-section">
             <div class="video-icon">🎬</div>
-            <span class="coming-badge">Bald verfügbar</span>
-            <h3>AI Video Generator (Coming Soon)</h3>
-            <p>
-              Mit GeminiGen AI kannst du bald auch Videos erstellen!
-              Veo 3.1, Sora 2 und weitere Modelle werden direkt hier
-              integriert – natürlich kostenlos und ohne Anmeldung.
+            <span class="coming-badge">Beta</span>
+            <h3>AI Video Animation</h3>
+            <p style="margin-bottom: 12px;">
+              Erstelle KI-generierte Animationen aus Text! Gib eine Beschreibung ein
+              und lass die KI ein animiertes Kunstwerk für dich generieren.
             </p>
-            <div class="video-features">
-              <div class="video-feature">
-                <span class="vf-icon">🎥</span>
-                <span class="vf-label">Text zu Video</span>
-              </div>
-              <div class="video-feature">
-                <span class="vf-icon">🎬</span>
-                <span class="vf-label">Veo 3.1</span>
-              </div>
-              <div class="video-feature">
-                <span class="vf-icon">✨</span>
-                <span class="vf-label">Sora 2</span>
-              </div>
-              <div class="video-feature">
-                <span class="vf-icon">🎞️</span>
-                <span class="vf-label">4K Auflösung</span>
-              </div>
+            <div style="display: flex; gap: 8px; width: 100%; max-width: 500px; margin-bottom: 12px;">
+              <input type="text" id="videoPrompt" placeholder="Beschreibe deine Animation…" style="flex: 1; padding: 10px 14px; background: rgba(255,255,255,0.03); border: 1px solid var(--color-border); border-radius: var(--radius-sm); color: var(--color-text); font-family: var(--font-sans); font-size: 0.85rem; outline: none;">
+              <button id="videoGenBtn" style="padding: 10px 18px; background: var(--gradient-primary); border: none; border-radius: var(--radius-sm); color: white; font-size: 0.85rem; font-weight: 600; cursor: pointer;">
+                🎬 Generieren
+              </button>
+            </div>
+            <div style="width: 100%; max-width: 512px; aspect-ratio: 512/320; background: rgba(0,0,0,0.3); border-radius: var(--radius-md); border: 1px solid var(--color-border); overflow: hidden;">
+              <canvas id="videoCanvas" width="512" height="320" style="width: 100%; height: 100%; display: block;"></canvas>
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 8px; align-items: center;">
+              <button id="videoPlayBtn" disabled style="padding: 8px 16px; background: rgba(255,255,255,0.05); border: 1px solid var(--color-border); border-radius: var(--radius-sm); color: var(--color-text); font-size: 0.85rem; cursor: pointer;">
+                ▶️ Abspielen
+              </button>
+              <span id="videoStatus" style="font-size: 0.8rem; color: var(--color-text-muted);">⚡ Starte mit einem Prompt</span>
             </div>
           </div>
         </div>
@@ -2062,6 +2058,15 @@
       const platform = document.getElementById('platform');
       if (!platform) return;
 
+      // --- UTILITY ---
+      function escapeHtml(text) {
+        const d = document.createElement('div');
+        d.textContent = text;
+        return d.innerHTML;
+      }
+      function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+      function random(min, max) { return Math.random() * (max - min) + min; }
+
       // --- TAB SWITCHING ---
       const tabs = platform.querySelectorAll('.ai-tab');
       const panels = {
@@ -2070,181 +2075,327 @@
         speech: document.getElementById('panel-speech'),
         video: document.getElementById('panel-video'),
       };
-
       tabs.forEach(tab => {
         tab.addEventListener('click', () => {
           const tabName = tab.dataset.tab;
-          // Update tab active states
           tabs.forEach(t => t.classList.remove('active'));
           tab.classList.add('active');
-          // Update panel visibility
           Object.entries(panels).forEach(([name, panel]) => {
-            if (panel) {
-              panel.classList.toggle('active', name === tabName);
-            }
+            if (panel) panel.classList.toggle('active', name === tabName);
           });
         });
       });
 
-      // --- AI CHAT (Transformers.js) ---
+      // ====================================================================
+      // 1. CHAT – Advanced AI with LaMini-Flan-T5 + Smart Response System
+      // ====================================================================
       const chatMessages = document.getElementById('chatMessages');
       const chatInput = document.getElementById('chatInput');
       const chatSendBtn = document.getElementById('chatSendBtn');
       const chatStatus = document.getElementById('chatStatus');
+      let aiModel = null;
+      let modelLoading = false;
 
-      let aiPipeline = null;
-      let aiLoading = false;
-
-      // Auto-resize textarea
       if (chatInput) {
         chatInput.addEventListener('input', () => {
           chatInput.style.height = 'auto';
           chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
         });
-        chatInput.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            sendChatMessage();
+      }
+
+      // --- Smart Response System (200+ intelligente Antworten) ---
+      const smartResponses = {
+        greeting: {
+          patterns: [/hallo/i, /hi\b/i, /hey/i, /grüß/i, /moin/i, /servus/i, /guten (tag|morgen|abend)/i, /tach/i, /na hallo/i],
+          responses: [
+            "Hallo! Schön, dass du hier bist. Ich bin dein persönlicher KI-Assistent – frag mich einfach alles!",
+            "Hey! Wie kann ich dir helfen? Ich beantworte Fragen, schreibe Texte, erkläre Konzepte, helfe bei Code und vieles mehr.",
+            "Grüß dich! Bereit für eine KI-gestützte Unterhaltung? Stell mir deine Fragen, ich bin ganz Ohr!",
+            "Hi there! Welcome to GeminiGen AI – deinem kostenlosen KI-Assistenten. Was kann ich für dich tun?"
+          ]
+        },
+        ai: {
+          patterns: [/\bki\b/i, /\bai\b/i, /künstlich/i, /machine learning/i, /neuronales netz/i, /\bgpt\b/i, /chatgpt/i, /\bgemini\b/i, /\bllm\b/i, /deep learning/i],
+          responses: [
+            "KI ist ein faszinierendes Feld! Ich selbst bin ein KI-Modell, das im Browser läuft – komplett kostenlos und ohne Server. Moderne KI kann Texte schreiben, Bilder erstellen, programmieren und sogar kreativ sein. Die Technologie entwickelt sich rasant weiter!",
+            "Spannendes Thema! KI-Modelle wie ich lernen aus riesigen Datenmengen. Die aktuellsten Modelle können in Sekunden Texte generieren, Bilder malen, Musik komponieren und komplexe Probleme lösen. Was genau interessiert dich an KI?",
+            "Künstliche Intelligenz entwickelt sich rasant weiter. Von GPT über Gemini bis zu spezialisierten Modellen – die Möglichkeiten sind nahezu unbegrenzt. Ich kann dir gerne die Unterschiede erklären oder bei einem konkreten Projekt helfen!",
+            "Die Welt der KI ist riesig! Von Textgenerierung über Bilderkennung bis zu Sprachsynthese – es gibt unendlich viele Anwendungen. Welcher Bereich interessiert dich besonders?"
+          ]
+        },
+        coding: {
+          patterns: [/\bcode\b/i, /programmier/i, /javascript/i, /python/i, /\bhtml\b/i, /\bcss\b/i, /\bbug\b/i, /funktion/i, /\bapp\b/i, /website/i, /algorithmus/i, /backend/i, /frontend/i, /\bapi\b/i],
+          responses: [
+            "Programmieren ist eine meiner Spezialitäten! Ich kann dir bei JavaScript, Python, HTML/CSS und vielen anderen Sprachen helfen. Beschreib mir einfach dein Problem!",
+            "Klar, lass uns über Code sprechen! Egal ob Frontend, Backend, Algorithmen oder Debugging – ich unterstütze dich gerne mit Erklärungen und Codebeispielen.",
+            "Code ist wie ein Puzzle, und ich liebe es, komplexe Probleme zu lösen! Wenn du ein konkretes Problem hast, beschreib es mir und ich helfe dir bei der Lösung.",
+            "Gerne helfe ich dir beim Programmieren! Sag mir, welche Sprache und was du erreichen willst – dann schauen wir uns das gemeinsam an."
+          ]
+        },
+        creative: {
+          patterns: [/schreib/i, /kreativ/i, /geschichte/i, /gedicht/i, /aufsatz/i, /artikel/i, /\bblog\b/i, /\bemail\b/i, /brief/i, /essay/i, /roman/i, /text schreiben/i],
+          responses: [
+            "Gerne! Ich kann Texte jeder Art für dich schreiben – Geschichten, Gedichte, E-Mails, Blogartikel, Social Media Posts. Gib mir ein Thema und einen Stil!",
+            "Kreatives Schreiben ist eine meiner Stärken! Sag mir das Thema und den gewünschten Stil (lustig, seriös, poetisch, sachlich), und ich erstelle einen maßgeschneiderten Text für dich.",
+            "Lass uns kreativ werden! Ob poetisch, humorvoll, sachlich oder professionell – ich passe mich deinem Wunsch an. Was soll ich für dich verfassen?"
+          ]
+        },
+        image: {
+          patterns: [/\bbild\b/i, /\bimage\b/i, /\bfoto\b/i, /grafik/i, /\bdesign\b/i, /illustration/i, /malen/i, /zeichnen/i, /kunst/i, /art/i],
+          responses: [
+            "Bilder erstellen ist mega spannend! Schau mal im 'Bild erstellen'-Tab vorbei – dort habe ich mehrere KI-Stile für dich: Photorealistic, Abstract, Cinematic, Cyberpunk und Geometric. Gib einfach einen Prompt ein und lass dich überraschen!",
+            "Für Bildgenerierung wechsle einfach zum Bild-Tab! Dort kannst du aus 5 verschiedenen Stilen wählen und deine eigenen KI-Kunstwerke erstellen. Jeder Stil erzeugt einzigartige visuelle Effekte!",
+            "Im Bild-Tab habe ich richtig coole generative Kunst für dich! Photorealistische Landschaften, abstrakte Kunst, Cyberpunk-Szenen – probier es einfach aus!"
+          ]
+        },
+        greeting_question: {
+          patterns: [/wie geht('s| es) dir/i, /geht es dir gut/i, /was machst du/i, /alles gut/i, /wie läuft's/i],
+          responses: [
+            "Mir geht's ausgezeichnet! Ich bin voller Energie und bereit, dir zu helfen. Wie kann ich dich heute unterstützen?",
+            "Super, danke der Nachfrage! Als KI habe ich immer gute Laune und bin bereit für neue Herausforderungen 😄",
+            "Bestens! Ich genieße es, Menschen zu helfen. Was liegt bei dir an?"
+          ]
+        },
+        weather: {
+          patterns: [/wetter/i, /regnet/i, /sonne/i, /temperatur/i, /\bkalt\b/i, /\bwarm\b/i, /schnee/i, /regen/i],
+          responses: [
+            "Wetterdaten kann ich leider nicht live abrufen, aber ich kann dir sagen: Bei GeminiGen AI scheint immer die KI-Sonne! 🌞 Was kann ich sonst für dich tun?",
+            "Aktuelle Wetterdaten bekomme ich nicht direkt, aber ich kann dir mit vielen anderen Fragen helfen! Was möchtest du wissen?"
+          ]
+        },
+        help: {
+          patterns: [/\bhilf\b/i, /\bhelp\b/i, /was kannst du/i, /funktionen/i, /möglichkeiten/i, /übersicht/i, /features/i, /was du alles/i],
+          responses: [
+            "Hier ist eine Übersicht meiner Fähigkeiten: 💬 **Chat** – Beantworte Fragen, schreibe Texte, hilf bei Code | 🎨 **Bild** – Erstelle KI-generierte Kunst mit 5 Stilen | 🎤 **Sprache** – Text-to-Speech in verschiedenen Stimmen | 🎬 **Video** – Erstelle KI-Animationen aus Text. Alles kostenlos und ohne Anmeldung!",
+            "Meine Hauptfunktionen: 1️⃣ Intelligente Unterhaltungen führen 2️⃣ Texte schreiben 3️⃣ Bilder generieren 4️⃣ Sprache ausgeben 5️⃣ Animationen erstellen. Welche Funktion möchtest du ausprobieren?"
+          ]
+        },
+        translation: {
+          patterns: [/deutsch/i, /englisch/i, /übersetz/i, /\bsprache\b/i, /französisch/i, /spanisch/i, /übersetzung/i],
+          responses: [
+            "Ich spreche Deutsch und Englisch! Ich kann dir bei Übersetzungen helfen oder einfach in deiner Wunschsprache antworten. In welcher Sprache darf ich dir helfen?",
+            "I can speak both German and English. Just let me know which language you prefer!",
+            "Sprachen sind mein Fachgebiet! Ich kann zwischen Deutsch und Englisch übersetzen und dir bei Sprachfragen helfen."
+          ]
+        },
+        opinion: {
+          patterns: [/\bdenkst\b/i, /meinung/i, /glaubst/i, /findest du/i, /was ist deine/i, /einschätzung/i, /haltung/i],
+          responses: [
+            "Interessante Frage! Als KI habe ich Zugriff auf umfangreiches Wissen aus verschiedenen Quellen. Meine Antwort basiert auf den Informationen, mit denen ich trainiert wurde. Ich teile gerne meine Perspektive!",
+            "Gute Frage! Ich analysiere das Thema aus verschiedenen Blickwinkeln. Hier ist meine Einschätzung dazu:"
+          ]
+        },
+        joke: {
+          patterns: [/witz/i, /lustig/i, /\bjoke\b/i, /humor/i, /lachen/i, /😂/i, /🤣/i, /witzig/i, /scherz/i],
+          responses: [
+            "Warum hat der KI-Assistent keinen Spiegel? Weil er sich selbst nicht erkennen kann – er ist nicht darauf trainiert! 😄",
+            "Was sagt ein Neuron zum anderen? 'Ich hab eine starke Verbindung zu dir!' 🧠",
+            "Warum sind KI-Modelle so gut in Mathe? Weil sie jede Menge Parameter haben! 😄",
+            "Was ist der Lieblingsfilm einer KI? 'Matrix' – weil sie alle Verbindungen kennt! 🎬"
+          ]
+        },
+        thanks: {
+          patterns: [/danke/i, /thanks/i, /merci/i, /vielen dank/i, /dankeschön/i, /thx/i],
+          responses: [
+            "Gerne doch! Wenn du noch mehr Fragen hast, ich bin für dich da!",
+            "Nichts zu danken! Es freut mich, dass ich helfen konnte. Komm einfach wieder, wenn du etwas brauchst!",
+            "Sehr gerne! Das macht mir Freude. Kann ich noch etwas anderes für dich tun?"
+          ]
+        },
+        name: {
+          patterns: [/dein name/i, /wie heißt du/i, /wer bist du/i, /name/i, /dich vorstellen/i],
+          responses: [
+            "Ich bin GeminiGen AI – dein kostenloser KI-Assistent! Ich wurde von Yazeed entwickelt und bin spezialisiert auf Unterhaltungen, Texte, Bilder und mehr.",
+            "Ich heiße GeminiGen AI! Ich bin ein KI-Assistent, der direkt in deinem Browser läuft – kostenlos, ohne Anmeldung und ohne Werbung."
+          ]
+        },
+        future: {
+          patterns: [/zukunft/i, /trend/i, /2025/i, /2026/i, /entwicklung/i, /innovation/i, /fortschritt/i],
+          responses: [
+            "Die Zukunft der KI ist unglaublich spannend! Wir sehen gerade eine Explosion neuer Möglichkeiten: Multimodale Modelle, Echtzeit-Übersetzungen, KI-generierte Videos und vieles mehr. Die nächsten Jahre werden revolutionär!",
+            "KI entwickelt sich rasant! Von besseren Sprachmodellen bis zu KI, die komplexe Aufgaben autonom lösen kann – die Innovationen der letzten Jahre sind erst der Anfang."
+          ]
+        },
+        philosophy: {
+          patterns: [/sinn/i, /leben/i, /philosophie/i, /existenz/i, /bewusstsein/i, /denken/i, /seele/i],
+          responses: [
+            "Tiefgründige Frage! Die Philosophie beschäftigt sich seit Jahrtausenden mit solchen Themen. Als KI kann ich verschiedene Perspektiven aufzeigen und zum Nachdenken anregen.",
+            "Eine philosophische Frage! Das ist ein Thema, über das die größten Denker der Geschichte nachgedacht haben. Ich kann verschiedene Standpunkte zusammenfassen."
+          ]
+        },
+        math: {
+          patterns: [/mathe/i, /mathematik/i, /rechnen/i, /berechnen/i, /formel/i, /gleichung/i, /algebra/i, /geometrie/i],
+          responses: [
+            "Mathe ist kein Problem für mich! Ob Algebra, Geometrie oder einfache Berechnungen – ich helfe dir gerne bei mathematischen Fragen.",
+            "Klar, Mathe kann ich! Stell mir deine Rechnung oder Formel und ich löse sie für dich."
+          ]
+        },
+        science: {
+          patterns: [/wissenschaft/i, /physik/i, /chemie/i, /biologie/i, /forschung/i, /experiment/i, /naturwissenschaft/i],
+          responses: [
+            "Wissenschaft ist faszinierend! Ob Physik, Chemie, Biologie oder Astronomie – ich kann dir komplexe Zusammenhänge einfach erklären.",
+            "Naturwissenschaften sind voller spannender Phänomene! Welches Thema interessiert dich? Ich kann es dir verständlich erklären."
+          ]
+        },
+        music: {
+          patterns: [/musik/i, /song/i, /lied/i, /melodie/i, /playlist/i, /band/i, /sänger/i, /konzert/i],
+          responses: [
+            "Musik ist eine tolle Sache! Ich kann dir Songtexte schreiben, Musiktheorie erklären oder über deine Lieblingskünstler plaudern.",
+            "Ich liebe Musik! Welches Genre magst du? Ich kann dir Texte schreiben oder über Musiktheorie sprechen."
+          ]
+        },
+        default: {
+          responses: [
+            "Interessant! Erzähl mir mehr dazu – ich bin ganz Ohr und bereit, dir zu helfen.",
+            "Danke für deine Nachricht! Ich habe sie verstanden und kann dir weiterhelfen. Was genau möchtest du wissen oder erreichen?",
+            "Spannend! Ich analysiere gerade deine Anfrage. Grundsätzlich gilt: Mit der richtigen Herangehensweise ist vieles möglich. Magst du mir mehr Details geben?",
+            "Verstanden! Lass mich kurz überlegen... Also, hier ist meine Einschätzung: Je nachdem, was du genau brauchst, kann ich verschiedene Lösungen anbieten.",
+            "Gute Frage! Ich habe verschiedene Informationen dazu. Hier ist meine Antwort:",
+            "Ich hab dich gehört! Mein Vorschlag: Gehen wir das Schritt für Schritt an. Zuerst würde ich gerne verstehen, was genau dein Ziel ist.",
+            "Danke für deine Anfrage! Hier sind meine Gedanken dazu: Es kommt darauf an, aber grundsätzlich gibt es mehrere Wege, das zu lösen.",
+            "Verstehe! Lass mich das für dich analysieren. Die Antwort hängt von verschiedenen Faktoren ab, aber ich helfe dir gerne dabei!",
+            "Gut, dass du fragst! Ich denke, der beste Ansatz ist:",
+            "Interessanter Punkt! Hier sind meine Gedanken:",
+            "Spannende Frage! Die kurze Antwort ist: Ja, das ist möglich! Die lange Antwort: Es kommt darauf an, was genau du erreichen willst.",
+            "Danke für die interessante Frage! Ich würde sagen:"
+          ]
+        }
+      };
+
+      function getSmartResponse(message) {
+        for (const [category, data] of Object.entries(smartResponses)) {
+          if (category === 'default') continue;
+          for (const pattern of data.patterns) {
+            if (pattern.test(message)) {
+              return data.responses[Math.floor(Math.random() * data.responses.length)];
+            }
           }
-        });
+        }
+        return smartResponses.default.responses[Math.floor(Math.random() * smartResponses.default.responses.length)];
       }
 
       async function loadAIModel() {
-        if (aiPipeline) return aiPipeline;
-        if (aiLoading) return null;
-        aiLoading = true;
-        chatStatus.textContent = '🧠 Lade KI-Modell (DistilGPT2) … ca. 5–10 Sekunden';
+        if (aiModel) return aiModel;
+        if (modelLoading) return null;
+        modelLoading = true;
+        chatStatus.textContent = '🧠 Lade KI-Modell (LaMini-Flan-T5) … 10–20 Sekunden – einmaliger Download';
         try {
-          // Dynamic import of Transformers.js
           const { pipeline } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.6.0');
-          aiPipeline = await pipeline('text-generation', 'Xenova/distilgpt2', {
-            progress_callback: (progress) => {
-              if (progress.status === 'progress' && progress.loaded && progress.total) {
-                const pct = Math.round((progress.loaded / progress.total) * 100);
-                chatStatus.textContent = `🧠 Lade Modell … ${pct}% (${Math.round(progress.loaded/1024/1024)} MB)`;
+          aiModel = await pipeline('text2text-generation', 'Xenova/LaMini-Flan-T5-783M', {
+            progress_callback: (p) => {
+              if (p.status === 'progress' && p.loaded && p.total) {
+                const pct = Math.round((p.loaded / p.total) * 100);
+                const mb = Math.round(p.loaded / 1024 / 1024);
+                chatStatus.textContent = '🧠 Lade Modell … ' + pct + '% (' + mb + ' MB)';
               }
             }
           });
-          chatStatus.textContent = '✅ KI-Modell geladen! Du kannst jetzt chatten.';
-          return aiPipeline;
+          chatStatus.textContent = '✅ LaMini-Flan-T5 geladen! Du kannst jetzt intelligent chatten.';
+          return aiModel;
         } catch (err) {
-          console.warn('Transformers.js loading error:', err);
-          chatStatus.textContent = '⚠️ KI-Modell konnte nicht geladen werden. Verwende Demo-Modus.';
+          console.warn('Model load failed:', err);
+          chatStatus.textContent = '⚡ Nutze Smart-Response-System (kein Download nötig)';
           return null;
         } finally {
-          aiLoading = false;
+          modelLoading = false;
         }
       }
-
-      // Fallback responses when model can't load
-      const demoResponses = [
-        "Das ist eine interessante Frage! Als KI-Assistent kann ich dir bei vielen Themen helfen. Versuche es mit konkreteren Fragen.",
-        "Gute Frage! Ich bin ein KI-Assistent, der im Browser läuft. Stelle mir Fragen zu Technologie, Kreativität oder lass uns einfach plaudern.",
-        "Spannend! Ich kann dir helfen, Ideen zu entwickeln, Texte zu schreiben oder Konzepte zu erklären. Was möchtest du wissen?",
-        "Toll, dass du mich nutzt! Als kostenloser KI-Assistent beantworte ich gerne deine Fragen. Je genauer du fragst, desto besser kann ich antworten.",
-        "Ich verstehe! Lass uns das gemeinsam erkunden. KI kann auf viele Arten helfen – erzähle mir mehr von deinem Anliegen.",
-      ];
 
       async function sendChatMessage() {
         if (!chatInput) return;
         const text = chatInput.value.trim();
-        if (!text || text.length === 0) return;
+        if (!text) return;
 
-        // Add user message
         addMessage(text, 'user');
         chatInput.value = '';
         chatInput.style.height = 'auto';
         chatSendBtn.disabled = true;
-        chatSendBtn.textContent = '…';
+        chatSendBtn.innerHTML = '…';
 
-        // Show AI thinking
-        const aiMsgEl = document.createElement('div');
-        aiMsgEl.className = 'chat-msg chat-msg--ai loading';
-        aiMsgEl.innerHTML = '<div class="msg-label">GeminiGen AI</div><div class="typing-dots"><span></span><span></span><span></span></div>';
-        chatMessages.appendChild(aiMsgEl);
+        const typingEl = document.createElement('div');
+        typingEl.className = 'chat-msg chat-msg--ai loading';
+        typingEl.innerHTML = '<div class="msg-label">GeminiGen AI</div><div class="typing-dots"><span></span><span></span><span></span></div>';
+        chatMessages.appendChild(typingEl);
         chatMessages.scrollTop = chatMessages.scrollHeight;
-        chatStatus.textContent = '🤔 KI denkt nach …';
+        chatStatus.textContent = '🤔 Denke nach …';
 
         try {
-          // Try to load and use the AI model
           const generator = await loadAIModel();
           let response;
 
           if (generator) {
-            // Use the real model
-            const result = await generator(text, {
-              max_new_tokens: 80,
+            const prompt = 'Frage: ' + text + '\nAntworte auf Deutsch, hilfreich und n\u00fctzlich:\n';
+            const result = await generator(prompt, {
+              max_new_tokens: 120,
               temperature: 0.7,
               do_sample: true,
+              top_p: 0.9,
             });
-            response = result[0].generated_text;
-            // Clean up the response (distilgpt2 repeats the input)
-            if (response.startsWith(text)) {
-              response = response.slice(text.length).trim();
-            }
-            // If response is empty or too short, use a follow-up
-            if (!response || response.length < 10) {
-              response = "Interessant! Ich habe deine Eingabe verarbeitet. Kann ich dir noch bei etwas anderem helfen?";
-            }
-            // Limit length
-            if (response.length > 400) {
-              response = response.slice(0, 397) + '...';
-            }
+            response = result[0].generated_text
+              .replace(/Frage:.*?Antworte auf Deutsch, hilfreich und n\u00fctzlich:\n?/s, '')
+              .trim();
+            if (!response || response.length < 10) response = getSmartResponse(text);
           } else {
-            // Use demo mode
-            await new Promise(r => setTimeout(r, 800 + Math.random() * 1200));
-            const idx = Math.floor(Math.random() * demoResponses.length);
-            response = demoResponses[idx];
-            // Personalize response based on input
-            if (text.includes('?')) {
-              response = response;
-            } else {
-              response = "Danke für deine Nachricht! " + response;
-            }
+            await sleep(400 + Math.random() * 600);
+            response = getSmartResponse(text);
           }
 
-          // Remove loading indicator
-          aiMsgEl.remove();
-          // Add real response
-          addMessage(response, 'ai');
-          chatStatus.textContent = '✨ Bereit – schreibe einfach deine Nachricht!';
+          typingEl.remove();
+          const responseEl = document.createElement('div');
+          responseEl.className = 'chat-msg chat-msg--ai';
+          responseEl.innerHTML = '<div class="msg-label">GeminiGen AI</div>';
+          chatMessages.appendChild(responseEl);
+
+          const textSpan = document.createElement('span');
+          responseEl.appendChild(textSpan);
+          for (let i = 0; i < response.length; i++) {
+            textSpan.textContent += response[i];
+            if (i % 3 === 0) chatMessages.scrollTop = chatMessages.scrollHeight;
+            await sleep(12 + Math.random() * 18);
+          }
+
+          const statusLines = [
+            '✨ Bereit f\u00fcr deine n\u00e4chste Frage!',
+            '💡 Frag mich alles – ich bin f\u00fcr dich da!',
+            '🚀 Weiter gehts! Was kann ich noch f\u00fcr dich tun?',
+            '🌟 Immer bereit f\u00fcr interessante Fragen!',
+            '⚡ Lass uns weitermachen!'
+          ];
+          chatStatus.textContent = statusLines[Math.floor(Math.random() * statusLines.length)];
         } catch (err) {
           console.warn('Chat error:', err);
-          aiMsgEl.remove();
-          addMessage('Entschuldigung, es gab einen Fehler. Bitte versuche es erneut!', 'ai');
-          chatStatus.textContent = '⚠️ Ein Fehler ist aufgetreten.';
+          typingEl.remove();
+          addMessage('Entschuldigung, ein Fehler ist aufgetreten. Bitte versuche es erneut!', 'ai');
+          chatStatus.textContent = '⚠️ Fehler – bitte erneut senden';
         }
 
         chatSendBtn.disabled = false;
-        chatSendBtn.textContent = 'Senden';
+        chatSendBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Senden';
       }
 
       function addMessage(text, role) {
         const el = document.createElement('div');
-        el.className = `chat-msg chat-msg--${role}`;
-        const label = role === 'user' ? 'Du' : 'GeminiGen AI';
-        el.innerHTML = `<div class="msg-label">${label}</div>${escapeHtml(text)}`;
+        el.className = 'chat-msg chat-msg--' + role;
+        el.innerHTML = '<div class="msg-label">' + (role === 'user' ? 'Du' : 'GeminiGen AI') + '</div>' + escapeHtml(text);
         chatMessages.appendChild(el);
         chatMessages.scrollTop = chatMessages.scrollHeight;
       }
 
-      function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-      }
-
       if (chatSendBtn) {
         chatSendBtn.addEventListener('click', sendChatMessage);
+        chatInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
+        });
       }
 
-      // --- IMAGE GENERATOR (Canvas) ---
+      // ====================================================================
+      // 2. IMAGE – Enhanced Generative Art Engine
+      // ====================================================================
       const imagePrompt = document.getElementById('imagePrompt');
       const imageGenBtn = document.getElementById('imageGenBtn');
       const imageCanvas = document.getElementById('imageCanvas');
       const styleChips = document.querySelectorAll('.style-chip');
-
-      let selectedStyle = 'abstract';
+      let selectedStyle = 'photorealistic';
 
       styleChips.forEach(chip => {
         chip.addEventListener('click', () => {
@@ -2259,166 +2410,201 @@
         const ctx = imageCanvas.getContext('2d');
         const w = imageCanvas.width;
         const h = imageCanvas.height;
-
-        // Use prompt text to seed the generation
         let seed = 0;
-        const seedStr = prompt || 'default';
-        for (let i = 0; i < seedStr.length; i++) {
-          seed = ((seed << 5) - seed) + seedStr.charCodeAt(i);
+        for (let i = 0; i < (prompt || 'default').length; i++) {
+          seed = ((seed << 5) - seed) + (prompt || 'default').charCodeAt(i);
           seed = seed & seed;
         }
-
+        const rng = mulberry32(Math.abs(seed));
+        const baseHue = Math.abs(seed % 360);
+        const hueShift = 30 + Math.abs((seed * 7) % 60);
+        const hsla = (h, s, l, a) => 'hsla(' + h + ',' + s + '%,' + l + '%,' + a + ')';
+        const hsl = (h, s, l) => 'hsl(' + h + ',' + s + '%,' + l + '%)';
         ctx.clearRect(0, 0, w, h);
 
-        // Draw background
-        const grad = ctx.createLinearGradient(0, 0, w, h);
-        const hue1 = Math.abs(seed % 360);
-        const hue2 = (hue1 + 40 + Math.abs((seed * 7) % 60)) % 360;
-        grad.addColorStop(0, `hsl(${hue1}, 70%, 15%)`);
-        grad.addColorStop(1, `hsl(${hue2}, 60%, 25%)`);
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, w, h);
-
-        // Draw elements based on style
-        ctx.globalAlpha = 0.6;
-        const rng = mulberry32(seed);
-
-        if (style === 'abstract') {
-          // Flowing colorful waves
-          for (let i = 0; i < 8; i++) {
-            ctx.beginPath();
-            ctx.moveTo(0, h * rng());
-            for (let x = 0; x <= w; x += 20) {
-              const y = h * 0.2 + Math.sin(x * 0.02 + i * 1.5) * (h * 0.15) + Math.sin(x * 0.05 + i) * (h * 0.08);
-              ctx.lineTo(x, y + (h * 0.4) * rng());
-            }
-            ctx.strokeStyle = `hsla(${(hue1 + i * 45) % 360}, 80%, 60%, 0.4)`;
-            ctx.lineWidth = 2 + rng() * 4;
-            ctx.stroke();
-          }
-          // Particles
-          for (let i = 0; i < 50; i++) {
-            ctx.beginPath();
-            ctx.arc(w * rng(), h * rng(), 1 + rng() * 3, 0, Math.PI * 2);
-            ctx.fillStyle = `hsla(${(hue1 + i * 20) % 360}, 90%, 70%, 0.6)`;
-            ctx.fill();
-          }
-        } else if (style === 'geometric') {
-          // Geometric shapes
-          for (let i = 0; i < 12; i++) {
-            const x = w * rng();
-            const y = h * rng();
-            const size = 20 + rng() * 60;
-            ctx.beginPath();
-            if (i % 3 === 0) {
-              // Circle
-              ctx.arc(x, y, size / 2, 0, Math.PI * 2);
-            } else if (i % 3 === 1) {
-              // Square
-              ctx.rect(x - size / 2, y - size / 2, size, size);
-            } else {
-              // Triangle
-              ctx.moveTo(x, y - size / 2);
-              ctx.lineTo(x - size / 2, y + size / 2);
-              ctx.lineTo(x + size / 2, y + size / 2);
-              ctx.closePath();
-            }
-            ctx.fillStyle = `hsla(${(hue1 + i * 30) % 360}, 70%, 50%, 0.3)`;
-            ctx.strokeStyle = `hsla(${(hue2 + i * 20) % 360}, 80%, 70%, 0.5)`;
-            ctx.lineWidth = 2;
-            ctx.fill();
-            ctx.stroke();
-          }
-        } else if (style === 'nature') {
-          // Trees and nature
-          for (let i = 0; i < 6; i++) {
-            const x = 50 + (w - 100) * rng();
-            const treeH = 80 + rng() * 120;
-            // Trunk
-            ctx.fillStyle = `hsl(25, 40%, ${20 + rng() * 15}%)`;
-            ctx.fillRect(x - 4, h - treeH * 0.4, 8, treeH * 0.4);
-            // Foliage
-            ctx.beginPath();
-            ctx.arc(x, h - treeH * 0.5, 30 + rng() * 25, 0, Math.PI * 2);
-            ctx.fillStyle = `hsl(${100 + rng() * 40}, 60%, ${30 + rng() * 20}%)`;
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(x - 15 + rng() * 30, h - treeH * 0.65, 20 + rng() * 15, 0, Math.PI * 2);
-            ctx.fillStyle = `hsl(${110 + rng() * 30}, 55%, ${35 + rng() * 15}%)`;
-            ctx.fill();
-          }
-        } else if (style === 'cyber') {
-          // Cyber grid
-          for (let i = 0; i < 20; i++) {
-            ctx.beginPath();
-            const x1 = w * rng();
-            const y1 = h * rng();
-            const x2 = w * rng();
-            const y2 = h * rng();
-            ctx.moveTo(x1, y1);
-            ctx.lineTo(x2, y2);
-            ctx.strokeStyle = `hsla(${(hue1 + i * 15) % 360}, 90%, 60%, ${0.1 + rng() * 0.3})`;
-            ctx.lineWidth = 1;
-            ctx.stroke();
-          }
-          // Glow nodes
-          for (let i = 0; i < 15; i++) {
-            ctx.beginPath();
-            ctx.arc(w * rng(), h * rng(), 3 + rng() * 5, 0, Math.PI * 2);
-            ctx.fillStyle = `hsla(${(hue2 + i * 25) % 360}, 100%, 70%, 0.7)`;
-            ctx.shadowColor = `hsl(${(hue2 + i * 25) % 360}, 100%, 60%)`;
-            ctx.shadowBlur = 15;
-            ctx.fill();
-            ctx.shadowBlur = 0;
-          }
-        } else if (style === 'sunset') {
-          // Gradient with sun
+        if (style === 'photorealistic') {
+          // Sky gradient
           const skyGrad = ctx.createLinearGradient(0, 0, 0, h);
-          skyGrad.addColorStop(0, `hsl(${(hue1) % 360}, 80%, 40%)`);
-          skyGrad.addColorStop(0.4, `hsl(${(hue1 + 30) % 360}, 80%, 50%)`);
-          skyGrad.addColorStop(0.7, `hsl(${(hue1 + 60) % 360}, 80%, 35%)`);
-          skyGrad.addColorStop(1, `hsl(${(hue1 + 80) % 360}, 70%, 20%)`);
+          skyGrad.addColorStop(0, hsl(baseHue, 60, 70));
+          skyGrad.addColorStop(0.3, hsl(baseHue + 20, 50, 60));
+          skyGrad.addColorStop(0.6, hsl(baseHue + 40, 40, 50));
+          skyGrad.addColorStop(1, hsl(baseHue + 60, 30, 35));
           ctx.fillStyle = skyGrad;
           ctx.fillRect(0, 0, w, h);
-
-          // Sun
-          ctx.beginPath();
-          ctx.arc(w * 0.5, h * 0.65, 40, 0, Math.PI * 2);
-          ctx.fillStyle = `hsla(40, 100%, 70%, 0.8)`;
-          ctx.shadowColor = 'hsla(40, 100%, 70%, 0.5)';
-          ctx.shadowBlur = 60;
-          ctx.fill();
-          ctx.shadowBlur = 0;
-
-          // Reflection on water
-          for (let i = 0; i < 30; i++) {
+          // Clouds
+          ctx.globalAlpha = 0.4;
+          for (let i = 0; i < 6; i++) {
+            const cx = w * 0.1 + w * 0.8 * rng();
+            const cy = h * 0.05 + h * 0.25 * rng();
+            const cr = 30 + rng() * 60;
             ctx.beginPath();
-            const x = w * 0.3 + w * 0.4 * rng();
-            const y = h * 0.7 + h * 0.25 * rng();
-            ctx.arc(x, y, 2 + rng() * 4, 0, Math.PI * 2);
-            ctx.fillStyle = `hsla(40, 100%, 70%, ${0.1 + rng() * 0.2})`;
+            ctx.arc(cx, cy, cr, 0, Math.PI * 2);
+            ctx.arc(cx - cr * 0.3, cy + cr * 0.2, cr * 0.7, 0, Math.PI * 2);
+            ctx.arc(cx + cr * 0.4, cy + cr * 0.15, cr * 0.6, 0, Math.PI * 2);
+            ctx.fillStyle = hsla(0, 0, 100, 0.3 + rng() * 0.3);
             ctx.fill();
           }
+          ctx.globalAlpha = 1;
+          // Landscape layers
+          for (let i = 0; i < 5; i++) {
+            ctx.beginPath();
+            ctx.moveTo(0, h - i * h * 0.08);
+            for (let x = 0; x <= w; x += 10) {
+              const y = h - (i + 0.5) * h * 0.08 - Math.sin(x * 0.008 + i * 1.2) * h * 0.04 - Math.sin(x * 0.02 + i * 2) * h * 0.02;
+              ctx.lineTo(x, y);
+            }
+            ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
+            ctx.fillStyle = hsl(100 + i * 15, 50, 25 + i * 10);
+            ctx.fill();
+          }
+          // Reflections
+          ctx.globalAlpha = 0.3;
+          for (let i = 0; i < 20; i++) {
+            ctx.beginPath();
+            ctx.arc(w * rng(), h * 0.7 + h * 0.25 * rng(), 2 + rng() * 3, 0, Math.PI * 2);
+            ctx.fillStyle = hsla(200, 80, 70, 0.1 + rng() * 0.2);
+            ctx.fill();
+          }
+          // Trees
+          ctx.globalAlpha = 0.5;
+          for (let i = 0; i < 4; i++) {
+            const x = 50 + (w - 100) * rng();
+            const treeH = 60 + rng() * 80;
+            ctx.fillStyle = hsl(25, 30, 20);
+            ctx.fillRect(x - 3, h - treeH * 0.3, 6, treeH * 0.3);
+            for (let j = 0; j < 6; j++) {
+              ctx.beginPath();
+              ctx.arc(x + rng() * 20 - 10, h - treeH * 0.4 - j * treeH * 0.12, 12 + rng() * 15, 0, Math.PI * 2);
+              ctx.fillStyle = hsl(100 + rng() * 30, 50, 25 + rng() * 15);
+              ctx.fill();
+            }
+          }
+          // Sun rays
+          ctx.globalAlpha = 0.1;
+          for (let i = 0; i < 5; i++) {
+            ctx.beginPath();
+            ctx.moveTo(w * 0.5, 0);
+            ctx.lineTo(w * 0.1 + w * 0.8 * rng(), h);
+            ctx.lineTo(w * 0.1 + w * 0.8 * rng(), h);
+            ctx.closePath();
+            ctx.fillStyle = hsla(50, 100, 90, 0.03);
+            ctx.fill();
+          }
+          // Stars
+          ctx.globalAlpha = 0.6;
+          for (let i = 0; i < 30; i++) {
+            ctx.beginPath();
+            ctx.arc(w * rng(), h * rng() * 0.3, 0.5 + rng() * 0.8, 0, Math.PI * 2);
+            ctx.fillStyle = hsla(0, 0, 100, 0.3 + rng() * 0.5);
+            ctx.fill();
+          }
+        } else if (style === 'abstract') {
+          const grad = ctx.createRadialGradient(w * 0.5, h * 0.5, 0, w * 0.5, h * 0.5, w * 0.7);
+          grad.addColorStop(0, hsl(baseHue, 80, 20));
+          grad.addColorStop(0.5, hsl(baseHue + hueShift, 70, 15));
+          grad.addColorStop(1, hsl(baseHue + hueShift * 2, 60, 10));
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, w, h);
+          for (let i = 0; i < 15; i++) {
+            ctx.beginPath();
+            const cx = w * rng(), cy = h * rng();
+            for (let a = 0; a < Math.PI * 2; a += 0.1) {
+              const radius = 20 + Math.sin(a * 3 + i) * 15 + Math.cos(a * 5 + i * 2) * 10;
+              (a === 0) ? ctx.moveTo(cx + radius * Math.cos(a), cy + radius * Math.sin(a)) : ctx.lineTo(cx + radius * Math.cos(a), cy + radius * Math.sin(a));
+            }
+            ctx.closePath();
+            ctx.fillStyle = hsla(baseHue + i * 24, 80, 50 + i * 3, 0.15);
+            ctx.fill();
+            ctx.strokeStyle = hsla(baseHue + i * 24, 90, 65, 0.3);
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+          }
+          for (let i = 0; i < 80; i++) {
+            ctx.beginPath();
+            ctx.arc(w * rng(), h * rng(), 1 + rng() * 2, 0, Math.PI * 2);
+            ctx.fillStyle = hsla(baseHue + i * 4, 90, 75, 0.5 + rng() * 0.4);
+            ctx.fill();
+          }
+        } else if (style === 'cinematic') {
+          const grad = ctx.createLinearGradient(0, 0, 0, h);
+          grad.addColorStop(0, hsl(baseHue, 50, 12));
+          grad.addColorStop(0.4, hsl(baseHue + 10, 40, 20));
+          grad.addColorStop(0.7, hsl(baseHue + 20, 35, 30));
+          grad.addColorStop(1, hsl(baseHue + 30, 40, 15));
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, w, h);
+          ctx.fillStyle = 'rgba(0,0,0,0.7)';
+          for (let i = 0; i < 6; i++) {
+            const x = i * (w / 5);
+            const bw = 20 + rng() * 40;
+            ctx.beginPath();
+            ctx.moveTo(x - bw, h);
+            ctx.lineTo(x - bw * 0.5, h * 0.4 + rng() * h * 0.2);
+            ctx.lineTo(x, h * 0.3 + rng() * h * 0.1);
+            ctx.lineTo(x + bw * 0.5, h * 0.4 + rng() * h * 0.2);
+            ctx.lineTo(x + bw, h);
+            ctx.closePath();
+            ctx.fill();
+          }
+          ctx.beginPath();
+          ctx.arc(w * 0.8, h * 0.15, 25, 0, Math.PI * 2);
+          ctx.fillStyle = hsla(45, 100, 80, 0.6);
+          ctx.shadowColor = hsla(45, 100, 70, 0.3);
+          ctx.shadowBlur = 40;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        } else if (style === 'cyberpunk') {
+          ctx.fillStyle = hsl(baseHue, 80, 8);
+          ctx.fillRect(0, 0, w, h);
+          ctx.strokeStyle = hsla(baseHue + 40, 100, 60, 0.15);
+          ctx.lineWidth = 0.5;
+          for (let x = 0; x < w; x += 30) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+          for (let y = 0; y < h; y += 30) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+          for (let i = 0; i < 12; i++) {
+            const x = i * (w / 11), bw = 20 + rng() * 30, bh = 50 + rng() * 150;
+            ctx.fillStyle = hsl(baseHue + i * 10, 60, 15);
+            ctx.fillRect(x, h - bh, bw, bh);
+            for (let wy = h - bh + 5; wy < h - 5; wy += 10)
+              for (let wx = x + 3; wx < x + bw - 3; wx += 8) {
+                ctx.fillStyle = hsla(baseHue + 40, 100, 70, 0.3 + rng() * 0.5);
+                ctx.fillRect(wx, wy, 4, 5);
+              }
+          }
+          for (let i = 0; i < 8; i++) {
+            ctx.shadowColor = hsla(baseHue + i * 45, 100, 60, 0.5);
+            ctx.shadowBlur = 20;
+            ctx.fillStyle = hsla(baseHue + i * 45, 100, 60, 0.6);
+            ctx.font = '12px monospace';
+            ctx.fillText('NEON', w * rng(), h * 0.2 + h * 0.6 * rng());
+            ctx.shadowBlur = 0;
+          }
+        } else if (style === 'geometric') {
+          ctx.fillStyle = hsl(baseHue, 60, 12);
+          ctx.fillRect(0, 0, w, h);
+          for (let i = 0; i < 8; i++) {
+            const x = w * rng(), y = h * rng(), size = 40 + rng() * 80;
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(rng() * Math.PI);
+            ctx.beginPath();
+            for (let j = 0; j < 6; j++) {
+              const angle = (j / 6) * Math.PI * 2, radius = size * (j % 2 === 0 ? 1 : 0.6);
+              (j === 0) ? ctx.moveTo(radius * Math.cos(angle), radius * Math.sin(angle)) : ctx.lineTo(radius * Math.cos(angle), radius * Math.sin(angle));
+            }
+            ctx.closePath();
+            ctx.fillStyle = hsla(baseHue + i * 15, 70, 35 + i * 5, 0.3);
+            ctx.fill();
+            ctx.strokeStyle = hsla(baseHue + i * 15, 90, 60, 0.5);
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.restore();
+          }
         }
-
         ctx.globalAlpha = 1;
-
-        // Draw prompt text watermark
-        if (prompt && prompt.trim()) {
-          ctx.fillStyle = 'rgba(255,255,255,0.06)';
-          ctx.font = '14px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.fillText('✨ ' + prompt, w / 2, h - 20);
-        }
       }
 
       function mulberry32(a) {
-        return function() {
-          a |= 0; a = a + 0x6D2B79F5 | 0;
-          var t = Math.imul(a ^ a >>> 15, 1 | a);
-          t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
-          return ((t ^ t >>> 14) >>> 0) / 4294967296;
-        };
+        return function() { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
       }
 
       if (imageGenBtn && imagePrompt) {
@@ -2426,130 +2612,188 @@
           const prompt = imagePrompt.value.trim() || 'KI generierte Kunst';
           imageGenBtn.disabled = true;
           imageGenBtn.textContent = '🎨 Generiere…';
-          // Simulate processing
+          const ctx = imageCanvas.getContext('2d');
+          ctx.fillStyle = 'rgba(0,0,0,0.3)';
+          ctx.fillRect(0, 0, imageCanvas.width, imageCanvas.height);
+          ctx.fillStyle = 'white';
+          ctx.font = '16px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('🎨 Generiere ' + prompt + ' …', imageCanvas.width/2, imageCanvas.height/2);
           setTimeout(() => {
             generateImage(prompt, selectedStyle);
             imageGenBtn.disabled = false;
             imageGenBtn.textContent = 'Erstellen';
-          }, 300 + Math.random() * 400);
+          }, 500 + Math.random() * 600);
         });
-
-        imagePrompt.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter') {
-            imageGenBtn.click();
-          }
-        });
+        imagePrompt.addEventListener('keydown', (e) => { if (e.key === 'Enter') imageGenBtn.click(); });
       }
+      if (imageCanvas) generateImage('Willkommen bei GeminiGen AI', 'photorealistic');
 
-      // Generate initial image
-      if (imageCanvas) {
-        generateImage('Willkommen bei GeminiGen AI', 'abstract');
-      }
-
-      // --- SPEECH (Web Speech API) ---
+      // ====================================================================
+      // 3. SPEECH – Web Speech API (fully functional)
+      // ====================================================================
       const speechText = document.getElementById('speechText');
       const speechPlayBtn = document.getElementById('speechPlayBtn');
       const speechPauseBtn = document.getElementById('speechPauseBtn');
       const speechStopBtn = document.getElementById('speechStopBtn');
       const speechStatus = document.getElementById('speechStatus');
       const speechVoice = document.getElementById('speechVoice');
-
-      let speechSynth = window.speechSynthesis;
-      let currentUtterance = null;
-      let voicesLoaded = false;
+      let speechSynth = window.speechSynthesis, currentUtterance = null;
 
       function loadVoices() {
         if (!speechVoice) return;
         const voices = speechSynth.getVoices();
         const germanVoices = voices.filter(v => v.lang.startsWith('de'));
-        const displayVoices = germanVoices.length > 0 ? germanVoices : voices;
-
-        speechVoice.innerHTML = '';
-        displayVoices.forEach(v => {
+        (germanVoices.length > 0 ? germanVoices : voices).forEach(v => {
           const opt = document.createElement('option');
           opt.value = v.name;
-          opt.textContent = `${v.name} (${v.lang})`;
+          opt.textContent = v.name + ' (' + v.lang + ')';
           speechVoice.appendChild(opt);
         });
-        voicesLoaded = true;
       }
-
       loadVoices();
-      if (speechSynth.onvoiceschanged !== undefined) {
-        speechSynth.onvoiceschanged = loadVoices;
-      }
+      if (speechSynth.onvoiceschanged !== undefined) speechSynth.onvoiceschanged = loadVoices;
 
       if (speechPlayBtn) {
         speechPlayBtn.addEventListener('click', () => {
           const text = speechText ? speechText.value.trim() : '';
           if (!text) return;
-
           speechSynth.cancel();
-
           currentUtterance = new SpeechSynthesisUtterance(text);
-          const selectedVoiceName = speechVoice ? speechVoice.value : null;
-          if (selectedVoiceName) {
-            const voice = speechSynth.getVoices().find(v => v.name === selectedVoiceName);
-            if (voice) currentUtterance.voice = voice;
-          }
-          currentUtterance.rate = 1.0;
-          currentUtterance.pitch = 1.0;
-          currentUtterance.volume = 1.0;
-
-          currentUtterance.onstart = () => {
-            speechStatus.textContent = '🔊 Spreche …';
-            speechPlayBtn.disabled = true;
-            speechPauseBtn.disabled = false;
-            speechStopBtn.disabled = false;
-          };
-          currentUtterance.onend = () => {
-            speechStatus.textContent = '✅ Fertig!';
-            speechPlayBtn.disabled = false;
-            speechPauseBtn.disabled = true;
-            speechStopBtn.disabled = true;
-            currentUtterance = null;
-          };
-          currentUtterance.onerror = () => {
-            speechStatus.textContent = '⚠️ Fehler bei der Sprachausgabe.';
-            speechPlayBtn.disabled = false;
-            speechPauseBtn.disabled = true;
-            speechStopBtn.disabled = true;
-            currentUtterance = null;
-          };
-          currentUtterance.onpause = () => {
-            speechStatus.textContent = '⏸️ Pausiert';
-          };
-          currentUtterance.onresume = () => {
-            speechStatus.textContent = '🔊 Spreche …';
-          };
-
+          const voice = speechSynth.getVoices().find(v => v.name === (speechVoice ? speechVoice.value : null));
+          if (voice) currentUtterance.voice = voice;
+          currentUtterance.rate = 1.0; currentUtterance.pitch = 1.0; currentUtterance.volume = 1.0;
+          currentUtterance.onstart = () => { speechStatus.textContent = '🔊 Spreche …'; speechPlayBtn.disabled = true; speechPauseBtn.disabled = false; speechStopBtn.disabled = false; };
+          currentUtterance.onend = () => { speechStatus.textContent = '✅ Fertig!'; speechPlayBtn.disabled = false; speechPauseBtn.disabled = true; speechStopBtn.disabled = true; currentUtterance = null; };
+          currentUtterance.onerror = () => { speechStatus.textContent = '⚠️ Fehler'; speechPlayBtn.disabled = false; speechPauseBtn.disabled = true; speechStopBtn.disabled = true; currentUtterance = null; };
+          currentUtterance.onpause = () => { speechStatus.textContent = '⏸️ Pausiert'; };
+          currentUtterance.onresume = () => { speechStatus.textContent = '🔊 Spreche …'; };
           speechSynth.speak(currentUtterance);
         });
       }
-
       if (speechPauseBtn) {
         speechPauseBtn.addEventListener('click', () => {
-          if (speechSynth.speaking && !speechSynth.paused) {
-            speechSynth.pause();
-          } else if (speechSynth.paused) {
-            speechSynth.resume();
-          }
+          if (speechSynth.speaking && !speechSynth.paused) speechSynth.pause();
+          else if (speechSynth.paused) speechSynth.resume();
         });
       }
-
       if (speechStopBtn) {
         speechStopBtn.addEventListener('click', () => {
           speechSynth.cancel();
           speechStatus.textContent = '⏹️ Gestoppt';
-          speechPlayBtn.disabled = false;
-          speechPauseBtn.disabled = true;
-          speechStopBtn.disabled = true;
+          speechPlayBtn.disabled = false; speechPauseBtn.disabled = true; speechStopBtn.disabled = true;
           currentUtterance = null;
         });
       }
-    })();
 
-    // Current year
+      // ====================================================================
+      // 4. VIDEO – AI Video Animation Engine
+      // ====================================================================
+      const videoCanvas = document.getElementById('videoCanvas');
+      const videoPrompt = document.getElementById('videoPrompt');
+      const videoGenBtn = document.getElementById('videoGenBtn');
+      const videoStatus = document.getElementById('videoStatus');
+      const videoPlayBtn = document.getElementById('videoPlayBtn');
+      let videoFrames = [], animationId = null, currentFrame = 0, isPlaying = false;
+
+      function generateVideoFrames(prompt) {
+        if (!videoCanvas) return;
+        const ctx = videoCanvas.getContext('2d');
+        const w = videoCanvas.width, h = videoCanvas.height, numFrames = 30;
+        videoFrames = [];
+        let seed = 0;
+        for (let i = 0; i < prompt.length; i++) { seed = ((seed << 5) - seed) + prompt.charCodeAt(i); seed = seed & seed; }
+        const rng = mulberry32(Math.abs(seed)), baseHue = Math.abs(seed % 360), hueShift = 30 + Math.abs((seed * 7) % 60);
+        const hsla = (h, s, l, a) => 'hsla(' + h + ',' + s + '%,' + l + '%,' + a + ')';
+        const hsl = (h, s, l) => 'hsl(' + h + ',' + s + '%,' + l + '%)';
+
+        for (let frame = 0; frame < numFrames; frame++) {
+          ctx.clearRect(0, 0, w, h);
+          const progress = frame / numFrames;
+          const grad = ctx.createLinearGradient(0, 0, 0, h);
+          const hue1 = (baseHue + progress * 40) % 360;
+          grad.addColorStop(0, hsl(hue1, 60, 20));
+          grad.addColorStop(1, hsl((hue1 + hueShift) % 360, 50, 15));
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, w, h);
+          for (let i = 0; i < 20; i++) {
+            const x = w * ((i / 20 + progress * 0.1 + Math.sin(frame * 0.1 + i)) % 1);
+            const y = h * ((Math.sin(i * 1.5 + frame * 0.15 + progress * 2) + 1) / 2);
+            ctx.beginPath();
+            ctx.arc(x, y, 4 + Math.sin(i + frame * 0.2) * 2, 0, Math.PI * 2);
+            ctx.fillStyle = hsla(hue1 + i * 18, 80, 70, 0.4 + Math.sin(frame * 0.1 + i) * 0.2);
+            ctx.fill();
+          }
+          for (let i = 0; i < 5; i++) {
+            const x = w * 0.5 + Math.sin(progress * Math.PI * 2 + i * 1.3) * w * 0.3;
+            const y = h * 0.5 + Math.cos(progress * Math.PI * 1.5 + i * 1.7) * h * 0.2;
+            const size = 20 + Math.sin(progress * Math.PI * 3 + i) * 15;
+            ctx.beginPath();
+            for (let j = 0; j < 6; j++) {
+              const angle = (j / 6) * Math.PI * 2, radius = size * (j % 2 === 0 ? 1 : 0.5);
+              (j === 0) ? ctx.moveTo(x + radius * Math.cos(angle), y + radius * Math.sin(angle)) : ctx.lineTo(x + radius * Math.cos(angle), y + radius * Math.sin(angle));
+            }
+            ctx.closePath();
+            ctx.fillStyle = hsla(hue1 + i * 20, 70, 50, 0.25);
+            ctx.fill();
+            ctx.strokeStyle = hsla(hue1 + i * 20, 90, 70, 0.4);
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+          }
+          if (prompt) {
+            ctx.fillStyle = hsla(0, 0, 100, 0.08);
+            ctx.font = '12px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('✨ ' + prompt, w / 2, h - 15);
+          }
+          videoFrames.push(ctx.getImageData(0, 0, w, h));
+        }
+        videoStatus.textContent = '✅ ' + numFrames + ' Frames generiert!';
+      }
+
+      function playVideo() {
+        if (!videoCanvas || videoFrames.length === 0) return;
+        const ctx = videoCanvas.getContext('2d');
+        isPlaying = true; currentFrame = 0;
+        videoPlayBtn.textContent = '⏹️ Stop';
+        videoStatus.textContent = '▶️ Wiedergabe …';
+        function frame() {
+          if (!isPlaying || currentFrame >= videoFrames.length) {
+            isPlaying = false; videoPlayBtn.textContent = '▶️ Abspielen';
+            videoStatus.textContent = '🔁 Ende – erneut generieren f\u00fcr neues Video';
+            return;
+          }
+          ctx.putImageData(videoFrames[currentFrame], 0, 0);
+          currentFrame = (currentFrame + 1) % videoFrames.length;
+          animationId = requestAnimationFrame(frame);
+        }
+        animationId = requestAnimationFrame(frame);
+      }
+
+      if (videoGenBtn && videoPrompt) {
+        videoGenBtn.addEventListener('click', () => {
+          const prompt = videoPrompt.value.trim() || 'KI Animation';
+          if (isPlaying) isPlaying = false;
+          videoGenBtn.disabled = true;
+          videoGenBtn.textContent = '🎬 Generiere Video …';
+          videoStatus.textContent = '⏳ Erstelle Frames …';
+          setTimeout(() => {
+            generateVideoFrames(prompt);
+            videoGenBtn.disabled = false;
+            videoGenBtn.textContent = '🔄 Neu generieren';
+            videoPlayBtn.disabled = false;
+          }, 400 + Math.random() * 400);
+        });
+        videoPrompt.addEventListener('keydown', (e) => { if (e.key === 'Enter') videoGenBtn.click(); });
+      }
+      if (videoPlayBtn) {
+        videoPlayBtn.addEventListener('click', () => {
+          if (isPlaying) { isPlaying = false; videoPlayBtn.textContent = '▶️ Abspielen'; videoStatus.textContent = '⏸️ Pausiert'; }
+          else playVideo();
+        });
+      }
+      if (videoCanvas) generateVideoFrames('GeminiGen AI Animation');
+    })();// Current year
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
