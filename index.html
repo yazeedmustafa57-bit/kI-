@@ -2077,52 +2077,46 @@
       });
 
       // ====================================================================
-      // MODEL SELECTOR
+      // MODEL SELECTOR – Active Model System
       // ====================================================================
       const modelSelect = document.getElementById('modelSelect');
       const activeModelDisplay = document.getElementById('activeModelDisplay');
+      let activeModel = 'gemini-3.1-pro';
+
+      const MODEL_CONFIG = {
+        'gemini-3.1-pro': { label: '🌍 Gemini 3.1 Pro', personality: 'detailed', temp: 0.7 },
+        'gpt-5.4': { label: '🧠 GPT-5.4', personality: 'creative', temp: 0.85 },
+        'claude-4': { label: '❤️ Claude 4', personality: 'thoughtful', temp: 0.65 },
+        'llama-4': { label: '🧑‍🏫 Llama 4 405B', personality: 'technical', temp: 0.6 },
+        'mistral-3': { label: '🌪️ Mistral 3', personality: 'concise', temp: 0.5 },
+        'grok-3': { label: '🤖 Grok 3', personality: 'witty', temp: 0.9 },
+      };
 
       if (modelSelect) {
         const savedModel = localStorage.getItem('geminiGen_model');
-        if (savedModel) {
-          modelSelect.value = savedModel;
-          updateModelDisplay(savedModel);
-        }
+        if (savedModel && MODEL_CONFIG[savedModel]) { modelSelect.value = savedModel; activeModel = savedModel; }
+        updateModelDisplay(activeModel);
 
         modelSelect.addEventListener('change', function() {
-          const model = this.value;
-          localStorage.setItem('geminiGen_model', model);
-          updateModelDisplay(model);
-          const status = document.getElementById('chatStatus');
-          if (status) {
-            const labels = {
-              'gemini-3.1-pro': '\ud83c\udf0d Gemini 3.1 Pro',
-              'gpt-5.4': '\ud83e\udde0 GPT-5.4',
-              'claude-4': '\u2764\ufe0f Claude 4',
-              'llama-4': '\ud83e\uddd1\u200d\ud83c\udfeb Llama 4 405B',
-              'mistral-3': '\ud83c\udf2a\ufe0f Mistral 3',
-              'grok-3': '\ud83e\udd16 Grok 3'
-            };
-            status.textContent = '\u2705 Gewechselt zu ' + (labels[model] || model);
-          }
+          const m = this.value;
+          if (!MODEL_CONFIG[m]) return;
+          activeModel = m;
+          localStorage.setItem('geminiGen_model', m);
+          updateModelDisplay(m);
+          const st = document.getElementById('chatStatus');
+          if (st) st.textContent = MODEL_CONFIG[m].label + ' aktiviert';
+          const ib = document.getElementById('imageModelBadge');
+          if (ib) ib.textContent = MODEL_CONFIG[m].label;
         });
 
-        function updateModelDisplay(model) {
-          if (!activeModelDisplay) return;
-          const labels = {
-            'gemini-3.1-pro': '\ud83c\udf0d Gemini 3.1 Pro',
-            'gpt-5.4': '\ud83e\udde0 GPT-5.4',
-            'claude-4': '\u2764\ufe0f Claude 4',
-            'llama-4': '\ud83e\uddd1\u200d\ud83c\udfeb Llama 4 405B',
-            'mistral-3': '\ud83c\udf2a\ufe0f Mistral 3',
-            'grok-3': '\ud83e\udd16 Grok 3'
-          };
-          activeModelDisplay.textContent = labels[model] || model;
+        function updateModelDisplay(m) {
+          if (!activeModelDisplay || !MODEL_CONFIG[m]) return;
+          activeModelDisplay.textContent = MODEL_CONFIG[m].label;
         }
       }
-
-      // ====================================================================
-      // 1. CHAT – Advanced AI with LaMini-Flan-T5 + Smart Response System
+      window.getModelPersonality = function() { return MODEL_CONFIG[activeModel] ? MODEL_CONFIG[activeModel].personality : 'detailed'; };
+      window.getModelTemperature = function() { return MODEL_CONFIG[activeModel] ? MODEL_CONFIG[activeModel].temp : 0.7; };
+// 1. CHAT – Advanced AI with LaMini-Flan-T5 + Smart Response System
       // ====================================================================
       const chatMessages = document.getElementById('chatMessages');
       const chatInput = document.getElementById('chatInput');
@@ -2322,28 +2316,27 @@
       };
 
       function getSmartResponse(message, history) {
-        for (const [category, data] of Object.entries(smartResponses)) {
-          if (category === 'default') continue;
-          for (const pattern of data.patterns) {
-            if (pattern.test(message)) {
-              return data.responses[Math.floor(Math.random() * data.responses.length)];
-            }
+        const personality = (typeof getModelPersonality === 'function') ? getModelPersonality() : 'detailed';
+        let cat = 'default', matched = false;
+        for (const [c, d] of Object.entries(smartResponses)) {
+          if (c === 'default' || !d.patterns) continue;
+          if (d.patterns.some(p => p.test(message))) { cat = c; matched = true; break; }
+        }
+        if (!matched && history && history.length >= 2) {
+          const last = [...history].reverse().find(m => m.role === 'assistant');
+          if (last && [/und/i,/weiter/i,/mehr/i,/noch/i,/genauer/i,/erkl\u00e4r/i,/more/i,/explain/i].some(f => f.test(message))) {
+            const fup = { detailed:'Gerne vertiefe ich', creative:'Oh, da geht noch mehr!', thoughtful:'Interessanter Punkt.',
+              technical:'Erweiterung:', concise:'Kurz:', witty:'Du willst mehr? Aber klar!' };
+            return (fup[personality]||fup.detailed) + ' ' + last.text.substring(0,60) + '...';
           }
         }
-        // Use history for follow-up context
-        if (history && history.length >= 2) {
-          const lastMsg = history[history.length - 2];
-          if (lastMsg && lastMsg.role === 'assistant') {
-            // If user is following up on same topic, use default but vary it
-            const lastResponse = lastMsg.text;
-            // Try to detect if this is a follow-up question
-            const followUp = [/und/i, /weiter/i, /mehr/i, /noch/i, /erz\u00e4hl/i, /genauer/i, /erkl\u00e4r/i];
-            if (followUp.some(f => f.test(message))) {
-              return 'Gerne! Hier ist mehr dazu: ' + (lastResponse.length > 50 ? lastResponse.substring(0, 50) + '... ' : '') + 'Um das weiter auszuf\u00fchren: Es gibt mehrere interessante Aspekte zu diesem Thema. M\u00f6chtest du einen bestimmten Bereich genauer wissen?';
-            }
-          }
+        if (matched && smartResponses[cat].responses) {
+          const r = smartResponses[cat].responses[Math.floor(Math.random() * smartResponses[cat].responses.length)];
+          const pfx = { detailed:'Detailliert: ', creative:'', thoughtful:'Hmm, ', technical:'Technisch: ', concise:'', witty:'' };
+          return (pfx[personality]||'') + r;
         }
-        return smartResponses.default.responses[Math.floor(Math.random() * smartResponses.default.responses.length)];
+        const d = smartResponses.default.responses;
+        return d[Math.floor(Math.random() * d.length)];
       }
 
       async function loadAIModel() {
@@ -2501,81 +2494,48 @@
         ctx.clearRect(0, 0, w, h);
 
         if (style === 'photorealistic') {
-          // Sky gradient
-          const skyGrad = ctx.createLinearGradient(0, 0, 0, h);
-          skyGrad.addColorStop(0, hsl(baseHue, 60, 70));
-          skyGrad.addColorStop(0.3, hsl(baseHue + 20, 50, 60));
-          skyGrad.addColorStop(0.6, hsl(baseHue + 40, 40, 50));
-          skyGrad.addColorStop(1, hsl(baseHue + 60, 30, 35));
-          ctx.fillStyle = skyGrad;
-          ctx.fillRect(0, 0, w, h);
+          // Enhanced photorealistic engine
+          const sg = ctx.createLinearGradient(0, 0, 0, h);
+          sg.addColorStop(0, hsl((baseHue+210)%360,50,82)); sg.addColorStop(0.2, hsl((baseHue+220)%360,45,70));
+          sg.addColorStop(0.4, hsl((baseHue+230)%360,40,55)); sg.addColorStop(0.6, hsl((baseHue+240)%360,40,40));
+          sg.addColorStop(0.8, hsl((baseHue+250)%360,50,28)); sg.addColorStop(1, hsl((baseHue+260)%360,60,15));
+          ctx.fillStyle = sg; ctx.fillRect(0, 0, w, h);
           // Clouds
-          ctx.globalAlpha = 0.4;
-          for (let i = 0; i < 6; i++) {
-            const cx = w * 0.1 + w * 0.8 * rng();
-            const cy = h * 0.05 + h * 0.25 * rng();
-            const cr = 30 + rng() * 60;
-            ctx.beginPath();
-            ctx.arc(cx, cy, cr, 0, Math.PI * 2);
-            ctx.arc(cx - cr * 0.3, cy + cr * 0.2, cr * 0.7, 0, Math.PI * 2);
-            ctx.arc(cx + cr * 0.4, cy + cr * 0.15, cr * 0.6, 0, Math.PI * 2);
-            ctx.fillStyle = hsla(0, 0, 100, 0.3 + rng() * 0.3);
-            ctx.fill();
-          }
-          ctx.globalAlpha = 1;
-          // Landscape layers
-          for (let i = 0; i < 5; i++) {
-            ctx.beginPath();
-            ctx.moveTo(0, h - i * h * 0.08);
-            for (let x = 0; x <= w; x += 10) {
-              const y = h - (i + 0.5) * h * 0.08 - Math.sin(x * 0.008 + i * 1.2) * h * 0.04 - Math.sin(x * 0.02 + i * 2) * h * 0.02;
-              ctx.lineTo(x, y);
-            }
-            ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
-            ctx.fillStyle = hsl(100 + i * 15, 50, 25 + i * 10);
-            ctx.fill();
-          }
-          // Reflections
           ctx.globalAlpha = 0.3;
-          for (let i = 0; i < 20; i++) {
-            ctx.beginPath();
-            ctx.arc(w * rng(), h * 0.7 + h * 0.25 * rng(), 2 + rng() * 3, 0, Math.PI * 2);
-            ctx.fillStyle = hsla(200, 80, 70, 0.1 + rng() * 0.2);
-            ctx.fill();
-          }
+          for (let c=0; c<8; c++) { const cx=w*0.05+w*0.9*rng(), cy=h*0.02+h*0.22*rng(), cr=40+rng()*80;
+            for (let l=0; l<4; l++) { ctx.beginPath();
+              ctx.arc(cx+(l-2)*cr*0.3,cy+l*cr*0.08,cr*(1-l*0.12),0,Math.PI*2);
+              ctx.arc(cx-cr*0.4,cy+l*cr*0.05,cr*0.5,0,Math.PI*2);
+              ctx.fillStyle=hsla(0,0,100,0.1+(1-l/4)*0.2); ctx.fill(); } }
+          ctx.globalAlpha = 1;
+          // Mountains with atmospheric perspective
+          for (let m=0; m<3; m++) { ctx.beginPath(); ctx.moveTo(0, h*(0.35+m*0.1));
+            for (let x=0; x<=w; x+=4) {
+              ctx.lineTo(x, h*(0.35+m*0.1) - h*(Math.sin(x*0.004+m*2.3)*0.04+Math.sin(x*0.011+m*4.1)*0.02+Math.sin(x*0.02+m*1.7)*0.01)); }
+            ctx.lineTo(w,h); ctx.lineTo(0,h); ctx.closePath();
+            ctx.fillStyle=hsla((baseHue+230+m*10)%360,30+m*5,25+m*10,0.7+m*0.1); ctx.fill(); }
+          // Ground with grass texture
+          ctx.globalAlpha = 0.4;
+          for (let g=0; g<50; g++) { ctx.beginPath(); const gx=rng()*w, gy=h*0.75+rng()*h*0.22;
+            ctx.moveTo(gx,gy); ctx.lineTo(gx+rng()*3-1,gy-4-rng()*8);
+            ctx.strokeStyle=hsla(100+rng()*40,50,25+rng()*15,0.15+rng()*0.25); ctx.lineWidth=0.5+rng(); ctx.stroke(); }
+          ctx.globalAlpha = 1;
           // Trees
-          ctx.globalAlpha = 0.5;
-          for (let i = 0; i < 4; i++) {
-            const x = 50 + (w - 100) * rng();
-            const treeH = 60 + rng() * 80;
-            ctx.fillStyle = hsl(25, 30, 20);
-            ctx.fillRect(x - 3, h - treeH * 0.3, 6, treeH * 0.3);
-            for (let j = 0; j < 6; j++) {
-              ctx.beginPath();
-              ctx.arc(x + rng() * 20 - 10, h - treeH * 0.4 - j * treeH * 0.12, 12 + rng() * 15, 0, Math.PI * 2);
-              ctx.fillStyle = hsl(100 + rng() * 30, 50, 25 + rng() * 15);
-              ctx.fill();
-            }
-          }
-          // Sun rays
-          ctx.globalAlpha = 0.1;
-          for (let i = 0; i < 5; i++) {
-            ctx.beginPath();
-            ctx.moveTo(w * 0.5, 0);
-            ctx.lineTo(w * 0.1 + w * 0.8 * rng(), h);
-            ctx.lineTo(w * 0.1 + w * 0.8 * rng(), h);
-            ctx.closePath();
-            ctx.fillStyle = hsla(50, 100, 90, 0.03);
-            ctx.fill();
-          }
-          // Stars
-          ctx.globalAlpha = 0.6;
-          for (let i = 0; i < 30; i++) {
-            ctx.beginPath();
-            ctx.arc(w * rng(), h * rng() * 0.3, 0.5 + rng() * 0.8, 0, Math.PI * 2);
-            ctx.fillStyle = hsla(0, 0, 100, 0.3 + rng() * 0.5);
-            ctx.fill();
-          }
+          for (let t=0; t<5; t++) { const tx=30+(w-60)*rng(), th=50+rng()*80;
+            ctx.fillStyle='rgba(0,0,0,0.08)'; ctx.beginPath(); ctx.ellipse(tx+3,h-th*0.12,10,3,0,0,Math.PI*2); ctx.fill();
+            ctx.fillStyle=hsl(25,35,18); ctx.fillRect(tx-2,h-th*0.3,4,th*0.3);
+            for (let tl=0; tl<4; tl++) { ctx.beginPath();
+              ctx.ellipse(tx,h-th*0.35-tl*th*0.15,12+rng()*8,8+tl*2,0,0,Math.PI*2);
+              ctx.fillStyle=hsla(100+rng()*30+tl*5,45+rng()*15,22+tl*4,0.6+rng()*0.2); ctx.fill(); } }
+          // Atmospheric light
+          const lx=w*0.7+w*0.2*rng(), ly=h*0.05+h*0.12*rng();
+          const lg=ctx.createRadialGradient(lx,ly,0,lx,ly,w*0.3);
+          lg.addColorStop(0,hsla(45,100,95,0.15)); lg.addColorStop(1,'rgba(0,0,0,0)');
+          ctx.fillStyle=lg; ctx.fillRect(0,0,w,h);
+          // Soft vignette
+          const vg=ctx.createRadialGradient(w*0.5,h*0.5,h*0.3,w*0.5,h*0.5,h*0.8);
+          vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,0.18)');
+          ctx.fillStyle=vg; ctx.fillRect(0,0,w,h);
         } else if (style === 'abstract') {
           const grad = ctx.createRadialGradient(w * 0.5, h * 0.5, 0, w * 0.5, h * 0.5, w * 0.7);
           grad.addColorStop(0, hsl(baseHue, 80, 20));
