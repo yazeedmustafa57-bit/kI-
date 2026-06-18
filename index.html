@@ -980,6 +980,13 @@
     }
 
     /* ============================================
+       SPINNER
+       ============================================ */
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ============================================
        REVEAL ANIMATIONS
        ============================================ */
     .reveal {
@@ -1021,7 +1028,7 @@
         <li><a href="#projects" class="nav__link">Projekte</a></li>
         <li><a href="#skills" class="nav__link">Skills</a></li>
         <li><a href="#contact" class="nav__link">Kontakt</a></li>
-        <li><a href="https://geminigen.ai" target="_blank" class="nav__cta">GeminiGen AI</a></li>
+        <li><a href="#platform" class="nav__cta">GeminiGen AI</a></li>
       </ul>
       <button class="nav__mobile-toggle" id="mobileToggle" aria-label="Menü">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
@@ -1201,7 +1208,7 @@
             </div>
           </div>
           <div style="text-align:right">
-            <a href="https://geminigen.ai" target="_blank" class="btn btn--primary">
+            <a href="#platform" class="btn btn--primary">
               Zur Plattform
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </a>
@@ -1331,7 +1338,7 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
             E-Mail senden
           </a>
-          <a href="https://geminigen.ai" target="_blank" class="btn btn--secondary">
+          <a href="#platform" class="btn btn--secondary">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
             GeminiGen AI
           </a>
@@ -1345,6 +1352,83 @@
     </div>
   </section>
 
+
+  <!-- ==========================================
+       PLATFORM EMBED
+       ========================================== -->
+  <section class="section" id="platform">
+    <div class="container">
+      <div class="projects__header reveal">
+        <span class="section-label">Plattform</span>
+        <h2 class="section-title">GeminiGen AI direkt nutzen</h2>
+        <p class="section-subtitle" style="margin: 0 auto;">
+          Nutze die volle Power von Veo 3.1, Sora 2, Grok, Imagen und mehr –
+          direkt hier eingebettet, ohne die Seite zu verlassen.
+        </p>
+      </div>
+      <div class="platform-frame-wrapper reveal" style="
+        position: relative;
+        width: 100%;
+        height: 700px;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        background: var(--color-bg-card);
+        border: 1px solid var(--color-border);
+        box-shadow: var(--shadow-lg), var(--shadow-glow);
+      ">
+        <iframe 
+          src="https://geminigen.ai" 
+          title="GeminiGen AI Plattform"
+          style="
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+          "
+          loading="lazy"
+          allow="camera; microphone; clipboard-read; clipboard-write"
+        ></iframe>
+        <!-- Loading overlay -->
+        <div class="platform-loading" style="
+          position: absolute;
+          inset: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          background: var(--color-bg-card);
+          z-index: 1;
+          transition: opacity 0.5s ease;
+          pointer-events: none;
+          gap: 20px;
+        ">
+          <div style="
+            width: 48px;
+            height: 48px;
+            border: 3px solid var(--color-border);
+            border-top-color: var(--color-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+          "></div>
+          <span style="color: var(--color-text-secondary); font-size: 0.9rem;">
+            Lade GeminiGen AI Plattform…
+          </span>
+        </div>
+      </div>
+      <div class="platform__notice reveal" style="
+        text-align: center;
+        margin-top: 16px;
+        font-size: 0.8rem;
+        color: var(--color-text-muted);
+      ">
+        Lädst du die Seite nicht? 
+        <a href="https://geminigen.ai" target="_blank" style="color: var(--color-primary-light); text-decoration: none;">
+          Direkt zu GeminiGen AI ↗
+        </a>
+      </div>
+    </div>
+  </section>
+
   <!-- ==========================================
        FOOTER
        ========================================== -->
@@ -1352,7 +1436,7 @@
     <div class="container">
       <p class="footer__text">
         &copy; <span id="year"></span> Yazeed · Built with ❤️ · 
-        <a href="https://geminigen.ai" target="_blank">GeminiGen AI</a>
+        <a href="#platform">GeminiGen AI</a>
       </p>
     </div>
   </footer>
@@ -1444,6 +1528,21 @@
         }
       });
     });
+
+    // Hide platform loading overlay on iframe load
+    const platformFrame = document.querySelector('.platform-frame-wrapper iframe');
+    const loadingOverlay = document.querySelector('.platform-loading');
+    if (platformFrame && loadingOverlay) {
+      platformFrame.addEventListener('load', () => {
+        loadingOverlay.style.opacity = '0';
+        setTimeout(() => loadingOverlay.style.display = 'none', 500);
+      });
+      // Fallback: hide after 5s even if load event didn't fire
+      setTimeout(() => {
+        loadingOverlay.style.opacity = '0';
+        setTimeout(() => loadingOverlay.style.display = 'none', 500);
+      }, 5000);
+    }
 
     // Current year
     document.getElementById('year').textContent = new Date().getFullYear();
