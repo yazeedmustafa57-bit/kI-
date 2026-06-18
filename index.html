@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yazeed – AI Innovation</title>
+  <meta name="description" content="Yazeed – Building the future of AI-powered content generation with GeminiGen AI.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================
+       CSS CUSTOM PROPERTIES – Design System
+       ============================================ */
+    :root {
+      --color-bg: #0a0a0f;
+      --color-bg-elevated: #12121a;
+      --color-bg-card: #1a1a26;
+      --color-bg-card-hover: #22223a;
+      --color-border: rgba(99, 102, 241, 0.15);
+      --color-border-hover: rgba(99, 102, 241, 0.35);
+      --color-primary: #6366f1;
+      --color-primary-light: #818cf8;
+      --color-primary-dark: #4f46e5;
+      --color-accent: #06b6d4;
+      --color-accent-light: #22d3ee;
+      --color-text: #f1f5f9;
+      --color-text-secondary: #94a3b8;
+      --color-text-muted: #64748b;
+      --color-success: #10b981;
+      --color-warning: #f59e0b;
+      --gradient-hero: linear-gradient(135deg, #0a0a0f 0%, #12121a 50%, #1a1a2e 100%);
+      --gradient-primary: linear-gradient(135deg, #6366f1, #06b6d4);
+      --gradient-primary-reverse: linear-gradient(135deg, #06b6d4, #6366f1);
+      --gradient-text: linear-gradient(135deg, #f1f5f9 0%, #818cf8 50%, #22d3ee 100%);
+      --gradient-card-border: linear-gradient(135deg, rgba(99,102,241,0.5), rgba(6,182,212,0.5));
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+      --shadow-md: 0 8px 32px rgba(0,0,0,0.4);
+      --shadow-lg: 0 20px 60px rgba(0,0,0,0.5);
+      --shadow-glow: 0 0 40px rgba(99,102,241,0.15);
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ============================================
+       RESET & BASE
+       ============================================ */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scrollbar-width: thin;
+      scrollbar-color: var(--color-primary) transparent;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    ::selection {
+      background: var(--color-primary);
+      color: white;
+    }
+
+    /* ============================================
+       ANIMATED BACKGROUND
+       ============================================ */
+    .bg-grid {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        linear-gradient(rgba(99,102,241,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99,102,241,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(100px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bg-orb--1 {
+      width: 600px;
+      height: 600px;
+      background: rgba(99,102,241,0.08);
+      top: -200px;
+      right: -200px;
+      animation: orbFloat 20s ease-in-out infinite;
+    }
+
+    .bg-orb--2 {
+      width: 400px;
+      height: 400px;
+      background: rgba(6,182,212,0.06);
+      bottom: -100px;
+      left: -100px;
+      animation: orbFloat 25s ease-in-out infinite reverse;
+    }
+
+    .bg-orb--3 {
+      width: 300px;
+      height: 300px;
+      background: rgba(99,102,241,0.05);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation: orbFloat 18s ease-in-out infinite 5s;
+    }
+
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -30px) scale(1.05); }
+      66% { transform: translate(-20px, 20px) scale(0.95); }
+    }
+
+    /* ============================================
+       UTILITY
+       ============================================ */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section {
+      padding: 100px 0;
+      position: relative;
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--color-primary-light);
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      background: var(--gradient-text);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .section-subtitle {
+      font-size: 1.1rem;
+      color: var(--color-text-secondary);
+      max-width: 600px;
+      line-height: 1.7;
+    }
+
+    /* ============================================
+       NAVIGATION
+       ============================================ */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 16px 0;
+      transition: var(--transition);
+    }
+
+    .nav.scrolled {
+      background: rgba(10, 10, 15, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--color-border);
+      padding: 10px 0;
+    }
+
+    .nav__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav__logo {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--color-text);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav__logo-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--gradient-primary);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 0.85rem;
+      color: white;
+    }
+
+    .nav__logo span {
+      background: var(--gradient-text);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav__links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav__link {
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .nav__link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--gradient-primary);
+      transition: var(--transition);
+      border-radius: 2px;
+    }
+
+    .nav__link:hover {
+      color: var(--color-text);
+    }
+
+    .nav__link:hover::after {
+      width: 100%;
+    }
+
+    .nav__cta {
+      padding: 10px 24px;
+      background: var(--gradient-primary);
+      color: white;
+      border-radius: 100px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .nav__cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(99,102,241,0.3);
+    }
+
+    .nav__mobile-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--color-text);
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    /* ============================================
+       HERO
+       ============================================ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      padding-top: 80px;
+      overflow: hidden;
+    }
+
+    .hero__content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .hero__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(99,102,241,0.1);
+      border: 1px solid rgba(99,102,241,0.2);
+      border-radius: 100px;
+      font-size: 0.8rem;
+      color: var(--color-primary-light);
+      font-weight: 500;
+      margin-bottom: 24px;
+    }
+
+    .hero__badge-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--color-success);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .hero__title {
+      font-size: clamp(2.8rem, 6vw, 4.5rem);
+      font-weight: 900;
+      line-height: 1.05;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero__title-line {
+      display: block;
+    }
+
+    .hero__title-line--gradient {
+      background: var(--gradient-text);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero__title-line--accent {
+      color: var(--color-text);
+    }
+
+    .hero__description {
+      font-size: 1.1rem;
+      color: var(--color-text-secondary);
+      max-width: 520px;
+      line-height: 1.8;
+      margin-bottom: 36px;
+    }
+
+    .hero__actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      border-radius: 100px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: var(--transition);
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn--primary {
+      background: var(--gradient-primary);
+      color: white;
+    }
+
+    .btn--primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(99,102,241,0.35);
+    }
+
+    .btn--secondary {
+      background: transparent;
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+    }
+
+    .btn--secondary:hover {
+      background: rgba(99,102,241,0.08);
+      border-color: var(--color-border-hover);
+      transform: translateY(-2px);
+    }
+
+    .btn--small {
+      padding: 10px 20px;
+      font-size: 0.85rem;
+    }
+
+    /* Hero right – Code Window */
+    .hero__code-window {
+      background: var(--color-bg-elevated);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg), var(--shadow-glow);
+    }
+
+    .code-window__header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 20px;
+      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .code-window__dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .code-window__dot--red { background: #ef4444; }
+    .code-window__dot--yellow { background: #eab308; }
+    .code-window__dot--green { background: #22c55e; }
+
+    .code-window__title {
+      margin-left: 8px;
+      font-size: 0.8rem;
+      color: var(--color-text-muted);
+      font-family: var(--font-mono);
+    }
+
+    .code-window__body {
+      padding: 24px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      line-height: 1.8;
+      color: var(--color-text-secondary);
+    }
+
+    .code-window__body .keyword { color: #818cf8; }
+    .code-window__body .function { color: #22d3ee; }
+    .code-window__body .string { color: #10b981; }
+    .code-window__body .comment { color: #64748b; font-style: italic; }
+    .code-window__body .variable { color: #f59e0b; }
+
+    /* ============================================
+       STATS BANNER
+       ============================================ */
+    .stats {
+      background: var(--color-bg-elevated);
+      border-top: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .stats__grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--color-border);
+    }
+
+    .stats__item {
+      padding: 40px 24px;
+      text-align: center;
+      background: var(--color-bg-elevated);
+    }
+
+    .stats__number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+    }
+
+    .stats__label {
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      margin-top: 4px;
+    }
+
+    /* ============================================
+       ABOUT
+       ============================================ */
+    .about__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .about__image-wrapper {
+      position: relative;
+    }
+
+    .about__image-glow {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background: rgba(99,102,241,0.1);
+      border-radius: 50%;
+      filter: blur(80px);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+    }
+
+    .about__image-card {
+      position: relative;
+      z-index: 1;
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      text-align: center;
+    }
+
+    .about__avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      font-weight: 800;
+      color: white;
+      box-shadow: 0 0 40px rgba(99,102,241,0.3);
+    }
+
+    .about__name {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .about__role {
+      color: var(--color-primary-light);
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+
+    .about__tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .about__tag {
+      padding: 4px 14px;
+      background: rgba(99,102,241,0.1);
+      border: 1px solid rgba(99,102,241,0.15);
+      border-radius: 100px;
+      font-size: 0.75rem;
+      color: var(--color-text-secondary);
+    }
+
+    .about__text p {
+      color: var(--color-text-secondary);
+      font-size: 1.05rem;
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+
+    /* ============================================
+       PROJECTS / PLATFORM SHOWCASE
+       ============================================ */
+    .projects__header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .projects__header .section-subtitle {
+      margin: 0 auto;
+    }
+
+    .projects__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 24px;
+    }
+
+    .project-card {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 32px;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--gradient-card-border);
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .project-card:hover {
+      border-color: var(--color-border-hover);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .project-card:hover::before {
+      opacity: 1;
+    }
+
+    .project-card__icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-sm);
+      background: rgba(99,102,241,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+
+    .project-card__title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .project-card__description {
+      font-size: 0.9rem;
+      color: var(--color-text-secondary);
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+
+    .project-card__link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--color-primary-light);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+
+    .project-card__link:hover {
+      gap: 10px;
+      color: var(--color-accent-light);
+    }
+
+    .project-card__tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 16px;
+    }
+
+    .project-card__tag {
+      padding: 3px 10px;
+      background: rgba(6,182,212,0.08);
+      border: 1px solid rgba(6,182,212,0.12);
+      border-radius: 100px;
+      font-size: 0.7rem;
+      color: var(--color-accent-light);
+    }
+
+    /* GeminiGen feature card */
+    .featured-card {
+      grid-column: 1 / -1;
+      background: var(--gradient-hero);
+      border: 1px solid rgba(99,102,241,0.2);
+      border-radius: var(--radius-lg);
+      padding: 48px;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 40px;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .featured-card::before {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: rgba(99,102,241,0.05);
+      border-radius: 50%;
+      filter: blur(100px);
+      top: -100px;
+      right: -100px;
+    }
+
+    .featured-card__title {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .featured-card__text {
+      color: var(--color-text-secondary);
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+
+    .featured-card__stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .featured-card__stat {
+      text-align: center;
+    }
+
+    .featured-card__stat-number {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--color-primary-light);
+    }
+
+    .featured-card__stat-label {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+    }
+
+    .featured-card__badge-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .featured-card__badge {
+      padding: 6px 16px;
+      background: rgba(99,102,241,0.12);
+      border: 1px solid rgba(99,102,241,0.2);
+      border-radius: 100px;
+      font-size: 0.8rem;
+      color: var(--color-primary-light);
+      font-weight: 500;
+    }
+
+    /* ============================================
+       SKILLS
+       ============================================ */
+    .skills__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .skill-item {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      transition: var(--transition);
+    }
+
+    .skill-item:hover {
+      border-color: var(--color-border-hover);
+      transform: translateY(-2px);
+    }
+
+    .skill-item__header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .skill-item__icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      background: rgba(99,102,241,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .skill-item__name {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .skill-item__bar {
+      width: 100%;
+      height: 4px;
+      background: rgba(99,102,241,0.08);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .skill-item__bar-fill {
+      height: 100%;
+      background: var(--gradient-primary);
+      border-radius: 4px;
+      transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ============================================
+       CONTACT
+       ============================================ */
+    .contact__inner {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .contact__actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 36px;
+    }
+
+    .contact__socials {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 32px;
+    }
+
+    .contact__social-link {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      font-size: 1.2rem;
+      transition: var(--transition);
+    }
+
+    .contact__social-link:hover {
+      background: rgba(99,102,241,0.1);
+      border-color: var(--color-primary);
+      color: var(--color-primary-light);
+      transform: translateY(-3px);
+    }
+
+    /* ============================================
+       FOOTER
+       ============================================ */
+    .footer {
+      padding: 32px 0;
+      border-top: 1px solid var(--color-border);
+      text-align: center;
+    }
+
+    .footer__text {
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+    }
+
+    .footer__text a {
+      color: var(--color-primary-light);
+      text-decoration: none;
+    }
+
+    /* ============================================
+       RESPONSIVE
+       ============================================ */
+    @media (max-width: 1024px) {
+      .hero__content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .hero__code-window {
+        max-width: 500px;
+        margin: 0 auto;
+      }
+
+      .about__grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .featured-card {
+        grid-template-columns: 1fr;
+        padding: 32px;
+      }
+
+      .stats__grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav__links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: rgba(10, 10, 15, 0.98);
+        backdrop-filter: blur(20px);
+        flex-direction: column;
+        padding: 24px;
+        gap: 20px;
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      .nav__links.open {
+        display: flex;
+      }
+
+      .nav__mobile-toggle {
+        display: block;
+      }
+
+      .hero__title {
+        font-size: clamp(2rem, 10vw, 3rem);
+      }
+
+      .section {
+        padding: 60px 0;
+      }
+
+      .projects__grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats__grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .featured-card__stats {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    /* ============================================
+       REVEAL ANIMATIONS
+       ============================================ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+                  transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+  </style>
+</head>
+<body>
+  <!-- Background Effects -->
+  <div class="bg-grid"></div>
+  <div class="bg-orb bg-orb--1"></div>
+  <div class="bg-orb bg-orb--2"></div>
+  <div class="bg-orb bg-orb--3"></div>
+
+  <!-- ==========================================
+       NAVIGATION
+       ========================================== -->
+  <nav class="nav" id="nav">
+    <div class="container nav__inner">
+      <a href="#" class="nav__logo">
+        <div class="nav__logo-icon">Y</div>
+        <span>Yazeed</span>
+      </a>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="#about" class="nav__link">Über mich</a></li>
+        <li><a href="#projects" class="nav__link">Projekte</a></li>
+        <li><a href="#skills" class="nav__link">Skills</a></li>
+        <li><a href="#contact" class="nav__link">Kontakt</a></li>
+        <li><a href="https://geminigen.ai" target="_blank" class="nav__cta">GeminiGen AI</a></li>
+      </ul>
+      <button class="nav__mobile-toggle" id="mobileToggle" aria-label="Menü">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="3" y1="6" x2="21" y2="6" id="menuLine1"/>
+          <line x1="3" y1="12" x2="21" y2="12" id="menuLine2"/>
+          <line x1="3" y1="18" x2="21" y2="18" id="menuLine3"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ==========================================
+       HERO
+       ========================================== -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <div class="hero__content">
+        <div class="hero__text">
+          <div class="hero__badge">
+            <span class="hero__badge-dot"></span>
+            Available for Projects
+          </div>
+          <h1 class="hero__title">
+            <span class="hero__title-line hero__title-line--accent">Hi, ich bin</span>
+            <span class="hero__title-line hero__title-line--gradient">Yazeed</span>
+            <span class="hero__title-line hero__title-line--accent">AI Creator & Developer</span>
+          </h1>
+          <p class="hero__description">
+            Ich baue die Zukunft der KI-gestützten Content-Erstellung. 
+            Als Gründer von <strong>GeminiGen AI</strong> entwickle ich 
+            Plattformen für Video-, Sprach- und Bildgenerierung – 
+            frei zugänglich für alle.
+          </p>
+          <div class="hero__actions">
+            <a href="#projects" class="btn btn--primary">
+              Projekte entdecken
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+            <a href="#contact" class="btn btn--secondary">Kontakt aufnehmen</a>
+          </div>
+        </div>
+        <div class="hero__code-window">
+          <div class="code-window__header">
+            <span class="code-window__dot code-window__dot--red"></span>
+            <span class="code-window__dot code-window__dot--yellow"></span>
+            <span class="code-window__dot code-window__dot--green"></span>
+            <span class="code-window__title">yazeed.sh</span>
+          </div>
+          <div class="code-window__body">
+            <span class="comment"># whoami</span><br>
+            <span class="variable">name</span>=<span class="string">"Yazeed"</span><br>
+            <span class="variable">role</span>=<span class="string">"AI Creator & Developer"</span><br>
+            <span class="variable">mission</span>=<span class="string">"Democratize AI content creation"</span><br><br>
+            <span class="comment"># platform</span><br>
+            <span class="variable">project</span>=<span class="keyword">new</span> <span class="function">Platform</span>({<br>
+            &nbsp;&nbsp;<span class="variable">name</span>: <span class="string">"GeminiGen AI"</span>,<br>
+            &nbsp;&nbsp;<span class="variable">tools</span>: [<span class="string">"Veo 3.1"</span>, <span class="string">"Sora 2"</span>, <span class="string">"Grok"</span>, <span class="string">"Imagen"</span>],<br>
+            &nbsp;&nbsp;<span class="variable">free</span>: <span class="keyword">true</span><br>
+            });<br><br>
+            <span class="comment"># status</span><br>
+            <span class="keyword">console</span>.<span class="function">log</span>(<span class="string">"🚀 Building the future"</span>);
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       STATS
+       ========================================== -->
+  <section class="stats">
+    <div class="stats__grid">
+      <div class="stats__item reveal">
+        <div class="stats__number" data-target="50000">0</div>
+        <div class="stats__label">Active Users</div>
+      </div>
+      <div class="stats__item reveal reveal-delay-1">
+        <div class="stats__number" data-target="10">0</div>
+        <div class="stats__label">AI Models</div>
+      </div>
+      <div class="stats__item reveal reveal-delay-2">
+        <div class="stats__number" data-target="1000000">0</div>
+        <div class="stats__label">Generations</div>
+      </div>
+      <div class="stats__item reveal reveal-delay-3">
+        <div class="stats__number" data-target="100">0</div>
+        <div class="stats__label">% Free Access</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       ABOUT
+       ========================================== -->
+  <section class="section" id="about">
+    <div class="container">
+      <div class="about__grid">
+        <div class="about__image-wrapper reveal">
+          <div class="about__image-glow"></div>
+          <div class="about__image-card">
+            <div class="about__avatar">Y</div>
+            <div class="about__name">Yazeed</div>
+            <div class="about__role">AI Creator & Developer</div>
+            <div class="about__tags">
+              <span class="about__tag">AI Engineering</span>
+              <span class="about__tag">Full-Stack</span>
+              <span class="about__tag">Product</span>
+              <span class="about__tag">Innovation</span>
+            </div>
+          </div>
+        </div>
+        <div class="about__text reveal reveal-delay-1">
+          <span class="section-label">Über mich</span>
+          <h2 class="section-title">Leidenschaft für KI & Innovation</h2>
+          <p>
+            Ich bin Yazeed – ein AI Creator und Developer mit einer klaren Vision: 
+            KI-gestützte Content-Erstellung für jeden zugänglich zu machen. 
+            Mit <strong>GeminiGen AI</strong> habe ich eine Plattform geschaffen, 
+            die modernste KI-Modelle wie Veo 3.1, Sora 2, Grok und Imagen 
+            vereint und kostenlos zur Verfügung stellt.
+          </p>
+          <p>
+            Meine Reise begann mit der Faszination für künstliche Intelligenz 
+            und dem Wunsch, komplexe Technologie in einfache, leistungsstarke 
+            Tools zu verwandeln. Heute nutzen tausende Creators weltweit 
+            meine Plattform, um Videos, Sprache und Bilder zu generieren.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       PROJECTS
+       ========================================== -->
+  <section class="section" id="projects">
+    <div class="container">
+      <div class="projects__header reveal">
+        <span class="section-label">Projekte</span>
+        <h2 class="section-title">Was ich erschaffe</h2>
+        <p class="section-subtitle">
+          Von KI-Plattformen bis zu kreativen Tools – hier sind meine 
+          wichtigsten Projekte.
+        </p>
+      </div>
+      <div class="projects__grid">
+        <!-- Featured: GeminiGen AI -->
+        <div class="featured-card reveal">
+          <div>
+            <span class="section-label">Featured Project</span>
+            <h3 class="featured-card__title">GeminiGen AI</h3>
+            <p class="featured-card__text">
+              Die führende Plattform für kostenlose KI-Video-, Sprach- und 
+              Bildgenerierung. Bietet Zugang zu Veo 3.1, Sora 2, Grok, 
+              Imagen und vielen weiteren Modellen – ohne versteckte Kosten.
+            </p>
+            <div class="featured-card__stats">
+              <div class="featured-card__stat">
+                <div class="featured-card__stat-number">10+</div>
+                <div class="featured-card__stat-label">AI Models</div>
+              </div>
+              <div class="featured-card__stat">
+                <div class="featured-card__stat-number">50K+</div>
+                <div class="featured-card__stat-label">Users</div>
+              </div>
+              <div class="featured-card__stat">
+                <div class="featured-card__stat-number">100%</div>
+                <div class="featured-card__stat-label">Free</div>
+              </div>
+            </div>
+            <div class="featured-card__badge-list">
+              <span class="featured-card__badge">Veo 3.1</span>
+              <span class="featured-card__badge">Sora 2</span>
+              <span class="featured-card__badge">Grok</span>
+              <span class="featured-card__badge">Imagen</span>
+              <span class="featured-card__badge">Speech</span>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <a href="https://geminigen.ai" target="_blank" class="btn btn--primary">
+              Zur Plattform
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Project Cards -->
+        <div class="project-card reveal">
+          <div class="project-card__icon">🎬</div>
+          <h3 class="project-card__title">AI Video Generator</h3>
+          <p class="project-card__description">
+            Erstelle beeindruckende Videos mit Veo 3.1 und Sora 2. 
+            Text-zu-Video in Sekunden – kostenlos und unbegrenzt.
+          </p>
+          <div class="project-card__tags">
+            <span class="project-card__tag">Veo 3.1</span>
+            <span class="project-card__tag">Sora 2</span>
+            <span class="project-card__tag">AI Video</span>
+          </div>
+        </div>
+
+        <div class="project-card reveal reveal-delay-1">
+          <div class="project-card__icon">🔊</div>
+          <h3 class="project-card__title">AI Speech Synthesis</h3>
+          <p class="project-card__description">
+            Lebensechte Sprachsynthese mit KI. Verwandle Text in 
+            natürliche Sprache für Creator und Unternehmen.
+          </p>
+          <div class="project-card__tags">
+            <span class="project-card__tag">TTS</span>
+            <span class="project-card__tag">Speech</span>
+            <span class="project-card__tag">AI Voice</span>
+          </div>
+        </div>
+
+        <div class="project-card reveal reveal-delay-2">
+          <div class="project-card__icon">🖼️</div>
+          <h3 class="project-card__title">AI Image Generation</h3>
+          <p class="project-card__description">
+            Generiere hochwertige Bilder mit Imagen und Grok. 
+            Perfekt für Marketing, Social Media und kreative Projekte.
+          </p>
+          <div class="project-card__tags">
+            <span class="project-card__tag">Imagen</span>
+            <span class="project-card__tag">Grok</span>
+            <span class="project-card__tag">AI Image</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       SKILLS
+       ========================================== -->
+  <section class="section" id="skills">
+    <div class="container">
+      <div class="projects__header reveal">
+        <span class="section-label">Skills</span>
+        <h2 class="section-title">Technologien & Kompetenzen</h2>
+        <p class="section-subtitle">
+          Was ich beherrsche und täglich einsetze, um großartige 
+          Produkte zu bauen.
+        </p>
+      </div>
+      <div class="skills__grid">
+        <div class="skill-item reveal">
+          <div class="skill-item__header">
+            <div class="skill-item__icon">🧠</div>
+            <span class="skill-item__name">AI / Machine Learning</span>
+          </div>
+          <div class="skill-item__bar"><div class="skill-item__bar-fill" style="width: 95%"></div></div>
+        </div>
+        <div class="skill-item reveal reveal-delay-1">
+          <div class="skill-item__header">
+            <div class="skill-item__icon">⚛️</div>
+            <span class="skill-item__name">Full-Stack Development</span>
+          </div>
+          <div class="skill-item__bar"><div class="skill-item__bar-fill" style="width: 90%"></div></div>
+        </div>
+        <div class="skill-item reveal reveal-delay-2">
+          <div class="skill-item__header">
+            <div class="skill-item__icon">☁️</div>
+            <span class="skill-item__name">Cloud & Infrastructure</span>
+          </div>
+          <div class="skill-item__bar"><div class="skill-item__bar-fill" style="width: 85%"></div></div>
+        </div>
+        <div class="skill-item reveal reveal-delay-3">
+          <div class="skill-item__header">
+            <div class="skill-item__icon">🎨</div>
+            <span class="skill-item__name">UI/UX Design</span>
+          </div>
+          <div class="skill-item__bar"><div class="skill-item__bar-fill" style="width: 80%"></div></div>
+        </div>
+        <div class="skill-item reveal">
+          <div class="skill-item__header">
+            <div class="skill-item__icon">📊</div>
+            <span class="skill-item__name">Product Management</span>
+          </div>
+          <div class="skill-item__bar"><div class="skill-item__bar-fill" style="width: 85%"></div></div>
+        </div>
+        <div class="skill-item reveal reveal-delay-1">
+          <div class="skill-item__header">
+            <div class="skill-item__icon">🐍</div>
+            <span class="skill-item__name">Python / JavaScript / Go</span>
+          </div>
+          <div class="skill-item__bar"><div class="skill-item__bar-fill" style="width: 90%"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       CONTACT
+       ========================================== -->
+  <section class="section" id="contact">
+    <div class="container">
+      <div class="contact__inner reveal">
+        <span class="section-label">Kontakt</span>
+        <h2 class="section-title">Lass uns zusammenarbeiten</h2>
+        <p class="section-subtitle" style="margin:0 auto">
+          Hast du eine Idee, ein Projekt oder eine Frage? Ich freue mich 
+          auf deine Nachricht!
+        </p>
+        <div class="contact__actions">
+          <a href="mailto:yazeed@geminigen.ai" class="btn btn--primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            E-Mail senden
+          </a>
+          <a href="https://geminigen.ai" target="_blank" class="btn btn--secondary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            GeminiGen AI
+          </a>
+        </div>
+        <div class="contact__socials">
+          <a href="https://github.com/yazeedmustafa57-bit" target="_blank" class="contact__social-link" aria-label="GitHub">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       FOOTER
+       ========================================== -->
+  <footer class="footer">
+    <div class="container">
+      <p class="footer__text">
+        &copy; <span id="year"></span> Yazeed · Built with ❤️ · 
+        <a href="https://geminigen.ai" target="_blank">GeminiGen AI</a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- ==========================================
+       JAVASCRIPT
+       ========================================== -->
+  <script>
+    // Navbar scroll effect
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // Mobile menu toggle
+    const mobileToggle = document.getElementById('mobileToggle');
+    const navLinks = document.getElementById('navLinks');
+    mobileToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+
+    // Close mobile menu on link click
+    navLinks.querySelectorAll('.nav__link').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+      });
+    });
+
+    // Scroll reveal
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    });
+
+    document.querySelectorAll('.reveal').forEach(el => {
+      revealObserver.observe(el);
+    });
+
+    // Counter animation
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const target = parseInt(el.dataset.target);
+          if (!target || el.dataset.counted) return;
+          el.dataset.counted = 'true';
+          animateCounter(el, target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    function animateCounter(el, target) {
+      const duration = 2000;
+      const steps = 60;
+      const increment = target / steps;
+      let current = 0;
+      let step = 0;
+
+      const timer = setInterval(() => {
+        step++;
+        current = Math.min(Math.round(increment * step), target);
+        el.textContent = current.toLocaleString() + (target === 100 ? '%' : '+');
+        if (step >= steps) {
+          clearInterval(timer);
+          el.textContent = target.toLocaleString() + (target === 100 ? '%' : '+');
+        }
+      }, duration / steps);
+    }
+
+    document.querySelectorAll('.stats__number').forEach(el => {
+      counterObserver.observe(el);
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href === '#') return;
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // Current year
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
