@@ -2494,48 +2494,79 @@
         ctx.clearRect(0, 0, w, h);
 
         if (style === 'photorealistic') {
-          // Enhanced photorealistic engine
-          const sg = ctx.createLinearGradient(0, 0, 0, h);
-          sg.addColorStop(0, hsl((baseHue+210)%360,50,82)); sg.addColorStop(0.2, hsl((baseHue+220)%360,45,70));
-          sg.addColorStop(0.4, hsl((baseHue+230)%360,40,55)); sg.addColorStop(0.6, hsl((baseHue+240)%360,40,40));
-          sg.addColorStop(0.8, hsl((baseHue+250)%360,50,28)); sg.addColorStop(1, hsl((baseHue+260)%360,60,15));
-          ctx.fillStyle = sg; ctx.fillRect(0, 0, w, h);
-          // Clouds
-          ctx.globalAlpha = 0.3;
-          for (let c=0; c<8; c++) { const cx=w*0.05+w*0.9*rng(), cy=h*0.02+h*0.22*rng(), cr=40+rng()*80;
-            for (let l=0; l<4; l++) { ctx.beginPath();
-              ctx.arc(cx+(l-2)*cr*0.3,cy+l*cr*0.08,cr*(1-l*0.12),0,Math.PI*2);
-              ctx.arc(cx-cr*0.4,cy+l*cr*0.05,cr*0.5,0,Math.PI*2);
-              ctx.fillStyle=hsla(0,0,100,0.1+(1-l/4)*0.2); ctx.fill(); } }
-          ctx.globalAlpha = 1;
-          // Mountains with atmospheric perspective
-          for (let m=0; m<3; m++) { ctx.beginPath(); ctx.moveTo(0, h*(0.35+m*0.1));
-            for (let x=0; x<=w; x+=4) {
-              ctx.lineTo(x, h*(0.35+m*0.1) - h*(Math.sin(x*0.004+m*2.3)*0.04+Math.sin(x*0.011+m*4.1)*0.02+Math.sin(x*0.02+m*1.7)*0.01)); }
+          // PROFESSIONAL PHOTOREALISTIC RENDER ENGINE
+          const p = prompt.toLowerCase();
+          const has_water = /see|meer|wasser|fluss|ozean|lake|river|ocean|strand/i.test(p);
+          const has_sunset = /sonnenuntergang|sunset|abendrot|dammerung|twilight/i.test(p);
+          const has_night = /nacht|night|stern|star|mond|moon|dunkel|dark/i.test(p);
+          const has_mountains = /berg|mountain|alp|hugel|hill/i.test(p);
+          const has_forest = /wald|forst|baum|tree|forest|wood/i.test(p);
+          const has_ocean = /meer|ocean|see|sea|welle|wave/i.test(p);
+          const has_snow = /schnee|snow|eis|ice|winter/i.test(p);
+          const has_flowers = /blume|flower|wiese|meadow|garten|garden/i.test(p);
+          const sky_h = has_sunset ? 15 : has_night ? 225 : 210;
+          const sky_b = has_night ? 12 : (has_sunset ? 25 : 82);
+          const sky = ctx.createLinearGradient(0, 0, 0, h);
+          sky.addColorStop(0, hsl(sky_h, has_night ? 20 : 50, sky_b));
+          if (!has_night) { sky.addColorStop(0.3, hsl(sky_h+10, 40, sky_b-15)); sky.addColorStop(0.6, hsl(sky_h+20, 35, sky_b-30)); }
+          sky.addColorStop(1, hsl(sky_h+30, 30, sky_b-40));
+          ctx.fillStyle = sky; ctx.fillRect(0, 0, w, h);
+          if (has_night) { for (let i=0;i<80;i++) { const sx=(i*137.5+seed)%w, sy=(i*97.3)%(h*0.5);
+            ctx.beginPath(); ctx.arc(sx, sy, 0.5+rng()*1.5, 0, Math.PI*2);
+            ctx.fillStyle = hsla(0,0,100,0.3+rng()*0.7); ctx.fill(); } }
+          const cx = has_sunset ? w*0.65 : w*0.3+rng()*w*0.3;
+          const cy = has_sunset ? h*0.6 : h*0.05+rng()*h*0.08;
+          const cs = has_night ? 15+rng()*10 : 25+rng()*12;
+          if (!has_night) {
+            for (let g=0;g<4;g++) { const gl=ctx.createRadialGradient(cx,cy,0,cx,cy,cs*(1+g*0.8));
+              gl.addColorStop(0,hsla(45,100,95,0.02*(5-g))); gl.addColorStop(1,'rgba(0,0,0,0)');
+              ctx.fillStyle=gl; ctx.fillRect(cx-cs*3,cy-cs*3,cs*6,cs*6); }
+            ctx.beginPath(); ctx.arc(cx,cy,cs,0,Math.PI*2);
+            ctx.fillStyle=hsla(45,100,has_sunset?85:95,has_sunset?0.7:0.85); ctx.fill();
+          } else { ctx.beginPath(); ctx.arc(cx,cy,cs,0,Math.PI*2); ctx.fillStyle=hsla(40,5,85,0.6); ctx.fill(); }
+          ctx.globalAlpha=has_night?0.08:0.25;
+          for (let ci=0;ci<10;ci++) { const cxx=(ci*157.7)%(w+80)-40, cyy=h*0.02+(ci*89.3)%(h*0.2), cw=40+rng()*60;
+            for (let cl=0;cl<4;cl++) { ctx.beginPath();
+              ctx.ellipse(cxx+(cl-2)*cw*0.25,cyy+cl*5,cw*(1-cl*0.12),10+cl*2,0,0,Math.PI*2);
+              ctx.ellipse(cxx-cw*0.3,cyy+cl*3,cw*0.45,8+cl*2,0,0,Math.PI*2);
+              ctx.fillStyle=hsla(0,0,100,0.08+(1-cl/4)*0.12); ctx.fill(); } }
+          ctx.globalAlpha=1;
+          for (let mi=0;mi<(has_mountains?4:2);mi++) { ctx.beginPath(); const mb=0.32+mi*0.08; ctx.moveTo(0,h*mb);
+            for (let x=0;x<=w;x+=3) { const m1=Math.sin(x*0.003+mi*2.7)*h*0.035, m2=Math.sin(x*0.007+mi*4.3)*h*0.017;
+              ctx.lineTo(x,h*mb-m1-m2-Math.sin(x*0.015+mi*1.1)*h*0.008); }
             ctx.lineTo(w,h); ctx.lineTo(0,h); ctx.closePath();
-            ctx.fillStyle=hsla((baseHue+230+m*10)%360,30+m*5,25+m*10,0.7+m*0.1); ctx.fill(); }
-          // Ground with grass texture
-          ctx.globalAlpha = 0.4;
-          for (let g=0; g<50; g++) { ctx.beginPath(); const gx=rng()*w, gy=h*0.75+rng()*h*0.22;
-            ctx.moveTo(gx,gy); ctx.lineTo(gx+rng()*3-1,gy-4-rng()*8);
-            ctx.strokeStyle=hsla(100+rng()*40,50,25+rng()*15,0.15+rng()*0.25); ctx.lineWidth=0.5+rng(); ctx.stroke(); }
-          ctx.globalAlpha = 1;
-          // Trees
-          for (let t=0; t<5; t++) { const tx=30+(w-60)*rng(), th=50+rng()*80;
-            ctx.fillStyle='rgba(0,0,0,0.08)'; ctx.beginPath(); ctx.ellipse(tx+3,h-th*0.12,10,3,0,0,Math.PI*2); ctx.fill();
-            ctx.fillStyle=hsl(25,35,18); ctx.fillRect(tx-2,h-th*0.3,4,th*0.3);
-            for (let tl=0; tl<4; tl++) { ctx.beginPath();
-              ctx.ellipse(tx,h-th*0.35-tl*th*0.15,12+rng()*8,8+tl*2,0,0,Math.PI*2);
-              ctx.fillStyle=hsla(100+rng()*30+tl*5,45+rng()*15,22+tl*4,0.6+rng()*0.2); ctx.fill(); } }
-          // Atmospheric light
-          const lx=w*0.7+w*0.2*rng(), ly=h*0.05+h*0.12*rng();
-          const lg=ctx.createRadialGradient(lx,ly,0,lx,ly,w*0.3);
-          lg.addColorStop(0,hsla(45,100,95,0.15)); lg.addColorStop(1,'rgba(0,0,0,0)');
-          ctx.fillStyle=lg; ctx.fillRect(0,0,w,h);
-          // Soft vignette
-          const vg=ctx.createRadialGradient(w*0.5,h*0.5,h*0.3,w*0.5,h*0.5,h*0.8);
-          vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,0.18)');
-          ctx.fillStyle=vg; ctx.fillRect(0,0,w,h);
+            ctx.fillStyle=hsl(220+mi*15,25,32+mi*10); ctx.globalAlpha=0.4+mi*0.12; ctx.fill(); ctx.globalAlpha=1; }
+          for (let ti=0;ti<3;ti++) { ctx.beginPath(); const tb=0.55+ti*0.09; ctx.moveTo(0,h*tb);
+            for (let x=0;x<=w;x+=3) ctx.lineTo(x,h*(tb+Math.sin(x*0.005+ti*2)*0.025+Math.sin(x*0.012+ti*3)*0.012));
+            ctx.lineTo(w,h); ctx.lineTo(0,h); ctx.closePath(); ctx.fillStyle=hsl(110+ti*20,40+ti*5,20+ti*10); ctx.fill(); }
+          if (has_forest||(!has_ocean&&!has_snow)) { const tc=has_forest?10:4;
+            for (let ti=0;ti<tc;ti++) { const tx=(ti*73.7+seed*2)%w, th=30+rng()*70;
+              ctx.fillStyle='rgba(0,0,0,0.06)'; ctx.beginPath(); ctx.ellipse(tx+1,h-th*0.08,8,2,0,0,Math.PI*2); ctx.fill();
+              ctx.fillStyle=hsl(25,30,14); ctx.fillRect(tx-1,h-th*0.28,3,th*0.28);
+              for (let fl=0;fl<4;fl++) { ctx.beginPath();
+                ctx.ellipse(tx,h-th*0.32-fl*th*0.15,8+rng()*6,5+fl*2,0,0,Math.PI*2);
+                ctx.fillStyle=hsla(100+rng()*25+fl*10,45+rng()*15,20+fl*6,0.5+rng()*0.2); ctx.fill(); } } }
+          if (has_ocean||has_water) { const wy=has_ocean?h*0.62:h*0.7;
+            const wg=ctx.createLinearGradient(0,wy,0,h);
+            wg.addColorStop(0,hsla(210,50,has_sunset?42:36,0.7)); wg.addColorStop(0.5,hsla(220,45,26,0.6));
+            wg.addColorStop(1,hsla(230,40,16,0.8)); ctx.fillStyle=wg; ctx.fillRect(0,wy,h,wy);
+            for (let ri=0;ri<20;ri++) { ctx.beginPath();
+              ctx.ellipse(rng()*w,wy+5+rng()*(h-wy-10),10+rng()*30,1.5+rng()*2,rng()*3,0,Math.PI*2);
+              ctx.fillStyle=hsla(200,60,70,0.03+rng()*0.04); ctx.fill(); } }
+          if (has_flowers) { for (let fi=0;fi<25;fi++) { const fx=rng()*w, fy=h*0.7+rng()*h*0.25;
+              ctx.strokeStyle=hsla(100,60,28,0.3); ctx.lineWidth=0.5;
+              ctx.beginPath(); ctx.moveTo(fx,fy); ctx.lineTo(fx,fy-4-rng()*6); ctx.stroke();
+              for (let p=0;p<5;p++) { const a=(p/5)*Math.PI*2; ctx.beginPath();
+                ctx.ellipse(fx+Math.cos(a)*2,fy-5-rng()*6+Math.sin(a)*2,1.5,2.5,a,0,Math.PI*2);
+                ctx.fillStyle=hsla((baseHue+fi*25+60)%360,70+rng()*20,50+rng()*20,0.3+rng()*0.3); ctx.fill(); } } }
+          for (let gi=0;gi<60;gi++) { ctx.beginPath(); const gx=rng()*w, gy=h*0.7+rng()*h*0.28;
+            ctx.moveTo(gx,gy); ctx.lineTo(gx+rng()*2-1,gy-3-rng()*6);
+            ctx.strokeStyle=hsla(100+rng()*40,40+rng()*20,18+rng()*12,0.1+rng()*0.15); ctx.lineWidth=0.5+rng()*0.5; ctx.stroke(); }
+          for (let fi=0;fi<2;fi++) { const fy=h*0.2+fi*h*0.2; const fog=ctx.createRadialGradient(w*0.5,fy,0,w*0.5,fy,w*0.4);
+            fog.addColorStop(0,hsla(0,0,100,0.03)); fog.addColorStop(1,'rgba(0,0,0,0)'); ctx.fillStyle=fog; ctx.fillRect(0,0,w,h); }
+          const vig=ctx.createRadialGradient(w*0.5,h*0.5,h*0.35,w*0.5,h*0.5,h*0.85);
+          vig.addColorStop(0,'rgba(0,0,0,0)'); vig.addColorStop(0.7,'rgba(0,0,0,0.03)'); vig.addColorStop(1,'rgba(0,0,0,0.2)');
+          ctx.fillStyle=vig; ctx.fillRect(0,0,w,h);
         } else if (style === 'abstract') {
           const grad = ctx.createRadialGradient(w * 0.5, h * 0.5, 0, w * 0.5, h * 0.5, w * 0.7);
           grad.addColorStop(0, hsl(baseHue, 80, 20));
