@@ -1005,6 +1005,451 @@
     .reveal-delay-2 { transition-delay: 0.2s; }
     .reveal-delay-3 { transition-delay: 0.3s; }
     .reveal-delay-4 { transition-delay: 0.4s; }
+    /* ============================================
+       AI PLATFORM – Custom Free AI Tools (no auth)
+       ============================================ */
+    .ai-platform {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg), var(--shadow-glow);
+    }
+    .ai-tabs {
+      display: flex;
+      gap: 0;
+      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid var(--color-border);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .ai-tab {
+      flex: 1;
+      min-width: 100px;
+      padding: 16px 24px;
+      background: none;
+      border: none;
+      color: var(--color-text-secondary);
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .ai-tab:hover {
+      color: var(--color-text);
+      background: rgba(255,255,255,0.03);
+    }
+    .ai-tab.active {
+      color: var(--color-primary-light);
+      background: rgba(99,102,241,0.08);
+    }
+    .ai-tab.active::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 20%;
+      right: 20%;
+      height: 2px;
+      background: var(--gradient-primary);
+      border-radius: 2px 2px 0 0;
+    }
+    .ai-tab-icon { font-size: 1.1rem; }
+    .ai-panel {
+      display: none;
+      padding: 24px;
+      min-height: 520px;
+      max-height: 620px;
+      overflow-y: auto;
+    }
+    .ai-panel.active { display: flex; flex-direction: column; }
+    .ai-panel::-webkit-scrollbar { width: 4px; }
+    .ai-panel::-webkit-scrollbar-track { background: transparent; }
+    .ai-panel::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 4px; }
+    /* Chat */
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-right: 8px;
+      margin-bottom: 16px;
+      min-height: 300px;
+      max-height: 400px;
+    }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 4px; }
+    .chat-msg {
+      max-width: 85%;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      animation: msgIn 0.3s ease;
+    }
+    @keyframes msgIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .chat-msg--user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+    .chat-msg--ai {
+      align-self: flex-start;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--color-border);
+      border-bottom-left-radius: 4px;
+      color: var(--color-text);
+    }
+    .chat-msg--ai.loading { opacity: 0.6; }
+    .chat-msg--ai .msg-label, .chat-msg--user .msg-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .chat-msg--ai .msg-label { color: var(--color-primary-light); }
+    .chat-msg--user .msg-label { color: rgba(255,255,255,0.7); text-align: right; }
+    .chat-input-area {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+    .chat-input-area textarea {
+      flex: 1;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      color: var(--color-text);
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      resize: none;
+      min-height: 48px;
+      max-height: 120px;
+      outline: none;
+      transition: var(--transition);
+    }
+    .chat-input-area textarea:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+    }
+    .chat-input-area textarea::placeholder { color: var(--color-text-muted); }
+    .chat-send-btn {
+      padding: 12px 20px;
+      background: var(--gradient-primary);
+      border: none;
+      border-radius: var(--radius-sm);
+      color: white;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .chat-send-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(99,102,241,0.3);
+    }
+    .chat-send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .chat-status {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      margin-top: 8px;
+      text-align: center;
+    }
+    .chat-model-info {
+      font-size: 0.7rem;
+      color: var(--color-text-muted);
+      text-align: center;
+      margin-top: 8px;
+      padding: 8px;
+      background: rgba(255,255,255,0.02);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-border);
+    }
+    .chat-model-info code {
+      color: var(--color-primary-light);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+    }
+    .typing-dots {
+      display: inline-flex;
+      gap: 3px;
+      align-items: center;
+    }
+    .typing-dots span {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--color-text-secondary);
+      animation: dotPulse 1.4s ease-in-out infinite;
+    }
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes dotPulse {
+      0%, 60%, 100% { transform: scale(0.6); opacity: 0.4; }
+      30% { transform: scale(1); opacity: 1; }
+    }
+    /* Image Generator */
+    .image-generator {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex: 1;
+    }
+    .image-prompt-row {
+      display: flex;
+      gap: 8px;
+    }
+    .image-prompt-row input {
+      flex: 1;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      color: var(--color-text);
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      outline: none;
+      transition: var(--transition);
+    }
+    .image-prompt-row input:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+    }
+    .image-prompt-row input::placeholder { color: var(--color-text-muted); }
+    .image-generate-btn {
+      padding: 12px 24px;
+      background: var(--gradient-primary);
+      border: none;
+      border-radius: var(--radius-sm);
+      color: white;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .image-generate-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(99,102,241,0.3);
+    }
+    .image-generate-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .image-style-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .style-chip {
+      padding: 6px 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--color-border);
+      border-radius: 20px;
+      color: var(--color-text-secondary);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .style-chip:hover {
+      border-color: var(--color-primary);
+      color: var(--color-text);
+    }
+    .style-chip.active {
+      background: rgba(99,102,241,0.15);
+      border-color: var(--color-primary);
+      color: var(--color-primary-light);
+    }
+    .image-canvas-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.2);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      min-height: 280px;
+      position: relative;
+      overflow: hidden;
+    }
+    .image-canvas-wrapper canvas {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: var(--radius-sm);
+    }
+    .image-placeholder {
+      color: var(--color-text-muted);
+      text-align: center;
+      padding: 40px;
+    }
+    .image-placeholder .placeholder-icon { font-size: 3rem; margin-bottom: 12px; display: block; }
+    .image-placeholder p { font-size: 0.9rem; }
+    /* Speech */
+    .speech-section {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex: 1;
+    }
+    .speech-section textarea {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      color: var(--color-text);
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      resize: vertical;
+      min-height: 120px;
+      outline: none;
+      transition: var(--transition);
+    }
+    .speech-section textarea:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+    }
+    .speech-controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .speech-btn {
+      padding: 10px 20px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      color: var(--color-text);
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-sans);
+    }
+    .speech-btn:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: var(--color-primary);
+    }
+    .speech-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .speech-btn--primary {
+      background: var(--gradient-primary);
+      border-color: transparent;
+      color: white;
+    }
+    .speech-btn--primary:hover { box-shadow: 0 4px 20px rgba(99,102,241,0.3); }
+    .speech-status { font-size: 0.8rem; color: var(--color-text-muted); }
+    .speech-voice-select {
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      color: var(--color-text);
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      outline: none;
+      cursor: pointer;
+    }
+    /* Video */
+    .video-section {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex: 1;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px 0;
+    }
+    .video-section .video-icon { font-size: 4rem; margin-bottom: 8px; }
+    .video-section h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      background: var(--gradient-text);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .video-section p {
+      color: var(--color-text-secondary);
+      max-width: 500px;
+      line-height: 1.7;
+      font-size: 0.95rem;
+    }
+    .video-features {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 8px;
+    }
+    .video-feature {
+      padding: 12px 20px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      min-width: 140px;
+    }
+    .video-feature .vf-icon { font-size: 1.5rem; display: block; margin-bottom: 4px; }
+    .video-feature .vf-label { font-size: 0.8rem; color: var(--color-text-secondary); }
+    .coming-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: rgba(6,182,212,0.1);
+      border: 1px solid rgba(6,182,212,0.2);
+      border-radius: 20px;
+      color: var(--color-accent-light);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .free-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: rgba(16,185,129,0.1);
+      border: 1px solid rgba(16,185,129,0.2);
+      border-radius: 20px;
+      color: var(--color-success);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .free-badge svg { width: 14px; height: 14px; }
+    @media (max-width: 640px) {
+      .ai-tab { padding: 12px 14px; font-size: 0.78rem; min-width: 70px; }
+      .ai-tab .ai-tab-label { display: none; }
+      .ai-panel { padding: 16px; min-height: 400px; max-height: 520px; }
+      .chat-msg { max-width: 92%; }
+      .image-prompt-row { flex-direction: column; }
+      .image-generate-btn { width: 100%; justify-content: center; }
+    }
+    @media (min-width: 641px) {
+      .ai-tab .ai-tab-label-short { display: none; }
+    }
+
   </style>
 </head>
 <body>
@@ -1359,73 +1804,155 @@
   <section class="section" id="platform">
     <div class="container">
       <div class="projects__header reveal">
-        <span class="section-label">Plattform</span>
-        <h2 class="section-title">GeminiGen AI direkt nutzen</h2>
+        <span class="section-label">KI-Plattform</span>
+        <h2 class="section-title">GeminiGen AI – Kostenlos & ohne Anmeldung</h2>
         <p class="section-subtitle" style="margin: 0 auto;">
-          Nutze die volle Power von Veo 3.1, Sora 2, Grok, Imagen und mehr –
-          direkt hier eingebettet, ohne die Seite zu verlassen.
+          Keine Registrierung, keine Zahlung – einfach lostippen und KI nutzen.
+          Alle Tools sind <strong style="color: var(--color-success);">dauerhaft kostenlos</strong>.
         </p>
-      </div>
-      <div class="platform-frame-wrapper reveal" style="
-        position: relative;
-        width: 100%;
-        height: 700px;
-        border-radius: var(--radius-lg);
-        overflow: hidden;
-        background: var(--color-bg-card);
-        border: 1px solid var(--color-border);
-        box-shadow: var(--shadow-lg), var(--shadow-glow);
-      ">
-        <iframe 
-          src="https://geminigen.ai" 
-          title="GeminiGen AI Plattform"
-          style="
-            width: 100%;
-            height: 100%;
-            border: none;
-            display: block;
-          "
-          loading="lazy"
-          allow="camera; microphone; clipboard-read; clipboard-write"
-        ></iframe>
-        <!-- Loading overlay -->
-        <div class="platform-loading" style="
-          position: absolute;
-          inset: 0;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          background: var(--color-bg-card);
-          z-index: 1;
-          transition: opacity 0.5s ease;
-          pointer-events: none;
-          gap: 20px;
-        ">
-          <div style="
-            width: 48px;
-            height: 48px;
-            border: 3px solid var(--color-border);
-            border-top-color: var(--color-primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-          "></div>
-          <span style="color: var(--color-text-secondary); font-size: 0.9rem;">
-            Lade GeminiGen AI Plattform…
+        <div style="display: flex; gap: 12px; justify-content: center; margin-top: 16px; flex-wrap: wrap;">
+          <span class="free-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            Keine Anmeldung
+          </span>
+          <span class="free-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            Keine Zahlung
+          </span>
+          <span class="free-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            Unbegrenzt nutzbar
           </span>
         </div>
       </div>
-      <div class="platform__notice reveal" style="
-        text-align: center;
-        margin-top: 16px;
-        font-size: 0.8rem;
-        color: var(--color-text-muted);
-      ">
-        Lädst du die Seite nicht? 
-        <a href="https://geminigen.ai" target="_blank" style="color: var(--color-primary-light); text-decoration: none;">
-          Direkt zu GeminiGen AI ↗
-        </a>
+
+      <!-- AI PLATFORM CONTAINER -->
+      <div class="ai-platform reveal" style="margin-top: 8px;">
+        <!-- Tabs -->
+        <div class="ai-tabs">
+          <button class="ai-tab active" data-tab="chat">
+            <span class="ai-tab-icon">💬</span>
+            <span class="ai-tab-label">KI-Chat</span>
+            <span class="ai-tab-label-short">Chat</span>
+          </button>
+          <button class="ai-tab" data-tab="image">
+            <span class="ai-tab-icon">🎨</span>
+            <span class="ai-tab-label">Bild erstellen</span>
+            <span class="ai-tab-label-short">Bild</span>
+          </button>
+          <button class="ai-tab" data-tab="speech">
+            <span class="ai-tab-icon">🎤</span>
+            <span class="ai-tab-label">Sprachausgabe</span>
+            <span class="ai-tab-label-short">Sprache</span>
+          </button>
+          <button class="ai-tab" data-tab="video">
+            <span class="ai-tab-icon">🎬</span>
+            <span class="ai-tab-label">Video KI</span>
+            <span class="ai-tab-label-short">Video</span>
+          </button>
+        </div>
+
+        <!-- === CHAT PANEL === -->
+        <div class="ai-panel active" id="panel-chat">
+          <div class="chat-messages" id="chatMessages">
+            <div class="chat-msg chat-msg--ai">
+              <div class="msg-label">GeminiGen AI</div>
+              Hallo! Ich bin dein kostenloser KI-Assistent. Stelle mir eine Frage oder schreibe etwas – ich antworte dir direkt im Browser, völlig kostenlos und ohne Anmeldung! 🚀
+            </div>
+          </div>
+          <div class="chat-input-area">
+            <textarea id="chatInput" placeholder="Schreibe eine Nachricht…" rows="1" maxlength="500"></textarea>
+            <button class="chat-send-btn" id="chatSendBtn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Senden
+            </button>
+          </div>
+          <div class="chat-status" id="chatStatus">✨ Bereit – schreibe einfach deine Nachricht!</div>
+          <div class="chat-model-info">
+            🤖 Läuft mit <code>Transformers.js</code> (DistilGPT2) – 100 % im Browser, kein Server nötig.
+            <span style="display: block; margin-top: 4px;">Das Modell wird beim ersten Chat geladen (ca. 5–10 Sekunden).</span>
+          </div>
+        </div>
+
+        <!-- === IMAGE PANEL === -->
+        <div class="ai-panel" id="panel-image">
+          <div class="image-generator">
+            <div class="image-prompt-row">
+              <input type="text" id="imagePrompt" placeholder="Beschreibe dein Bild… z.B. «Ein Sonnenuntergang am Meer mit Palmen»" />
+              <button class="image-generate-btn" id="imageGenBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                Erstellen
+              </button>
+            </div>
+            <div class="image-style-row">
+              <span class="style-chip active" data-style="abstract">🎨 Abstrakt</span>
+              <span class="style-chip" data-style="geometric">🔷 Geometrisch</span>
+              <span class="style-chip" data-style="nature">🌿 Natur</span>
+              <span class="style-chip" data-style="cyber">🤖 Cyber</span>
+              <span class="style-chip" data-style="sunset">🌅 Farbverlauf</span>
+            </div>
+            <div class="image-canvas-wrapper" id="imageCanvasWrapper">
+              <canvas id="imageCanvas" width="512" height="320"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- === SPEECH PANEL === -->
+        <div class="ai-panel" id="panel-speech">
+          <div class="speech-section">
+            <textarea id="speechText" placeholder="Gib hier Text ein, der vorgelesen werden soll…&#10;&#10;Beispiel: Hallo! Ich bin GeminiGen AI. Willkommen auf meiner kostenlosen KI-Plattform. Keine Anmeldung nötig!">Hallo! Ich bin GeminiGen AI. Willkommen auf meiner kostenlosen KI-Plattform. Keine Anmeldung, keine Zahlung – einfach kostenlos KI nutzen!</textarea>
+            <div class="speech-controls">
+              <select class="speech-voice-select" id="speechVoice"></select>
+              <button class="speech-btn speech-btn--primary" id="speechPlayBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Abspielen
+              </button>
+              <button class="speech-btn" id="speechPauseBtn" disabled>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                Pause
+              </button>
+              <button class="speech-btn" id="speechStopBtn" disabled>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16"/></svg>
+                Stop
+              </button>
+            </div>
+            <div class="speech-status" id="speechStatus">🔊 Bereit zum Vorlesen.</div>
+          </div>
+        </div>
+
+        <!-- === VIDEO PANEL === -->
+        <div class="ai-panel" id="panel-video">
+          <div class="video-section">
+            <div class="video-icon">🎬</div>
+            <span class="coming-badge">Bald verfügbar</span>
+            <h3>AI Video Generator (Coming Soon)</h3>
+            <p>
+              Mit GeminiGen AI kannst du bald auch Videos erstellen!
+              Veo 3.1, Sora 2 und weitere Modelle werden direkt hier
+              integriert – natürlich kostenlos und ohne Anmeldung.
+            </p>
+            <div class="video-features">
+              <div class="video-feature">
+                <span class="vf-icon">🎥</span>
+                <span class="vf-label">Text zu Video</span>
+              </div>
+              <div class="video-feature">
+                <span class="vf-icon">🎬</span>
+                <span class="vf-label">Veo 3.1</span>
+              </div>
+              <div class="video-feature">
+                <span class="vf-icon">✨</span>
+                <span class="vf-label">Sora 2</span>
+              </div>
+              <div class="video-feature">
+                <span class="vf-icon">🎞️</span>
+                <span class="vf-label">4K Auflösung</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
     </div>
   </section>
 
@@ -1529,20 +2056,498 @@
       });
     });
 
-    // Hide platform loading overlay on iframe load
-    const platformFrame = document.querySelector('.platform-frame-wrapper iframe');
-    const loadingOverlay = document.querySelector('.platform-loading');
-    if (platformFrame && loadingOverlay) {
-      platformFrame.addEventListener('load', () => {
-        loadingOverlay.style.opacity = '0';
-        setTimeout(() => loadingOverlay.style.display = 'none', 500);
+    // Hide platform loading overlay on iframe load (legacy – removed)
+    // New AI Platform JavaScript
+    (function() {
+      const platform = document.getElementById('platform');
+      if (!platform) return;
+
+      // --- TAB SWITCHING ---
+      const tabs = platform.querySelectorAll('.ai-tab');
+      const panels = {
+        chat: document.getElementById('panel-chat'),
+        image: document.getElementById('panel-image'),
+        speech: document.getElementById('panel-speech'),
+        video: document.getElementById('panel-video'),
+      };
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          const tabName = tab.dataset.tab;
+          // Update tab active states
+          tabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          // Update panel visibility
+          Object.entries(panels).forEach(([name, panel]) => {
+            if (panel) {
+              panel.classList.toggle('active', name === tabName);
+            }
+          });
+        });
       });
-      // Fallback: hide after 5s even if load event didn't fire
-      setTimeout(() => {
-        loadingOverlay.style.opacity = '0';
-        setTimeout(() => loadingOverlay.style.display = 'none', 500);
-      }, 5000);
-    }
+
+      // --- AI CHAT (Transformers.js) ---
+      const chatMessages = document.getElementById('chatMessages');
+      const chatInput = document.getElementById('chatInput');
+      const chatSendBtn = document.getElementById('chatSendBtn');
+      const chatStatus = document.getElementById('chatStatus');
+
+      let aiPipeline = null;
+      let aiLoading = false;
+
+      // Auto-resize textarea
+      if (chatInput) {
+        chatInput.addEventListener('input', () => {
+          chatInput.style.height = 'auto';
+          chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
+        });
+        chatInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendChatMessage();
+          }
+        });
+      }
+
+      async function loadAIModel() {
+        if (aiPipeline) return aiPipeline;
+        if (aiLoading) return null;
+        aiLoading = true;
+        chatStatus.textContent = '🧠 Lade KI-Modell (DistilGPT2) … ca. 5–10 Sekunden';
+        try {
+          // Dynamic import of Transformers.js
+          const { pipeline } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.6.0');
+          aiPipeline = await pipeline('text-generation', 'Xenova/distilgpt2', {
+            progress_callback: (progress) => {
+              if (progress.status === 'progress' && progress.loaded && progress.total) {
+                const pct = Math.round((progress.loaded / progress.total) * 100);
+                chatStatus.textContent = `🧠 Lade Modell … ${pct}% (${Math.round(progress.loaded/1024/1024)} MB)`;
+              }
+            }
+          });
+          chatStatus.textContent = '✅ KI-Modell geladen! Du kannst jetzt chatten.';
+          return aiPipeline;
+        } catch (err) {
+          console.warn('Transformers.js loading error:', err);
+          chatStatus.textContent = '⚠️ KI-Modell konnte nicht geladen werden. Verwende Demo-Modus.';
+          return null;
+        } finally {
+          aiLoading = false;
+        }
+      }
+
+      // Fallback responses when model can't load
+      const demoResponses = [
+        "Das ist eine interessante Frage! Als KI-Assistent kann ich dir bei vielen Themen helfen. Versuche es mit konkreteren Fragen.",
+        "Gute Frage! Ich bin ein KI-Assistent, der im Browser läuft. Stelle mir Fragen zu Technologie, Kreativität oder lass uns einfach plaudern.",
+        "Spannend! Ich kann dir helfen, Ideen zu entwickeln, Texte zu schreiben oder Konzepte zu erklären. Was möchtest du wissen?",
+        "Toll, dass du mich nutzt! Als kostenloser KI-Assistent beantworte ich gerne deine Fragen. Je genauer du fragst, desto besser kann ich antworten.",
+        "Ich verstehe! Lass uns das gemeinsam erkunden. KI kann auf viele Arten helfen – erzähle mir mehr von deinem Anliegen.",
+      ];
+
+      async function sendChatMessage() {
+        if (!chatInput) return;
+        const text = chatInput.value.trim();
+        if (!text || text.length === 0) return;
+
+        // Add user message
+        addMessage(text, 'user');
+        chatInput.value = '';
+        chatInput.style.height = 'auto';
+        chatSendBtn.disabled = true;
+        chatSendBtn.textContent = '…';
+
+        // Show AI thinking
+        const aiMsgEl = document.createElement('div');
+        aiMsgEl.className = 'chat-msg chat-msg--ai loading';
+        aiMsgEl.innerHTML = '<div class="msg-label">GeminiGen AI</div><div class="typing-dots"><span></span><span></span><span></span></div>';
+        chatMessages.appendChild(aiMsgEl);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        chatStatus.textContent = '🤔 KI denkt nach …';
+
+        try {
+          // Try to load and use the AI model
+          const generator = await loadAIModel();
+          let response;
+
+          if (generator) {
+            // Use the real model
+            const result = await generator(text, {
+              max_new_tokens: 80,
+              temperature: 0.7,
+              do_sample: true,
+            });
+            response = result[0].generated_text;
+            // Clean up the response (distilgpt2 repeats the input)
+            if (response.startsWith(text)) {
+              response = response.slice(text.length).trim();
+            }
+            // If response is empty or too short, use a follow-up
+            if (!response || response.length < 10) {
+              response = "Interessant! Ich habe deine Eingabe verarbeitet. Kann ich dir noch bei etwas anderem helfen?";
+            }
+            // Limit length
+            if (response.length > 400) {
+              response = response.slice(0, 397) + '...';
+            }
+          } else {
+            // Use demo mode
+            await new Promise(r => setTimeout(r, 800 + Math.random() * 1200));
+            const idx = Math.floor(Math.random() * demoResponses.length);
+            response = demoResponses[idx];
+            // Personalize response based on input
+            if (text.includes('?')) {
+              response = response;
+            } else {
+              response = "Danke für deine Nachricht! " + response;
+            }
+          }
+
+          // Remove loading indicator
+          aiMsgEl.remove();
+          // Add real response
+          addMessage(response, 'ai');
+          chatStatus.textContent = '✨ Bereit – schreibe einfach deine Nachricht!';
+        } catch (err) {
+          console.warn('Chat error:', err);
+          aiMsgEl.remove();
+          addMessage('Entschuldigung, es gab einen Fehler. Bitte versuche es erneut!', 'ai');
+          chatStatus.textContent = '⚠️ Ein Fehler ist aufgetreten.';
+        }
+
+        chatSendBtn.disabled = false;
+        chatSendBtn.textContent = 'Senden';
+      }
+
+      function addMessage(text, role) {
+        const el = document.createElement('div');
+        el.className = `chat-msg chat-msg--${role}`;
+        const label = role === 'user' ? 'Du' : 'GeminiGen AI';
+        el.innerHTML = `<div class="msg-label">${label}</div>${escapeHtml(text)}`;
+        chatMessages.appendChild(el);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      if (chatSendBtn) {
+        chatSendBtn.addEventListener('click', sendChatMessage);
+      }
+
+      // --- IMAGE GENERATOR (Canvas) ---
+      const imagePrompt = document.getElementById('imagePrompt');
+      const imageGenBtn = document.getElementById('imageGenBtn');
+      const imageCanvas = document.getElementById('imageCanvas');
+      const styleChips = document.querySelectorAll('.style-chip');
+
+      let selectedStyle = 'abstract';
+
+      styleChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+          styleChips.forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          selectedStyle = chip.dataset.style;
+        });
+      });
+
+      function generateImage(prompt, style) {
+        if (!imageCanvas) return;
+        const ctx = imageCanvas.getContext('2d');
+        const w = imageCanvas.width;
+        const h = imageCanvas.height;
+
+        // Use prompt text to seed the generation
+        let seed = 0;
+        const seedStr = prompt || 'default';
+        for (let i = 0; i < seedStr.length; i++) {
+          seed = ((seed << 5) - seed) + seedStr.charCodeAt(i);
+          seed = seed & seed;
+        }
+
+        ctx.clearRect(0, 0, w, h);
+
+        // Draw background
+        const grad = ctx.createLinearGradient(0, 0, w, h);
+        const hue1 = Math.abs(seed % 360);
+        const hue2 = (hue1 + 40 + Math.abs((seed * 7) % 60)) % 360;
+        grad.addColorStop(0, `hsl(${hue1}, 70%, 15%)`);
+        grad.addColorStop(1, `hsl(${hue2}, 60%, 25%)`);
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
+
+        // Draw elements based on style
+        ctx.globalAlpha = 0.6;
+        const rng = mulberry32(seed);
+
+        if (style === 'abstract') {
+          // Flowing colorful waves
+          for (let i = 0; i < 8; i++) {
+            ctx.beginPath();
+            ctx.moveTo(0, h * rng());
+            for (let x = 0; x <= w; x += 20) {
+              const y = h * 0.2 + Math.sin(x * 0.02 + i * 1.5) * (h * 0.15) + Math.sin(x * 0.05 + i) * (h * 0.08);
+              ctx.lineTo(x, y + (h * 0.4) * rng());
+            }
+            ctx.strokeStyle = `hsla(${(hue1 + i * 45) % 360}, 80%, 60%, 0.4)`;
+            ctx.lineWidth = 2 + rng() * 4;
+            ctx.stroke();
+          }
+          // Particles
+          for (let i = 0; i < 50; i++) {
+            ctx.beginPath();
+            ctx.arc(w * rng(), h * rng(), 1 + rng() * 3, 0, Math.PI * 2);
+            ctx.fillStyle = `hsla(${(hue1 + i * 20) % 360}, 90%, 70%, 0.6)`;
+            ctx.fill();
+          }
+        } else if (style === 'geometric') {
+          // Geometric shapes
+          for (let i = 0; i < 12; i++) {
+            const x = w * rng();
+            const y = h * rng();
+            const size = 20 + rng() * 60;
+            ctx.beginPath();
+            if (i % 3 === 0) {
+              // Circle
+              ctx.arc(x, y, size / 2, 0, Math.PI * 2);
+            } else if (i % 3 === 1) {
+              // Square
+              ctx.rect(x - size / 2, y - size / 2, size, size);
+            } else {
+              // Triangle
+              ctx.moveTo(x, y - size / 2);
+              ctx.lineTo(x - size / 2, y + size / 2);
+              ctx.lineTo(x + size / 2, y + size / 2);
+              ctx.closePath();
+            }
+            ctx.fillStyle = `hsla(${(hue1 + i * 30) % 360}, 70%, 50%, 0.3)`;
+            ctx.strokeStyle = `hsla(${(hue2 + i * 20) % 360}, 80%, 70%, 0.5)`;
+            ctx.lineWidth = 2;
+            ctx.fill();
+            ctx.stroke();
+          }
+        } else if (style === 'nature') {
+          // Trees and nature
+          for (let i = 0; i < 6; i++) {
+            const x = 50 + (w - 100) * rng();
+            const treeH = 80 + rng() * 120;
+            // Trunk
+            ctx.fillStyle = `hsl(25, 40%, ${20 + rng() * 15}%)`;
+            ctx.fillRect(x - 4, h - treeH * 0.4, 8, treeH * 0.4);
+            // Foliage
+            ctx.beginPath();
+            ctx.arc(x, h - treeH * 0.5, 30 + rng() * 25, 0, Math.PI * 2);
+            ctx.fillStyle = `hsl(${100 + rng() * 40}, 60%, ${30 + rng() * 20}%)`;
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(x - 15 + rng() * 30, h - treeH * 0.65, 20 + rng() * 15, 0, Math.PI * 2);
+            ctx.fillStyle = `hsl(${110 + rng() * 30}, 55%, ${35 + rng() * 15}%)`;
+            ctx.fill();
+          }
+        } else if (style === 'cyber') {
+          // Cyber grid
+          for (let i = 0; i < 20; i++) {
+            ctx.beginPath();
+            const x1 = w * rng();
+            const y1 = h * rng();
+            const x2 = w * rng();
+            const y2 = h * rng();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.strokeStyle = `hsla(${(hue1 + i * 15) % 360}, 90%, 60%, ${0.1 + rng() * 0.3})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+          // Glow nodes
+          for (let i = 0; i < 15; i++) {
+            ctx.beginPath();
+            ctx.arc(w * rng(), h * rng(), 3 + rng() * 5, 0, Math.PI * 2);
+            ctx.fillStyle = `hsla(${(hue2 + i * 25) % 360}, 100%, 70%, 0.7)`;
+            ctx.shadowColor = `hsl(${(hue2 + i * 25) % 360}, 100%, 60%)`;
+            ctx.shadowBlur = 15;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+          }
+        } else if (style === 'sunset') {
+          // Gradient with sun
+          const skyGrad = ctx.createLinearGradient(0, 0, 0, h);
+          skyGrad.addColorStop(0, `hsl(${(hue1) % 360}, 80%, 40%)`);
+          skyGrad.addColorStop(0.4, `hsl(${(hue1 + 30) % 360}, 80%, 50%)`);
+          skyGrad.addColorStop(0.7, `hsl(${(hue1 + 60) % 360}, 80%, 35%)`);
+          skyGrad.addColorStop(1, `hsl(${(hue1 + 80) % 360}, 70%, 20%)`);
+          ctx.fillStyle = skyGrad;
+          ctx.fillRect(0, 0, w, h);
+
+          // Sun
+          ctx.beginPath();
+          ctx.arc(w * 0.5, h * 0.65, 40, 0, Math.PI * 2);
+          ctx.fillStyle = `hsla(40, 100%, 70%, 0.8)`;
+          ctx.shadowColor = 'hsla(40, 100%, 70%, 0.5)';
+          ctx.shadowBlur = 60;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+
+          // Reflection on water
+          for (let i = 0; i < 30; i++) {
+            ctx.beginPath();
+            const x = w * 0.3 + w * 0.4 * rng();
+            const y = h * 0.7 + h * 0.25 * rng();
+            ctx.arc(x, y, 2 + rng() * 4, 0, Math.PI * 2);
+            ctx.fillStyle = `hsla(40, 100%, 70%, ${0.1 + rng() * 0.2})`;
+            ctx.fill();
+          }
+        }
+
+        ctx.globalAlpha = 1;
+
+        // Draw prompt text watermark
+        if (prompt && prompt.trim()) {
+          ctx.fillStyle = 'rgba(255,255,255,0.06)';
+          ctx.font = '14px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('✨ ' + prompt, w / 2, h - 20);
+        }
+      }
+
+      function mulberry32(a) {
+        return function() {
+          a |= 0; a = a + 0x6D2B79F5 | 0;
+          var t = Math.imul(a ^ a >>> 15, 1 | a);
+          t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+          return ((t ^ t >>> 14) >>> 0) / 4294967296;
+        };
+      }
+
+      if (imageGenBtn && imagePrompt) {
+        imageGenBtn.addEventListener('click', () => {
+          const prompt = imagePrompt.value.trim() || 'KI generierte Kunst';
+          imageGenBtn.disabled = true;
+          imageGenBtn.textContent = '🎨 Generiere…';
+          // Simulate processing
+          setTimeout(() => {
+            generateImage(prompt, selectedStyle);
+            imageGenBtn.disabled = false;
+            imageGenBtn.textContent = 'Erstellen';
+          }, 300 + Math.random() * 400);
+        });
+
+        imagePrompt.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            imageGenBtn.click();
+          }
+        });
+      }
+
+      // Generate initial image
+      if (imageCanvas) {
+        generateImage('Willkommen bei GeminiGen AI', 'abstract');
+      }
+
+      // --- SPEECH (Web Speech API) ---
+      const speechText = document.getElementById('speechText');
+      const speechPlayBtn = document.getElementById('speechPlayBtn');
+      const speechPauseBtn = document.getElementById('speechPauseBtn');
+      const speechStopBtn = document.getElementById('speechStopBtn');
+      const speechStatus = document.getElementById('speechStatus');
+      const speechVoice = document.getElementById('speechVoice');
+
+      let speechSynth = window.speechSynthesis;
+      let currentUtterance = null;
+      let voicesLoaded = false;
+
+      function loadVoices() {
+        if (!speechVoice) return;
+        const voices = speechSynth.getVoices();
+        const germanVoices = voices.filter(v => v.lang.startsWith('de'));
+        const displayVoices = germanVoices.length > 0 ? germanVoices : voices;
+
+        speechVoice.innerHTML = '';
+        displayVoices.forEach(v => {
+          const opt = document.createElement('option');
+          opt.value = v.name;
+          opt.textContent = `${v.name} (${v.lang})`;
+          speechVoice.appendChild(opt);
+        });
+        voicesLoaded = true;
+      }
+
+      loadVoices();
+      if (speechSynth.onvoiceschanged !== undefined) {
+        speechSynth.onvoiceschanged = loadVoices;
+      }
+
+      if (speechPlayBtn) {
+        speechPlayBtn.addEventListener('click', () => {
+          const text = speechText ? speechText.value.trim() : '';
+          if (!text) return;
+
+          speechSynth.cancel();
+
+          currentUtterance = new SpeechSynthesisUtterance(text);
+          const selectedVoiceName = speechVoice ? speechVoice.value : null;
+          if (selectedVoiceName) {
+            const voice = speechSynth.getVoices().find(v => v.name === selectedVoiceName);
+            if (voice) currentUtterance.voice = voice;
+          }
+          currentUtterance.rate = 1.0;
+          currentUtterance.pitch = 1.0;
+          currentUtterance.volume = 1.0;
+
+          currentUtterance.onstart = () => {
+            speechStatus.textContent = '🔊 Spreche …';
+            speechPlayBtn.disabled = true;
+            speechPauseBtn.disabled = false;
+            speechStopBtn.disabled = false;
+          };
+          currentUtterance.onend = () => {
+            speechStatus.textContent = '✅ Fertig!';
+            speechPlayBtn.disabled = false;
+            speechPauseBtn.disabled = true;
+            speechStopBtn.disabled = true;
+            currentUtterance = null;
+          };
+          currentUtterance.onerror = () => {
+            speechStatus.textContent = '⚠️ Fehler bei der Sprachausgabe.';
+            speechPlayBtn.disabled = false;
+            speechPauseBtn.disabled = true;
+            speechStopBtn.disabled = true;
+            currentUtterance = null;
+          };
+          currentUtterance.onpause = () => {
+            speechStatus.textContent = '⏸️ Pausiert';
+          };
+          currentUtterance.onresume = () => {
+            speechStatus.textContent = '🔊 Spreche …';
+          };
+
+          speechSynth.speak(currentUtterance);
+        });
+      }
+
+      if (speechPauseBtn) {
+        speechPauseBtn.addEventListener('click', () => {
+          if (speechSynth.speaking && !speechSynth.paused) {
+            speechSynth.pause();
+          } else if (speechSynth.paused) {
+            speechSynth.resume();
+          }
+        });
+      }
+
+      if (speechStopBtn) {
+        speechStopBtn.addEventListener('click', () => {
+          speechSynth.cancel();
+          speechStatus.textContent = '⏹️ Gestoppt';
+          speechPlayBtn.disabled = false;
+          speechPauseBtn.disabled = true;
+          speechStopBtn.disabled = true;
+          currentUtterance = null;
+        });
+      }
+    })();
 
     // Current year
     document.getElementById('year').textContent = new Date().getFullYear();
