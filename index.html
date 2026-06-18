@@ -2076,8 +2076,6 @@
         });
       });
 
-      });
-
       // ====================================================================
       // MODEL SELECTOR
       // ====================================================================
@@ -2671,6 +2669,7 @@
               const angle = (j / 6) * Math.PI * 2, radius = size * (j % 2 === 0 ? 1 : 0.6);
               (j === 0) ? ctx.moveTo(radius * Math.cos(angle), radius * Math.sin(angle)) : ctx.lineTo(radius * Math.cos(angle), radius * Math.sin(angle));
             }
+          }
         } else if (style === 'fantasy') {
           // Magic fantasy landscape with glowing elements
           const grad = ctx.createLinearGradient(0, 0, 0, h);
@@ -2826,15 +2825,6 @@
             const cx2 = w * rng(); const cy2 = h * rng();
             ctx.bezierCurveTo(cx1, cy1, cx2, cy2, w * rng(), h * rng());
             ctx.stroke();
-          }
-        }
-            ctx.closePath();
-            ctx.fillStyle = hsla(baseHue + i * 15, 70, 35 + i * 5, 0.3);
-            ctx.fill();
-            ctx.strokeStyle = hsla(baseHue + i * 15, 90, 60, 0.5);
-            ctx.lineWidth = 2;
-            ctx.stroke();
-            ctx.restore();
           }
         }
         ctx.globalAlpha = 1;
