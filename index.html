@@ -1353,6 +1353,10 @@
       border-color: var(--color-primary);
     }
     .speech-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .speech-btn--mic { background: var(--color-bg-card); border: 1px solid var(--color-border); }
+    .speech-btn--mic:hover { border-color: var(--color-accent); background: var(--color-bg-card-hover); }
+    .speech-btn--mic.listening { border-color: #ef4444; color: #ef4444; animation: pulse-mic 1s infinite; }
+    @keyframes pulse-mic { 0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); } 50% { box-shadow: 0 0 0 8px rgba(239,68,68,0); } }
     .speech-btn--primary {
       background: var(--gradient-primary);
       border-color: transparent;
@@ -1890,9 +1894,11 @@
               <span class="style-chip" data-style="cinematic">🎬 Kinematisch</span>
               <span class="style-chip" data-style="cyberpunk">🤖 Cyberpunk</span>
               <span class="style-chip" data-style="geometric">🔷 Geometrisch</span>
+              <span class="style-chip" data-style="fantasy">🧙 Fantasy</span>
+              <span class="style-chip" data-style="watercolor">🎨 Aquarell</span>
             </div>
             <div class="image-canvas-wrapper" id="imageCanvasWrapper">
-              <canvas id="imageCanvas" width="512" height="320"></canvas>
+              <canvas id="imageCanvas" width="640" height="400"></canvas>
             </div>
           </div>
         </div>
@@ -1903,6 +1909,7 @@
             <textarea id="speechText" placeholder="Gib hier Text ein, der vorgelesen werden soll…&#10;&#10;Beispiel: Hallo! Ich bin GeminiGen AI. Willkommen auf meiner kostenlosen KI-Plattform. Keine Anmeldung nötig!">Hallo! Ich bin GeminiGen AI. Willkommen auf meiner kostenlosen KI-Plattform. Keine Anmeldung, keine Zahlung – einfach kostenlos KI nutzen!</textarea>
             <div class="speech-controls">
               <select class="speech-voice-select" id="speechVoice"></select>
+              <button class="speech-btn speech-btn--mic" id="speechMicBtn">🎤</button>
               <button class="speech-btn speech-btn--primary" id="speechPlayBtn">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                 Abspielen
@@ -2066,6 +2073,30 @@
       }
       function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
       function random(min, max) { return Math.random() * (max - min) + min; }
+
+      // --- Conversation Memory & Helpers ---
+      let conversationHistory = [];
+      const MAX_HISTORY = 20;
+      let chatContext = { topic: null, lastCategory: null, userCount: 0 };
+
+      function addToHistory(role, text) {
+        conversationHistory.push({ role, text, timestamp: new Date().toLocaleTimeString() });
+        if (conversationHistory.length > MAX_HISTORY) {
+          conversationHistory = conversationHistory.slice(-MAX_HISTORY);
+        }
+      }
+
+      function getContextWindow() {
+        if (conversationHistory.length === 0) return '';
+        return conversationHistory.slice(-6).map(m =>
+          m.role === 'user' ? 'User: ' + m.text : 'Assistant: ' + m.text
+        ).join('\n');
+      }
+
+      function timestamp() {
+        return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      }
+
 
       // --- TAB SWITCHING ---
       const tabs = platform.querySelectorAll('.ai-tab');
@@ -2244,6 +2275,30 @@
             "Ich liebe Musik! Welches Genre magst du? Ich kann dir Texte schreiben oder über Musiktheorie sprechen."
           ]
         },
+        motivation: {
+          patterns: [/motivation/i, /motivier/i, /ermutig/i, /inspirier/i, /ziele/i, /träume/i, /erfolg/i, /positiv/i, /aufmunter/i, /antrieb/i],
+          responses: [
+            "Du schaffst das! 🌟 Jeder große Erfolg beginnt mit dem ersten Schritt. Glaube an dich und deine Fähigkeiten – du hast das Potenzial, Großartiges zu erreichen!",
+            "Lass dich nicht entmutigen! Die größten Errungenschaften der Menschheit kamen von Menschen, die weitergemacht haben, als andere aufgegeben haben. Du bist stärker, als du denkst! 💪",
+            "Motivation ist der Treibstoff für große Taten! Erinnere dich daran, warum du angefangen hast – deine Leidenschaft und dein Ziel sind es wert. Ich glaube an dich! 🚀"
+          ]
+        },
+        yazeed: {
+          patterns: [/yazeed/i, /ersteller/i, /entwickler/i, /macher/i, /wer hat.*gemacht/i, /erschaffen/i, /wer.*gebaut/i],
+          responses: [
+            "Yazeed ist der talentierte Entwickler hinter GeminiGen AI! Er hat diese Plattform mit viel Leidenschaft und Fachwissen aufgebaut, um KI für alle kostenlos zugänglich zu machen.",
+            "Yazeed hat diese komplette KI-Plattform entwickelt! Von der Idee bis zur Umsetzung – seine Vision ist es, modernste KI-Technologie für jeden frei verfügbar zu machen.",
+            "Yazeed ist der kreative Kopf hinter diesem Projekt! Er kombiniert modernste Web-Technologien mit KI, um eine leistungsstarke, aber einfach zugängliche Plattform zu schaffen."
+          ]
+        },
+        sports: {
+          patterns: [/sport/i, /fussball/i, /fußball/i, /basketball/i, /tennis/i, /schwimmen/i, /training/i, /übung/i, /olympia/i, /verein/i],
+          responses: [
+            "Sport ist ein super Thema! Ob Fußball, Basketball, Tennis oder andere Sportarten – ich kann dir Trainingspläne erklären, Regeln erläutern oder über berühmte Sportler plaudern.",
+            "Bewegung hält fit! Regelmäßiger Sport stärkt nicht nur den Körper, sondern auch den Geist. Welche Sportart interessiert dich?",
+            "Sport verbindet Menschen weltweit! Von der Fußball-WM bis zu den Olympischen Spielen – Sportgeschichte ist voller inspirierender Momente."
+          ]
+        },
         default: {
           responses: [
             "Interessant! Erzähl mir mehr dazu – ich bin ganz Ohr und bereit, dir zu helfen.",
@@ -2262,12 +2317,25 @@
         }
       };
 
-      function getSmartResponse(message) {
+      function getSmartResponse(message, history) {
         for (const [category, data] of Object.entries(smartResponses)) {
           if (category === 'default') continue;
           for (const pattern of data.patterns) {
             if (pattern.test(message)) {
               return data.responses[Math.floor(Math.random() * data.responses.length)];
+            }
+          }
+        }
+        // Use history for follow-up context
+        if (history && history.length >= 2) {
+          const lastMsg = history[history.length - 2];
+          if (lastMsg && lastMsg.role === 'assistant') {
+            // If user is following up on same topic, use default but vary it
+            const lastResponse = lastMsg.text;
+            // Try to detect if this is a follow-up question
+            const followUp = [/und/i, /weiter/i, /mehr/i, /noch/i, /erz\u00e4hl/i, /genauer/i, /erkl\u00e4r/i];
+            if (followUp.some(f => f.test(message))) {
+              return 'Gerne! Hier ist mehr dazu: ' + (lastResponse.length > 50 ? lastResponse.substring(0, 50) + '... ' : '') + 'Um das weiter auszuf\u00fchren: Es gibt mehrere interessante Aspekte zu diesem Thema. M\u00f6chtest du einen bestimmten Bereich genauer wissen?';
             }
           }
         }
@@ -2306,67 +2374,73 @@
         const text = chatInput.value.trim();
         if (!text) return;
 
+        chatContext.userCount++;
+        let detectedTopic = null;
+        for (const [cat, data] of Object.entries(smartResponses)) {
+          if (data.patterns && data.patterns.some(p => p.test(text))) {
+            detectedTopic = cat;
+            break;
+          }
+        }
+        if (detectedTopic) chatContext.lastCategory = detectedTopic;
+        if (!chatContext.topic && detectedTopic) chatContext.topic = detectedTopic;
+
         addMessage(text, 'user');
+        addToHistory('user', text);
         chatInput.value = '';
         chatInput.style.height = 'auto';
         chatSendBtn.disabled = true;
-        chatSendBtn.innerHTML = '…';
+        chatSendBtn.innerHTML = '\u2026';
 
         const typingEl = document.createElement('div');
         typingEl.className = 'chat-msg chat-msg--ai loading';
         typingEl.innerHTML = '<div class="msg-label">GeminiGen AI</div><div class="typing-dots"><span></span><span></span><span></span></div>';
         chatMessages.appendChild(typingEl);
         chatMessages.scrollTop = chatMessages.scrollHeight;
-        chatStatus.textContent = '🤔 Denke nach …';
+        chatStatus.textContent = '\ud83e\udd14 Denke nach \u2026';
 
         try {
           const generator = await loadAIModel();
           let response;
 
           if (generator) {
-            const prompt = 'Frage: ' + text + '\nAntworte auf Deutsch, hilfreich und n\u00fctzlich:\n';
+            const context = getContextWindow();
+            const prompt = 'Unterhaltung:\\n' + context + '\\nUser: ' + text + '\\nAssistant: Antworte auf Deutsch, hilfreich, freundlich und pers\u00f6nlich. Sei nat\u00fcrlich und gib detaillierte Antworten:\\n';
             const result = await generator(prompt, {
-              max_new_tokens: 120,
-              temperature: 0.7,
+              max_new_tokens: 200,
+              temperature: 0.8,
               do_sample: true,
-              top_p: 0.9,
+              top_p: 0.92,
+              repetition_penalty: 1.1,
             });
             response = result[0].generated_text
-              .replace(/Frage:.*?Antworte auf Deutsch, hilfreich und n\u00fctzlich:\n?/s, '')
+              .replace(/Unterhaltung:[\\s\\S]*?Assistant: Antworte auf Deutsch, hilfreich, freundlich und pers\u00f6nlich\\. Sei nat\u00fcrlich und gib detaillierte Antworten:\\n?/, '')
+              .replace(/User:.*$/m, '')
               .trim();
-            if (!response || response.length < 10) response = getSmartResponse(text);
+            if (!response || response.length < 8) response = getSmartResponse(text, conversationHistory);
           } else {
-            await sleep(400 + Math.random() * 600);
-            response = getSmartResponse(text);
+            await sleep(300 + Math.random() * 500);
+            response = getSmartResponse(text, conversationHistory);
           }
 
           typingEl.remove();
-          const responseEl = document.createElement('div');
-          responseEl.className = 'chat-msg chat-msg--ai';
-          responseEl.innerHTML = '<div class="msg-label">GeminiGen AI</div>';
-          chatMessages.appendChild(responseEl);
-
-          const textSpan = document.createElement('span');
-          responseEl.appendChild(textSpan);
-          for (let i = 0; i < response.length; i++) {
-            textSpan.textContent += response[i];
-            if (i % 3 === 0) chatMessages.scrollTop = chatMessages.scrollHeight;
-            await sleep(12 + Math.random() * 18);
-          }
+          addMessage(response, 'ai');
+          addToHistory('assistant', response);
 
           const statusLines = [
-            '✨ Bereit f\u00fcr deine n\u00e4chste Frage!',
-            '💡 Frag mich alles – ich bin f\u00fcr dich da!',
-            '🚀 Weiter gehts! Was kann ich noch f\u00fcr dich tun?',
-            '🌟 Immer bereit f\u00fcr interessante Fragen!',
-            '⚡ Lass uns weitermachen!'
+            '\u2728 Bereit f\u00fcr deine n\u00e4chste Frage!',
+            '\ud83d\udca1 Frag mich alles - ich bin f\u00fcr dich da!',
+            '\ud83d\ude80 Weiter gehts! Was kann ich noch f\u00fcr dich tun?',
+            '\ud83c\udf1f Immer bereit f\u00fcr interessante Fragen!',
+            '\u26a1 Lass uns weitermachen!',
+            '\ud83c\udf89 Noch Fragen? Ich bin ganz Ohr!'
           ];
           chatStatus.textContent = statusLines[Math.floor(Math.random() * statusLines.length)];
         } catch (err) {
           console.warn('Chat error:', err);
           typingEl.remove();
           addMessage('Entschuldigung, ein Fehler ist aufgetreten. Bitte versuche es erneut!', 'ai');
-          chatStatus.textContent = '⚠️ Fehler – bitte erneut senden';
+          chatStatus.textContent = '\u26a0\ufe0f Fehler - bitte erneut senden';
         }
 
         chatSendBtn.disabled = false;
@@ -2591,6 +2665,163 @@
               const angle = (j / 6) * Math.PI * 2, radius = size * (j % 2 === 0 ? 1 : 0.6);
               (j === 0) ? ctx.moveTo(radius * Math.cos(angle), radius * Math.sin(angle)) : ctx.lineTo(radius * Math.cos(angle), radius * Math.sin(angle));
             }
+        } else if (style === 'fantasy') {
+          // Magic fantasy landscape with glowing elements
+          const grad = ctx.createLinearGradient(0, 0, 0, h);
+          const nightHue = (baseHue + 240) % 360;
+          grad.addColorStop(0, hsl(nightHue, 70, 8));
+          grad.addColorStop(0.3, hsl(nightHue, 60, 12));
+          grad.addColorStop(0.6, hsl((nightHue + 40) % 360, 50, 20));
+          grad.addColorStop(0.8, hsl((nightHue + 60) % 360, 40, 15));
+          grad.addColorStop(1, hsl(0, 0, 5));
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, w, h);
+          // Stars
+          for (let i = 0; i < 100; i++) {
+            ctx.beginPath();
+            ctx.arc(w * rng(), h * 0.6 * rng(), 0.5 + rng() * 1.5, 0, Math.PI * 2);
+            ctx.fillStyle = hsla(0, 0, 100, 0.3 + rng() * 0.7);
+            ctx.fill();
+          }
+          // Glowing moon/planet
+          const moonX = w * 0.7 + w * 0.2 * rng();
+          const moonY = h * 0.1 + h * 0.15 * rng();
+          const moonR = 25 + rng() * 20;
+          const glow = ctx.createRadialGradient(moonX, moonY, 0, moonX, moonY, moonR * 4);
+          glow.addColorStop(0, 'rgba(200, 180, 255, 0.4)');
+          glow.addColorStop(0.3, 'rgba(150, 100, 255, 0.15)');
+          glow.addColorStop(1, 'rgba(100, 50, 200, 0)');
+          ctx.fillStyle = glow;
+          ctx.fillRect(0, 0, w, h);
+          ctx.beginPath();
+          ctx.arc(moonX, moonY, moonR, 0, Math.PI * 2);
+          ctx.fillStyle = hsl(260, 40, 85);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(moonX - moonR * 0.2, moonY - moonR * 0.2, moonR * 0.3, 0, Math.PI * 2);
+          ctx.fillStyle = hsl(260, 30, 70);
+          ctx.globalAlpha = 0.5;
+          ctx.fill();
+          ctx.globalAlpha = 1;
+          // Magic floating particles
+          for (let i = 0; i < 40; i++) {
+            const px = w * rng();
+            const py = h * rng();
+            const ps = 2 + rng() * 4;
+            ctx.fillStyle = hsla((baseHue + 200 + i * 30) % 360, 90, 70, 0.3 + rng() * 0.5);
+            ctx.beginPath();
+            ctx.arc(px, py, ps, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          // Ground with mist
+          ctx.globalAlpha = 0.3;
+          for (let i = 0; i < 3; i++) {
+            const mistY = h * 0.7 + i * h * 0.1;
+            const mistGrad = ctx.createLinearGradient(0, mistY, 0, mistY + h * 0.1);
+            mistGrad.addColorStop(0, 'rgba(150, 100, 255, 0)');
+            mistGrad.addColorStop(0.5, 'rgba(150, 100, 255, 0.1)');
+            mistGrad.addColorStop(1, 'rgba(150, 100, 255, 0)');
+            ctx.fillStyle = mistGrad;
+            ctx.fillRect(0, mistY, w, h * 0.1);
+          }
+          ctx.globalAlpha = 1;
+          // Mountains silhouette
+          ctx.fillStyle = hsl(nightHue, 30, 8);
+          ctx.beginPath();
+          ctx.moveTo(0, h * 0.85);
+          for (let x = 0; x <= w; x += 5) {
+            const y = h * 0.85 - Math.sin(x * 0.003 + 1) * h * 0.08 - Math.sin(x * 0.007 + 3) * h * 0.05;
+            ctx.lineTo(x, y);
+          }
+          ctx.lineTo(w, h);
+          ctx.lineTo(0, h);
+          ctx.closePath();
+          ctx.fill();
+          // Foreground grass
+          ctx.fillStyle = hsl(120, 40, 5);
+          ctx.beginPath();
+          ctx.moveTo(0, h * 0.9);
+          for (let x = 0; x <= w; x += 3) {
+            const y = h * 0.9 + Math.sin(x * 0.02 + 5) * h * 0.02;
+            ctx.lineTo(x, y);
+          }
+          ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
+          ctx.fill();
+          // Fireflies
+          for (let i = 0; i < 20; i++) {
+            ctx.beginPath();
+            const fx = w * rng();
+            const fy = h * 0.7 + h * 0.2 * rng();
+            const glow2 = ctx.createRadialGradient(fx, fy, 0, fx, fy, 6);
+            glow2.addColorStop(0, 'rgba(200, 255, 100, 0.6)');
+            glow2.addColorStop(1, 'rgba(200, 255, 100, 0)');
+            ctx.fillStyle = glow2;
+            ctx.fillRect(fx - 6, fy - 6, 12, 12);
+          }
+        } else if (style === 'watercolor') {
+          // Watercolor / soft painting style
+          const baseLight = 85 + rng() * 10;
+          const grad = ctx.createLinearGradient(0, 0, 0, h);
+          grad.addColorStop(0, hsl(baseHue, 30, Math.min(baseLight + 5, 95)));
+          grad.addColorStop(0.4, hsl(baseHue + 20, 40, baseLight - 5));
+          grad.addColorStop(0.7, hsl(baseHue + 40, 50, baseLight - 15));
+          grad.addColorStop(1, hsl(baseHue + 60, 40, baseLight - 20));
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, w, h);
+          // Soft organic blobs (watercolor effect)
+          ctx.globalAlpha = 0.15;
+          for (let i = 0; i < 8; i++) {
+            const bx = w * (0.1 + 0.8 * rng());
+            const by = h * (0.1 + 0.7 * rng());
+            const br = 40 + rng() * 100;
+            ctx.fillStyle = hsl((baseHue + i * 30) % 360, 60 + rng() * 30, 60 + rng() * 20);
+            ctx.beginPath();
+            for (let a = 0; a < Math.PI * 2; a += 0.05) {
+              const wave = 1 + 0.3 * Math.sin(a * 3 + i * 2) + 0.2 * Math.cos(a * 5 + i);
+              const rx = bx + br * wave * Math.cos(a);
+              const ry = by + br * 0.7 * wave * Math.sin(a);
+              (a === 0) ? ctx.moveTo(rx, ry) : ctx.lineTo(rx, ry);
+            }
+            ctx.closePath();
+            ctx.fill();
+          }
+          ctx.globalAlpha = 1;
+          // Soft landscape layers (washed out)
+          for (let i = 0; i < 4; i++) {
+            ctx.globalAlpha = 0.2 + i * 0.1;
+            ctx.beginPath();
+            ctx.moveTo(0, h * (0.75 - i * 0.1));
+            for (let x = 0; x <= w; x += 5) {
+              const y = h * (0.75 - i * 0.1) - Math.sin(x * 0.005 + i * 1.5) * h * 0.04 - Math.sin(x * 0.015 + i * 3) * h * 0.02;
+              ctx.lineTo(x, y);
+            }
+            ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
+            ctx.fillStyle = hsl(80 + i * 30, 50 + rng() * 20, 60 + rng() * 20);
+            ctx.fill();
+          }
+          ctx.globalAlpha = 1;
+          // Soft splatter dots
+          for (let i = 0; i < 30; i++) {
+            ctx.beginPath();
+            const sx = w * rng();
+            const sy = h * (0.3 + 0.6 * rng());
+            const sr = 1 + rng() * 3;
+            ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+            ctx.fillStyle = hsla((baseHue + i * 20) % 360, 80, 50, 0.1 + rng() * 0.15);
+            ctx.fill();
+          }
+          // Thin sketch lines
+          ctx.strokeStyle = hsla(baseHue, 30, 30, 0.08);
+          ctx.lineWidth = 0.5;
+          for (let i = 0; i < 10; i++) {
+            ctx.beginPath();
+            ctx.moveTo(w * rng(), h * rng());
+            const cx1 = w * rng(); const cy1 = h * rng();
+            const cx2 = w * rng(); const cy2 = h * rng();
+            ctx.bezierCurveTo(cx1, cy1, cx2, cy2, w * rng(), h * rng());
+            ctx.stroke();
+          }
+        }
             ctx.closePath();
             ctx.fillStyle = hsla(baseHue + i * 15, 70, 35 + i * 5, 0.3);
             ctx.fill();
@@ -2636,8 +2867,86 @@
       const speechPlayBtn = document.getElementById('speechPlayBtn');
       const speechPauseBtn = document.getElementById('speechPauseBtn');
       const speechStopBtn = document.getElementById('speechStopBtn');
+      const speechMicBtn = document.getElementById('speechMicBtn');
       const speechStatus = document.getElementById('speechStatus');
       const speechVoice = document.getElementById('speechVoice');
+      let speechRecognition = null;
+      let isListening = false;
+      
+      // Speech Recognition
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SpeechRec) {
+        speechRecognition = new SpeechRec();
+        speechRecognition.lang = 'de-DE';
+        speechRecognition.continuous = false;
+        speechRecognition.interimResults = true;
+        
+        speechRecognition.onresult = function(event) {
+          let interim = '';
+          let final = '';
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            if (event.results[i].isFinal) {
+              final += event.results[i][0].transcript;
+            } else {
+              interim += event.results[i][0].transcript;
+            }
+          }
+          if (final) {
+            speechText.value += (speechText.value ? ' ' : '') + final;
+            isListening = false;
+            speechMicBtn.classList.remove('listening');
+            speechMicBtn.textContent = '🎤';
+            speechStatus.textContent = '✅ Erkannt: \"' + final + '\"';
+            // Auto-play if text was recognized
+            if (speechText.value.trim()) setTimeout(() => speechPlayBtn.click(), 500);
+          } else if (interim) {
+            speechStatus.textContent = '🎤 H\u00f6re zu: ' + interim;
+          }
+        };
+        
+        speechRecognition.onerror = function(event) {
+          console.warn('Speech recognition error:', event.error);
+          isListening = false;
+          speechMicBtn.classList.remove('listening');
+          speechMicBtn.textContent = '🎤';
+          speechStatus.textContent = '\u26a0\ufe0f Fehler: ' + (event.error === 'no-speech' ? 'Keine Sprache erkannt' : event.error);
+        };
+        
+        speechRecognition.onend = function() {
+          if (isListening) { speechRecognition.start(); }
+          else {
+            speechMicBtn.classList.remove('listening');
+            speechMicBtn.textContent = '🎤';
+          }
+        };
+        
+        if (speechMicBtn) {
+          speechMicBtn.addEventListener('click', function() {
+            if (isListening) {
+              speechRecognition.stop();
+              isListening = false;
+              speechMicBtn.classList.remove('listening');
+              speechMicBtn.textContent = '🎤';
+              speechStatus.textContent = '⏹️ Gestoppt';
+            } else {
+              try {
+                speechRecognition.start();
+                isListening = true;
+                speechMicBtn.classList.add('listening');
+                speechMicBtn.textContent = '🔴';
+                speechStatus.textContent = '🎤 H\u00f6re zu ... Sprecht jetzt!';
+              } catch(e) {
+                speechStatus.textContent = '\u26a0\ufe0f Fehler: ' + e.message;
+              }
+            }
+          });
+        }
+      } else {
+        if (speechMicBtn) {
+          speechMicBtn.style.opacity = '0.3';
+          speechMicBtn.title = 'Spracherkennung nicht unterst\u00fctzt (Chrome empfohlen)';
+        }
+      }
       let speechSynth = window.speechSynthesis, currentUtterance = null;
 
       function loadVoices() {
@@ -2699,7 +3008,7 @@
       function generateVideoFrames(prompt) {
         if (!videoCanvas) return;
         const ctx = videoCanvas.getContext('2d');
-        const w = videoCanvas.width, h = videoCanvas.height, numFrames = 30;
+        const w = videoCanvas.width, h = videoCanvas.height, numFrames = 48;
         videoFrames = [];
         let seed = 0;
         for (let i = 0; i < prompt.length; i++) { seed = ((seed << 5) - seed) + prompt.charCodeAt(i); seed = seed & seed; }
@@ -2707,48 +3016,180 @@
         const hsla = (h, s, l, a) => 'hsla(' + h + ',' + s + '%,' + l + '%,' + a + ')';
         const hsl = (h, s, l) => 'hsl(' + h + ',' + s + '%,' + l + '%)';
 
+        // Detect animation type from prompt
+        p = prompt.toLowerCase();
+        const isCosmic = p.includes('weltall') || p.includes('space') || p.includes('stern') || p.includes('galax') || p.includes('kosmos');
+        const isNature = p.includes('natur') || p.includes('wald') || p.includes('baum') || p.includes('blume') || p.includes('landschaft');
+        const isAbstract = p.includes('abstrakt') || p.includes('muster') || p.includes('farbe') || p.includes('welle');
+        const isWater = p.includes('wasser') || p.includes('meer') || p.includes('ozean') || p.includes('fluss') || p.includes('regen');
+        const animType = isCosmic ? 'cosmic' : isNature ? 'nature' : isWater ? 'water' : isAbstract ? 'abstract' : 'default';
+
         for (let frame = 0; frame < numFrames; frame++) {
           ctx.clearRect(0, 0, w, h);
           const progress = frame / numFrames;
+          const hue1 = (baseHue + progress * 50) % 360;
+          const hue2 = (hue1 + hueShift) % 360;
+
+          // --- Background Gradient ---
           const grad = ctx.createLinearGradient(0, 0, 0, h);
-          const hue1 = (baseHue + progress * 40) % 360;
-          grad.addColorStop(0, hsl(hue1, 60, 20));
-          grad.addColorStop(1, hsl((hue1 + hueShift) % 360, 50, 15));
+          if (animType === 'cosmic') {
+            grad.addColorStop(0, '#0a0a1a');
+            grad.addColorStop(0.3, '#150a2a');
+            grad.addColorStop(0.6, '#0a1520');
+            grad.addColorStop(1, '#050810');
+          } else if (animType === 'water') {
+            const hb = (baseHue + 200 + progress * 20) % 360;
+            grad.addColorStop(0, hsl(hb, 60, 50));
+            grad.addColorStop(0.5, hsl((hb + 20) % 360, 55, 40));
+            grad.addColorStop(1, hsl((hb + 40) % 360, 50, 25));
+          } else if (animType === 'nature') {
+            grad.addColorStop(0, hsl(40, 50, 70));
+            grad.addColorStop(0.3, hsl(30, 40, 50));
+            grad.addColorStop(0.7, hsl(120, 40, 25));
+            grad.addColorStop(1, hsl(120, 40, 15));
+          } else {
+            grad.addColorStop(0, hsl(hue1, 60, 20));
+            grad.addColorStop(1, hsl(hue2, 50, 12));
+          }
           ctx.fillStyle = grad;
           ctx.fillRect(0, 0, w, h);
-          for (let i = 0; i < 20; i++) {
-            const x = w * ((i / 20 + progress * 0.1 + Math.sin(frame * 0.1 + i)) % 1);
-            const y = h * ((Math.sin(i * 1.5 + frame * 0.15 + progress * 2) + 1) / 2);
+
+          if (animType === 'cosmic') {
+            // Twinkling stars
+            for (let i = 0; i < 60; i++) {
+              const sx = (i * 67 + frame * 2) % w;
+              const sy = (i * 137) % (h * 0.6);
+              const sb = 0.3 + Math.sin(frame * 0.1 + i * 1.7) * 0.3 + 0.4;
+              ctx.beginPath();
+              ctx.arc(sx, sy, 0.5 + Math.sin(i + frame * 0.05) * 0.5, 0, Math.PI * 2);
+              ctx.fillStyle = hsla(0, 0, 100, sb);
+              ctx.fill();
+            }
+            // Nebula clouds
+            for (let i = 0; i < 3; i++) {
+              const nx = w * (0.2 + 0.6 * ((i * 0.5 + progress * 0.1) % 1));
+              const ny = h * (0.3 + 0.4 * Math.sin(i + progress));
+              const nebula = ctx.createRadialGradient(nx, ny, 0, nx, ny, w * 0.3);
+              nebula.addColorStop(0, hsla((baseHue + i * 120) % 360, 80, 50, 0.15));
+              nebula.addColorStop(0.5, hsla((baseHue + i * 120 + 30) % 360, 70, 40, 0.08));
+              nebula.addColorStop(1, 'rgba(0,0,0,0)');
+              ctx.fillStyle = nebula;
+              ctx.fillRect(0, 0, w, h);
+            }
+            // Orbiting rings
+            for (let ring = 0; ring < 2; ring++) {
+              ctx.beginPath();
+              ctx.ellipse(w * 0.5, h * 0.4, 80 + ring * 50 + Math.sin(progress * Math.PI * 2) * 10, 20 + ring * 15, 0.3, 0, Math.PI * 2);
+              ctx.strokeStyle = hsla((baseHue + ring * 180) % 360, 80, 60, 0.15 + Math.sin(progress * Math.PI * 2) * 0.1);
+              ctx.lineWidth = 1.5;
+              ctx.stroke();
+            }
+          }
+
+          if (animType === 'water') {
+            // Wave surface
+            ctx.globalAlpha = 0.3;
+            for (let wave = 0; wave < 3; wave++) {
+              ctx.beginPath();
+              ctx.moveTo(0, h * 0.6);
+              for (let x = 0; x <= w; x += 4) {
+                const wy = h * 0.6 + Math.sin(x * 0.03 + frame * 0.15 + wave * 2) * h * 0.05 + Math.sin(x * 0.01 + frame * 0.08) * h * 0.02;
+                ctx.lineTo(x, wy);
+              }
+              ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
+              ctx.fillStyle = hsla((baseHue + 200 + wave * 30) % 360, 70, 60, 0.12);
+              ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+            // Bubbles
+            for (let i = 0; i < 12; i++) {
+              const bx = w * ((i / 12 + progress * 0.05) % 1);
+              const by = h * 0.7 + Math.sin(i + frame * 0.1) * h * 0.15;
+              const br = 3 + Math.sin(i * 2 + frame * 0.2) * 2;
+              ctx.beginPath();
+              ctx.arc(bx, by, br, 0, Math.PI * 2);
+              ctx.strokeStyle = hsla(200, 80, 80, 0.3);
+              ctx.lineWidth = 0.5;
+              ctx.stroke();
+            }
+          }
+
+          if (animType === 'nature') {
+            // Trees swaying
+            for (let t = 0; t < 3; t++) {
+              const tx = w * (0.2 + t * 0.3);
+              const sway = Math.sin(frame * 0.05 + t * 2) * 3;
+              // Trunk
+              ctx.fillStyle = hsl(25, 30, 20);
+              ctx.fillRect(tx - 3 + sway, h * 0.45, 6, h * 0.3);
+              // Foliage
+              ctx.fillStyle = hsl(100 + t * 20, 50, 30);
+              for (let c = 0; c < 8; c++) {
+                ctx.beginPath();
+                ctx.arc(tx + sway + Math.sin(c * 1.3 + t) * 15, h * 0.45 - c * h * 0.04, 12 + Math.sin(c + frame * 0.03) * 3, 0, Math.PI * 2);
+                ctx.fill();
+              }
+            }
+            // Falling leaves
+            for (let i = 0; i < 8; i++) {
+              const lx = w * ((i * 37 + frame * 2) % w) / w;
+              const ly = ((i * 53 + frame * 4) % (h * h)) / h;
+              ctx.fillStyle = hsla(30 + i * 20, 80, 50, 0.4);
+              ctx.beginPath();
+              ctx.ellipse(lx, ly, 3, 2, Math.sin(frame * 0.1 + i), 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+
+          // Particle system (common to all)
+          for (let i = 0; i < 15; i++) {
+            const pAngle = (i / 15) * Math.PI * 2 + progress * Math.PI * 2;
+            const pDist = 80 + Math.sin(progress * Math.PI * 2 * 0.5 + i) * 40;
+            const px = w * 0.5 + Math.cos(pAngle) * pDist;
+            const py = h * 0.4 + Math.sin(pAngle) * pDist * 0.5 + Math.sin(progress * Math.PI * 2 + i) * 20;
+            const ps = 3 + Math.sin(frame * 0.1 + i * 1.5) * 1.5;
             ctx.beginPath();
-            ctx.arc(x, y, 4 + Math.sin(i + frame * 0.2) * 2, 0, Math.PI * 2);
-            ctx.fillStyle = hsla(hue1 + i * 18, 80, 70, 0.4 + Math.sin(frame * 0.1 + i) * 0.2);
+            ctx.arc(px, py, ps, 0, Math.PI * 2);
+            const hue_p = (baseHue + i * 24 + frame * 2) % 360;
+            ctx.fillStyle = hsla(hue_p, 80, 70, 0.35 + Math.sin(frame * 0.08 + i) * 0.15);
             ctx.fill();
           }
-          for (let i = 0; i < 5; i++) {
-            const x = w * 0.5 + Math.sin(progress * Math.PI * 2 + i * 1.3) * w * 0.3;
-            const y = h * 0.5 + Math.cos(progress * Math.PI * 1.5 + i * 1.7) * h * 0.2;
-            const size = 20 + Math.sin(progress * Math.PI * 3 + i) * 15;
+
+          // Geometric shapes (hexagons) floating
+          for (let i = 0; i < 4; i++) {
+            const gx = w * 0.1 + w * 0.8 * ((i * 0.3 + progress * 0.2 + Math.sin(frame * 0.02 + i * 2) * 0.05) % 1);
+            const gy = h * 0.1 + h * 0.6 * ((i * 0.7 + progress * 0.15 + Math.cos(frame * 0.03 + i) * 0.05) % 1);
+            const size = 10 + 8 * Math.sin(frame * 0.05 + i * 1.7);
             ctx.beginPath();
             for (let j = 0; j < 6; j++) {
-              const angle = (j / 6) * Math.PI * 2, radius = size * (j % 2 === 0 ? 1 : 0.5);
-              (j === 0) ? ctx.moveTo(x + radius * Math.cos(angle), y + radius * Math.sin(angle)) : ctx.lineTo(x + radius * Math.cos(angle), y + radius * Math.sin(angle));
+              const angle = (j / 6) * Math.PI * 2 + progress * 0.2 * (i % 2 === 0 ? 1 : -1);
+              const r = size;
+              (j === 0) ? ctx.moveTo(gx + r * Math.cos(angle), gy + r * Math.sin(angle)) : ctx.lineTo(gx + r * Math.cos(angle), gy + r * Math.sin(angle));
             }
             ctx.closePath();
-            ctx.fillStyle = hsla(hue1 + i * 20, 70, 50, 0.25);
+            ctx.fillStyle = hsla((hue1 + i * 60 + frame * 3) % 360, 70, 55, 0.12);
             ctx.fill();
-            ctx.strokeStyle = hsla(hue1 + i * 20, 90, 70, 0.4);
-            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = hsla((hue1 + i * 60 + frame * 3) % 360, 90, 70, 0.3 + Math.sin(frame * 0.1 + i) * 0.15);
+            ctx.lineWidth = 1;
             ctx.stroke();
           }
-          if (prompt) {
-            ctx.fillStyle = hsla(0, 0, 100, 0.08);
-            ctx.font = '12px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('✨ ' + prompt, w / 2, h - 15);
+
+          // Text overlay
+          ctx.globalAlpha = 0.5 + Math.sin(frame * 0.15) * 0.1;
+          ctx.fillStyle = 'rgba(255,255,255,0.15)';
+          ctx.font = 'bold 14px sans-serif';
+          ctx.textAlign = 'center';
+          const words = prompt.split(' ');
+          if (words.length > 1) {
+            ctx.globalAlpha = 0.08 + Math.sin(frame * 0.1) * 0.04;
+            for (let ww = 0; ww < words.length; ww++) {
+              ctx.fillText(words[ww], w * 0.5, h - 30 + ww * 18 + Math.sin(frame * 0.1 + ww) * 3);
+            }
           }
+          ctx.globalAlpha = 1;
           videoFrames.push(ctx.getImageData(0, 0, w, h));
         }
-        videoStatus.textContent = '✅ ' + numFrames + ' Frames generiert!';
+        videoStatus.textContent = '✅ ' + numFrames + ' Frames generiert! (Stil: ' + animType + ')';
       }
 
       function playVideo() {
