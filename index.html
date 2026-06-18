@@ -1860,12 +1860,11 @@
             </div>
             <div class="image-style-row">
               <span class="style-chip active" data-style="photorealistic">&#x1F4F8; Fotorealistisch</span>
-              <span class="style-chip" data-style="abstract">&#x1F3A8; Abstrakt</span>
               <span class="style-chip" data-style="cinematic">&#x1F3AC; Kinematisch</span>
-              <span class="style-chip" data-style="cyberpunk">&#x1F916; Cyberpunk</span>
-              <span class="style-chip" data-style="geometric">&#x1F537; Geometrisch</span>
-              <span class="style-chip" data-style="fantasy">&#x1F9D9; Fantasy</span>
-              <span class="style-chip" data-style="watercolor">&#x1F3A8; Aquarell</span>
+              <span class="style-chip" data-style="portrait">&#x1F9D1; Portr&#xE4;t</span>
+              <span class="style-chip" data-style="aerial">&#x1F681; Luftaufnahme</span>
+              <span class="style-chip" data-style="vivid">&#x1F308; Lebendig</span>
+              <span class="style-chip" data-style="macro">&#x1F50D; Makro</span>
             </div>
             <div class="image-canvas-wrapper" id="imageCanvasWrapper">
               <canvas id="imageCanvas" width="640" height="400"></canvas>
@@ -2595,233 +2594,120 @@
             ctx.fill();
           }
         } else if (style === 'cinematic') {
+          // Cinematic widescreen look
+          ctx.clearRect(0, 0, w, h);
           const grad = ctx.createLinearGradient(0, 0, 0, h);
-          grad.addColorStop(0, hsl(baseHue, 50, 12));
-          grad.addColorStop(0.4, hsl(baseHue + 10, 40, 20));
-          grad.addColorStop(0.7, hsl(baseHue + 20, 35, 30));
-          grad.addColorStop(1, hsl(baseHue + 30, 40, 15));
-          ctx.fillStyle = grad;
-          ctx.fillRect(0, 0, w, h);
-          ctx.fillStyle = 'rgba(0,0,0,0.7)';
-          for (let i = 0; i < 6; i++) {
-            const x = i * (w / 5);
-            const bw = 20 + rng() * 40;
-            ctx.beginPath();
-            ctx.moveTo(x - bw, h);
-            ctx.lineTo(x - bw * 0.5, h * 0.4 + rng() * h * 0.2);
-            ctx.lineTo(x, h * 0.3 + rng() * h * 0.1);
-            ctx.lineTo(x + bw * 0.5, h * 0.4 + rng() * h * 0.2);
-            ctx.lineTo(x + bw, h);
-            ctx.closePath();
-            ctx.fill();
-          }
-          ctx.beginPath();
-          ctx.arc(w * 0.8, h * 0.15, 25, 0, Math.PI * 2);
-          ctx.fillStyle = hsla(45, 100, 80, 0.6);
-          ctx.shadowColor = hsla(45, 100, 70, 0.3);
-          ctx.shadowBlur = 40;
-          ctx.fill();
-          ctx.shadowBlur = 0;
-        } else if (style === 'cyberpunk') {
-          ctx.fillStyle = hsl(baseHue, 80, 8);
-          ctx.fillRect(0, 0, w, h);
-          ctx.strokeStyle = hsla(baseHue + 40, 100, 60, 0.15);
-          ctx.lineWidth = 0.5;
-          for (let x = 0; x < w; x += 30) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
-          for (let y = 0; y < h; y += 30) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
-          for (let i = 0; i < 12; i++) {
-            const x = i * (w / 11), bw = 20 + rng() * 30, bh = 50 + rng() * 150;
-            ctx.fillStyle = hsl(baseHue + i * 10, 60, 15);
-            ctx.fillRect(x, h - bh, bw, bh);
-            for (let wy = h - bh + 5; wy < h - 5; wy += 10)
-              for (let wx = x + 3; wx < x + bw - 3; wx += 8) {
-                ctx.fillStyle = hsla(baseHue + 40, 100, 70, 0.3 + rng() * 0.5);
-                ctx.fillRect(wx, wy, 4, 5);
-              }
-          }
-          for (let i = 0; i < 8; i++) {
-            ctx.shadowColor = hsla(baseHue + i * 45, 100, 60, 0.5);
-            ctx.shadowBlur = 20;
-            ctx.fillStyle = hsla(baseHue + i * 45, 100, 60, 0.6);
-            ctx.font = '12px monospace';
-            ctx.fillText('NEON', w * rng(), h * 0.2 + h * 0.6 * rng());
-            ctx.shadowBlur = 0;
-          }
-        } else if (style === 'geometric') {
-          ctx.fillStyle = hsl(baseHue, 60, 12);
-          ctx.fillRect(0, 0, w, h);
-          for (let i = 0; i < 8; i++) {
-            const x = w * rng(), y = h * rng(), size = 40 + rng() * 80;
-            ctx.save();
-            ctx.translate(x, y);
-            ctx.rotate(rng() * Math.PI);
-            ctx.beginPath();
-            for (let j = 0; j < 6; j++) {
-              const angle = (j / 6) * Math.PI * 2, radius = size * (j % 2 === 0 ? 1 : 0.6);
-              (j === 0) ? ctx.moveTo(radius * Math.cos(angle), radius * Math.sin(angle)) : ctx.lineTo(radius * Math.cos(angle), radius * Math.sin(angle));
-            }
-          }
-        } else if (style === 'fantasy') {
-          // Magic fantasy landscape with glowing elements
-          const grad = ctx.createLinearGradient(0, 0, 0, h);
-          const nightHue = (baseHue + 240) % 360;
-          grad.addColorStop(0, hsl(nightHue, 70, 8));
-          grad.addColorStop(0.3, hsl(nightHue, 60, 12));
-          grad.addColorStop(0.6, hsl((nightHue + 40) % 360, 50, 20));
-          grad.addColorStop(0.8, hsl((nightHue + 60) % 360, 40, 15));
-          grad.addColorStop(1, hsl(0, 0, 5));
-          ctx.fillStyle = grad;
-          ctx.fillRect(0, 0, w, h);
-          // Stars
-          for (let i = 0; i < 100; i++) {
-            ctx.beginPath();
-            ctx.arc(w * rng(), h * 0.6 * rng(), 0.5 + rng() * 1.5, 0, Math.PI * 2);
-            ctx.fillStyle = hsla(0, 0, 100, 0.3 + rng() * 0.7);
-            ctx.fill();
-          }
-          // Glowing moon/planet
-          const moonX = w * 0.7 + w * 0.2 * rng();
-          const moonY = h * 0.1 + h * 0.15 * rng();
-          const moonR = 25 + rng() * 20;
-          const glow = ctx.createRadialGradient(moonX, moonY, 0, moonX, moonY, moonR * 4);
-          glow.addColorStop(0, 'rgba(200, 180, 255, 0.4)');
-          glow.addColorStop(0.3, 'rgba(150, 100, 255, 0.15)');
-          glow.addColorStop(1, 'rgba(100, 50, 200, 0)');
-          ctx.fillStyle = glow;
-          ctx.fillRect(0, 0, w, h);
-          ctx.beginPath();
-          ctx.arc(moonX, moonY, moonR, 0, Math.PI * 2);
-          ctx.fillStyle = hsl(260, 40, 85);
-          ctx.fill();
-          ctx.beginPath();
-          ctx.arc(moonX - moonR * 0.2, moonY - moonR * 0.2, moonR * 0.3, 0, Math.PI * 2);
-          ctx.fillStyle = hsl(260, 30, 70);
-          ctx.globalAlpha = 0.5;
-          ctx.fill();
-          ctx.globalAlpha = 1;
-          // Magic floating particles
-          for (let i = 0; i < 40; i++) {
-            const px = w * rng();
-            const py = h * rng();
-            const ps = 2 + rng() * 4;
-            ctx.fillStyle = hsla((baseHue + 200 + i * 30) % 360, 90, 70, 0.3 + rng() * 0.5);
-            ctx.beginPath();
-            ctx.arc(px, py, ps, 0, Math.PI * 2);
-            ctx.fill();
-          }
-          // Ground with mist
-          ctx.globalAlpha = 0.3;
+          grad.addColorStop(0, hsl(220, 40, 18)); grad.addColorStop(0.3, hsl(210, 35, 25));
+          grad.addColorStop(0.6, hsl(200, 30, 20)); grad.addColorStop(1, hsl(190, 25, 12));
+          ctx.fillStyle = grad; ctx.fillRect(0, 0, w, h);
+          // Light beam effect
           for (let i = 0; i < 3; i++) {
-            const mistY = h * 0.7 + i * h * 0.1;
-            const mistGrad = ctx.createLinearGradient(0, mistY, 0, mistY + h * 0.1);
-            mistGrad.addColorStop(0, 'rgba(150, 100, 255, 0)');
-            mistGrad.addColorStop(0.5, 'rgba(150, 100, 255, 0.1)');
-            mistGrad.addColorStop(1, 'rgba(150, 100, 255, 0)');
-            ctx.fillStyle = mistGrad;
-            ctx.fillRect(0, mistY, w, h * 0.1);
+            const beam = ctx.createRadialGradient(w * (0.2 + i * 0.3), 0, 0, w * (0.2 + i * 0.3), 0, w * 0.2);
+            beam.addColorStop(0, hsla(45, 60, 80, 0.04 + i * 0.01));
+            beam.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = beam; ctx.fillRect(0, 0, w, h);
+          }
+          // Cinematic grain
+          ctx.globalAlpha = 0.04;
+          for (let i = 0; i < 100; i++) {
+            ctx.fillStyle = hsla(0, 0, rng() > 0.5 ? 100 : 0, rng() * 0.5);
+            ctx.fillRect(rng() * w, rng() * h, 1 + rng() * 2, 1);
           }
           ctx.globalAlpha = 1;
-          // Mountains silhouette
-          ctx.fillStyle = hsl(nightHue, 30, 8);
-          ctx.beginPath();
-          ctx.moveTo(0, h * 0.85);
-          for (let x = 0; x <= w; x += 5) {
-            const y = h * 0.85 - Math.sin(x * 0.003 + 1) * h * 0.08 - Math.sin(x * 0.007 + 3) * h * 0.05;
-            ctx.lineTo(x, y);
-          }
-          ctx.lineTo(w, h);
-          ctx.lineTo(0, h);
-          ctx.closePath();
-          ctx.fill();
-          // Foreground grass
-          ctx.fillStyle = hsl(120, 40, 5);
-          ctx.beginPath();
-          ctx.moveTo(0, h * 0.9);
-          for (let x = 0; x <= w; x += 3) {
-            const y = h * 0.9 + Math.sin(x * 0.02 + 5) * h * 0.02;
-            ctx.lineTo(x, y);
-          }
-          ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
-          ctx.fill();
-          // Fireflies
-          for (let i = 0; i < 20; i++) {
-            ctx.beginPath();
-            const fx = w * rng();
-            const fy = h * 0.7 + h * 0.2 * rng();
-            const glow2 = ctx.createRadialGradient(fx, fy, 0, fx, fy, 6);
-            glow2.addColorStop(0, 'rgba(200, 255, 100, 0.6)');
-            glow2.addColorStop(1, 'rgba(200, 255, 100, 0)');
-            ctx.fillStyle = glow2;
-            ctx.fillRect(fx - 6, fy - 6, 12, 12);
-          }
-        } else if (style === 'watercolor') {
-          // Watercolor / soft painting style
-          const baseLight = 85 + rng() * 10;
-          const grad = ctx.createLinearGradient(0, 0, 0, h);
-          grad.addColorStop(0, hsl(baseHue, 30, Math.min(baseLight + 5, 95)));
-          grad.addColorStop(0.4, hsl(baseHue + 20, 40, baseLight - 5));
-          grad.addColorStop(0.7, hsl(baseHue + 40, 50, baseLight - 15));
-          grad.addColorStop(1, hsl(baseHue + 60, 40, baseLight - 20));
-          ctx.fillStyle = grad;
-          ctx.fillRect(0, 0, w, h);
-          // Soft organic blobs (watercolor effect)
-          ctx.globalAlpha = 0.15;
-          for (let i = 0; i < 8; i++) {
-            const bx = w * (0.1 + 0.8 * rng());
-            const by = h * (0.1 + 0.7 * rng());
-            const br = 40 + rng() * 100;
-            ctx.fillStyle = hsl((baseHue + i * 30) % 360, 60 + rng() * 30, 60 + rng() * 20);
-            ctx.beginPath();
-            for (let a = 0; a < Math.PI * 2; a += 0.05) {
-              const wave = 1 + 0.3 * Math.sin(a * 3 + i * 2) + 0.2 * Math.cos(a * 5 + i);
-              const rx = bx + br * wave * Math.cos(a);
-              const ry = by + br * 0.7 * wave * Math.sin(a);
-              (a === 0) ? ctx.moveTo(rx, ry) : ctx.lineTo(rx, ry);
-            }
-            ctx.closePath();
-            ctx.fill();
-          }
-          ctx.globalAlpha = 1;
-          // Soft landscape layers (washed out)
-          for (let i = 0; i < 4; i++) {
-            ctx.globalAlpha = 0.2 + i * 0.1;
-            ctx.beginPath();
-            ctx.moveTo(0, h * (0.75 - i * 0.1));
-            for (let x = 0; x <= w; x += 5) {
-              const y = h * (0.75 - i * 0.1) - Math.sin(x * 0.005 + i * 1.5) * h * 0.04 - Math.sin(x * 0.015 + i * 3) * h * 0.02;
-              ctx.lineTo(x, y);
-            }
-            ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
-            ctx.fillStyle = hsl(80 + i * 30, 50 + rng() * 20, 60 + rng() * 20);
-            ctx.fill();
-          }
-          ctx.globalAlpha = 1;
-          // Soft splatter dots
-          for (let i = 0; i < 30; i++) {
-            ctx.beginPath();
-            const sx = w * rng();
-            const sy = h * (0.3 + 0.6 * rng());
-            const sr = 1 + rng() * 3;
-            ctx.arc(sx, sy, sr, 0, Math.PI * 2);
-            ctx.fillStyle = hsla((baseHue + i * 20) % 360, 80, 50, 0.1 + rng() * 0.15);
-            ctx.fill();
-          }
-          // Thin sketch lines
-          ctx.strokeStyle = hsla(baseHue, 30, 30, 0.08);
-          ctx.lineWidth = 0.5;
-          for (let i = 0; i < 10; i++) {
-            ctx.beginPath();
-            ctx.moveTo(w * rng(), h * rng());
-            const cx1 = w * rng(); const cy1 = h * rng();
-            const cx2 = w * rng(); const cy2 = h * rng();
-            ctx.bezierCurveTo(cx1, cy1, cx2, cy2, w * rng(), h * rng());
-            ctx.stroke();
-          }
-        }
-        ctx.globalAlpha = 1;
-      }
+          // Letterbox
+          ctx.fillStyle = '#000'; ctx.fillRect(0, 0, w, h * 0.045);
+          ctx.fillRect(0, h - h * 0.045, w, h * 0.045);
+          // Vignette
+          const v = ctx.createRadialGradient(w*0.5, h*0.5, h*0.2, w*0.5, h*0.5, h*0.7);
+          v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,0.4)');
+          ctx.fillStyle = v; ctx.fillRect(0, 0, w, h);
 
-      function mulberry32(a) {
+        } else if (style === 'portrait') {
+          // Soft portrait-oriented scene
+          ctx.clearRect(0, 0, w, h);
+          const bg = ctx.createRadialGradient(w*0.5, h*0.3, 0, w*0.5, h*0.5, w*0.6);
+          bg.addColorStop(0, hsla(30, 30, 65, 1)); bg.addColorStop(0.5, hsla(25, 25, 42, 1));
+          bg.addColorStop(1, hsla(20, 20, 28, 1)); ctx.fillStyle = bg; ctx.fillRect(0, 0, w, h);
+          // Bokeh
+          ctx.globalAlpha = 0.06;
+          for (let i = 0; i < 15; i++) {
+            ctx.beginPath(); ctx.arc(rng()*w, rng()*h, 8+rng()*18, 0, Math.PI*2);
+            ctx.fillStyle = hsla(40, 80, 90, 0.3+rng()*0.3); ctx.fill();
+          }
+          ctx.globalAlpha = 1;
+          const v2 = ctx.createRadialGradient(w*0.5, h*0.4, h*0.2, w*0.5, h*0.4, h*0.7);
+          v2.addColorStop(0, 'rgba(255,255,200,0.08)'); v2.addColorStop(0.5, 'rgba(0,0,0,0)');
+          v2.addColorStop(1, 'rgba(0,0,0,0.3)'); ctx.fillStyle = v2; ctx.fillRect(0, 0, w, h);
+
+        } else if (style === 'aerial') {
+          // Aerial / drone perspective
+          ctx.clearRect(0, 0, w, h);
+          const g = ctx.createLinearGradient(0, 0, 0, h);
+          g.addColorStop(0, hsla(210, 40, 60, 1)); g.addColorStop(0.3, hsla(130, 35, 45, 1));
+          g.addColorStop(0.5, hsla(110, 40, 38, 1)); g.addColorStop(1, hsla(100, 45, 22, 1));
+          ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+          // Terrain patches
+          ctx.globalAlpha = 0.12;
+          for (let i = 0; i < 25; i++) {
+            ctx.beginPath(); ctx.ellipse(rng()*w, h*0.3+rng()*h*0.55, 15+rng()*60, 8+rng()*25, rng()*Math.PI, 0, Math.PI*2);
+            ctx.fillStyle = hsla(90+rng()*40, 50+rng()*30, 25+rng()*20, 0.3+rng()*0.3); ctx.fill();
+          }
+          ctx.globalAlpha = 1;
+          // Roads
+          ctx.strokeStyle = hsla(0, 0, 35, 0.15); ctx.lineWidth = 1.5;
+          for (let i = 0; i < 3; i++) {
+            ctx.beginPath();
+            ctx.moveTo(rng()*w, h*0.35); ctx.quadraticCurveTo(rng()*w, h*0.55, rng()*w, h*0.85); ctx.stroke();
+          }
+          const v3 = ctx.createRadialGradient(w*0.5, h*0.5, h*0.25, w*0.5, h*0.5, h*0.8);
+          v3.addColorStop(0, 'rgba(0,0,0,0)'); v3.addColorStop(1, 'rgba(0,0,0,0.25)');
+          ctx.fillStyle = v3; ctx.fillRect(0, 0, w, h);
+
+        } else if (style === 'vivid') {
+          // HDR vivid colors
+          ctx.clearRect(0, 0, w, h);
+          const g2 = ctx.createLinearGradient(0, 0, 0, h);
+          g2.addColorStop(0, hsla(210, 60, 75, 1)); g2.addColorStop(0.3, hsla(140, 50, 50, 1));
+          g2.addColorStop(0.6, hsla(110, 55, 38, 1)); g2.addColorStop(1, hsla(90, 50, 25, 1));
+          ctx.fillStyle = g2; ctx.fillRect(0, 0, w, h);
+          // Enhanced color pops
+          ctx.globalAlpha = 0.06;
+          for (let i = 0; i < 12; i++) {
+            ctx.fillStyle = hsla((baseHue+i*40)%360, 90, 60, 0.15);
+            ctx.beginPath(); ctx.arc(rng()*w, rng()*h, 12+rng()*25, 0, Math.PI*2); ctx.fill();
+          }
+          ctx.globalAlpha = 1;
+          const v4 = ctx.createRadialGradient(w*0.5, h*0.5, h*0.3, w*0.5, h*0.5, h*0.8);
+          v4.addColorStop(0, 'rgba(0,0,0,0)'); v4.addColorStop(1, 'rgba(0,0,0,0.15)');
+          ctx.fillStyle = v4; ctx.fillRect(0, 0, w, h);
+
+        } else if (style === 'macro') {
+          // Macro / close-up detail
+          ctx.clearRect(0, 0, w, h);
+          const hue_macro = (baseHue + 120) % 360;
+          const bg2 = ctx.createRadialGradient(w*0.5, h*0.5, 0, w*0.5, h*0.5, w*0.7);
+          bg2.addColorStop(0, hsla(hue_macro, 50+rng()*20, 55+rng()*15, 1));
+          bg2.addColorStop(0.6, hsla((hue_macro+30)%360, 40+rng()*20, 30+rng()*10, 1));
+          bg2.addColorStop(1, hsla((hue_macro+50)%360, 30+rng()*15, 15+rng()*8, 1));
+          ctx.fillStyle = bg2; ctx.fillRect(0, 0, w, h);
+          // Dew drop effect
+          ctx.globalAlpha = 0.15;
+          for (let i = 0; i < 10; i++) {
+            const dx = rng()*w, dy = rng()*h, dr = 4+rng()*10;
+            ctx.beginPath(); ctx.arc(dx, dy, dr, 0, Math.PI*2);
+            ctx.fillStyle = hsla(200, 60, 90, 0.3+rng()*0.3); ctx.fill();
+            ctx.beginPath(); ctx.arc(dx-dr*0.2, dy-dr*0.2, dr*0.3, 0, Math.PI*2);
+            ctx.fillStyle = hsla(200, 80, 95, 0.5+rng()*0.3); ctx.fill();
+          }
+          ctx.globalAlpha = 1;
+          // Extreme blur vignette
+          const v5 = ctx.createRadialGradient(w*0.5, h*0.5, h*0.15, w*0.5, h*0.5, h*0.6);
+          v5.addColorStop(0, 'rgba(0,0,0,0)'); v5.addColorStop(0.3, 'rgba(0,0,0,0.02)');
+          v5.addColorStop(1, 'rgba(0,0,0,0.4)'); ctx.fillStyle = v5; ctx.fillRect(0, 0, w, h);
+
+        }
+        }
+function mulberry32(a) {
         return function() { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
       }
 
