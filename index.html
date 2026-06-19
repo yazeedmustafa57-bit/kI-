@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Yazeed AI – Professionelle KI Plattform</title>
-  <meta name="description" content="Yazeed AI – Chat mit Gemini 2.5 + echte KI-Bilder kostenlos">
+  <title>Yazeed AI – Kostenlose KI wie ChatGPT</title>
+  <meta name="description" content="Yazeed AI – Deine kostenlose KI-Plattform. Chat wie ChatGPT + echte KI-Bilder, ohne Anmeldung.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
       --border: rgba(99,102,241,0.12); --border-hover: rgba(99,102,241,0.3);
       --primary: #6366f1; --primary-light: #818cf8; --accent: #06b6d4;
       --text: #f1f5f9; --text2: #94a3b8; --text3: #64748b;
-      --success: #10b981; --danger: #ef4444;
+      --success: #10b981;
       --font: 'Inter', sans-serif; --mono: 'JetBrains Mono', monospace;
     }
     html, body { height: 100%; overflow: hidden; }
@@ -26,11 +26,12 @@
     .app { display: flex; height: 100vh; width: 100vw; }
 
     /* SIDEBAR */
-    .sidebar { width: 270px; background: var(--bg2); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
+    .sidebar { width: 260px; background: var(--bg2); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
     .sidebar-header { padding: 20px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
     .sidebar-logo { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, var(--primary), var(--accent)); display: flex; align-items: center; justify-content: center; font-weight: 900; color: white; font-size: 1.1rem; }
     .sidebar-title { font-weight: 700; font-size: 1.1rem; }
     .sidebar-title span { color: var(--primary-light); font-weight: 300; }
+
     .sidebar-section { padding: 16px 18px; }
     .sidebar-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text3); font-weight: 600; margin-bottom: 10px; }
     .model-list { display: flex; flex-direction: column; gap: 2px; }
@@ -40,28 +41,11 @@
     .model-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
     .model-name { font-weight: 500; flex: 1; }
     .model-badge { font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; background: rgba(99,102,241,0.15); color: var(--primary-light); }
+
     .sidebar-footer { margin-top: auto; padding: 16px 18px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
     .sidebar-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #f97316, #ef4444); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; color: white; }
     .sidebar-user { font-size: 0.85rem; flex: 1; }
-    .sidebar-user span { display: block; font-size: 0.7rem; color: var(--text3); }
-
-    /* API OVERLAY */
-    .api-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
-      display: flex; align-items: center; justify-content: center; z-index: 9999;
-    }
-    .api-overlay.hidden { display: none; }
-    .api-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 20px; padding: 40px; max-width: 480px; width: 90%; text-align: center; }
-    .api-card h2 { font-size: 1.4rem; margin-bottom: 8px; }
-    .api-card p { color: var(--text2); font-size: 0.9rem; margin-bottom: 8px; line-height: 1.6; }
-    .api-card ol { text-align: left; color: var(--text2); font-size: 0.85rem; margin: 16px 0; padding-left: 24px; line-height: 2; }
-    .api-card ol a { color: var(--primary-light); }
-    .api-input { width: 100%; padding: 14px 18px; border-radius: 12px; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 0.9rem; font-family: var(--mono); outline: none; transition: 0.2s; margin-bottom: 16px; }
-    .api-input:focus { border-color: var(--primary); }
-    .api-btn { padding: 14px 36px; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; font-weight: 600; cursor: pointer; font-size: 0.95rem; transition: 0.2s; font-family: var(--font); }
-    .api-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(99,102,241,0.3); }
-    .api-error { color: var(--danger); font-size: 0.85rem; margin-bottom: 12px; display: none; }
+    .sidebar-user span { display: block; font-size: 0.7rem; color: var(--success); }
 
     /* TOPBAR */
     .topbar { padding: 10px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 16px; background: var(--bg2); flex-shrink: 0; }
@@ -69,9 +53,9 @@
     .tab-btn:hover { color: var(--text); background: var(--bg3); }
     .tab-btn.active { color: var(--text); background: var(--card); }
     .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
-    .model-badge-active { padding: 4px 12px; border-radius: 6px; background: rgba(99,102,241,0.1); border: 1px solid var(--border); font-size: 0.75rem; color: var(--primary-light); }
-    .settings-btn { background: transparent; border: none; color: var(--text3); cursor: pointer; padding: 6px; border-radius: 6px; font-size: 1.1rem; transition: 0.2s; }
-    .settings-btn:hover { color: var(--text); background: var(--bg3); }
+    .status-badge { padding: 4px 12px; border-radius: 6px; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); font-size: 0.75rem; color: var(--success); display: flex; align-items: center; gap: 6px; }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); display: inline-block; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
 
     /* CHAT */
     .chat-area { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; }
@@ -87,7 +71,7 @@
     .message-text { font-size: 0.92rem; line-height: 1.75; color: var(--text2); }
     .message-text p { margin-bottom: 10px; }
     .message-text strong { color: var(--text); }
-    .message-text ul, .message-text ol { margin: 8px 0; padding-left: 24px; }
+    .message-text ul, ol { margin: 8px 0; padding-left: 24px; }
     .message-text li { margin-bottom: 4px; }
     .message-text code { background: var(--bg3); padding: 1px 6px; border-radius: 4px; font-family: var(--mono); font-size: 0.82rem; }
     .message-text pre { background: var(--bg3); padding: 16px; border-radius: 8px; overflow-x: auto; margin: 12px 0; border: 1px solid var(--border); }
@@ -100,10 +84,12 @@
     @keyframes dotPulse { 0%,80%,100% { opacity: 0.3; } 40% { opacity: 1; } }
 
     .welcome { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; }
-    .welcome-icon { width: 72px; height: 72px; border-radius: 18px; background: linear-gradient(135deg, var(--primary), var(--accent)); display: flex; align-items: center; justify-content: center; font-size: 2rem; margin-bottom: 20px; box-shadow: 0 0 50px rgba(99,102,241,0.15); }
-    .welcome h1 { font-size: 1.6rem; font-weight: 800; margin-bottom: 6px; }
-    .welcome p { color: var(--text2); max-width: 420px; line-height: 1.7; font-size: 0.9rem; }
-    .welcome-suggestions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 28px; }
+    .welcome-icon { width: 80px; height: 80px; border-radius: 20px; background: linear-gradient(135deg, var(--primary), var(--accent)); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin-bottom: 20px; box-shadow: 0 0 60px rgba(99,102,241,0.2); }
+    .welcome h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; }
+    .welcome p { color: var(--text2); max-width: 440px; line-height: 1.7; font-size: 0.9rem; }
+    .welcome-features { display: flex; gap: 16px; margin-top: 28px; flex-wrap: wrap; justify-content: center; }
+    .welcome-feat { padding: 8px 16px; border-radius: 8px; background: var(--card); border: 1px solid var(--border); font-size: 0.8rem; color: var(--text2); display: flex; align-items: center; gap: 8px; }
+    .welcome-suggestions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 24px; }
     .suggestion-chip { padding: 8px 18px; border-radius: 50px; background: var(--card); border: 1px solid var(--border); color: var(--text2); font-size: 0.8rem; cursor: pointer; transition: 0.2s; font-family: var(--font); }
     .suggestion-chip:hover { border-color: var(--primary); color: var(--text); background: var(--bg3); }
 
@@ -116,55 +102,39 @@
     .send-btn { width: 50px; height: 50px; border-radius: 12px; border: none; background: var(--primary); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; flex-shrink: 0; }
     .send-btn:hover { background: var(--primary-light); }
     .send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-    .input-hint { max-width: 760px; margin: 8px auto 0; font-size: 0.7rem; color: var(--text3); }
+    .input-hint { max-width: 760px; margin: 8px auto 0; font-size: 0.7rem; color: var(--text3); display: flex; gap: 16px; }
+    .input-hint span { display: flex; align-items: center; gap: 4px; }
 
     /* IMAGE */
     .image-area { flex: 1; overflow-y: auto; padding: 24px; display: none; flex-direction: column; }
     .image-area.active { display: flex; }
-    .image-generator { max-width: 650px; margin: 0 auto; width: 100%; text-align: center; padding: 30px 0; }
-    .image-generator h2 { font-size: 1.4rem; margin-bottom: 8px; }
-    .image-generator p { color: var(--text2); font-size: 0.9rem; }
-    .image-flex { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
-    .image-flex .image-input { flex: 1; margin-bottom: 0; }
-    .image-input { width: 100%; padding: 14px 18px; border-radius: 12px; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 0.9rem; font-family: var(--font); outline: none; transition: 0.2s; }
-    .image-input:focus { border-color: var(--primary); }
-    .image-gen-btn { padding: 12px 28px; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; font-weight: 600; cursor: pointer; font-size: 0.9rem; transition: 0.2s; font-family: var(--font); white-space: nowrap; }
-    .image-gen-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(99,102,241,0.25); }
-    .image-gen-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-    .image-result { margin-top: 20px; width: 100%; border-radius: 16px; border: 1px solid var(--border); background: var(--card); overflow: hidden; }
-    .image-result img { width: 100%; height: auto; display: block; }
-    .image-result-loading { padding: 60px 20px; color: var(--text3); font-size: 0.9rem; }
+    .image-generator { max-width: 700px; margin: 0 auto; width: 100%; text-align: center; padding: 30px 0; }
+    .image-generator h2 { font-size: 1.5rem; margin-bottom: 6px; }
+    .image-generator p { color: var(--text2); font-size: 0.9rem; margin-bottom: 16px; }
+
     .image-styles { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; margin-bottom: 16px; }
-    .style-chip { padding: 6px 14px; border-radius: 50px; border: 1px solid var(--border); background: transparent; color: var(--text3); font-size: 0.75rem; cursor: pointer; transition: 0.2s; font-family: var(--font); }
+    .style-chip { padding: 6px 16px; border-radius: 50px; border: 1px solid var(--border); background: transparent; color: var(--text3); font-size: 0.75rem; cursor: pointer; transition: 0.2s; font-family: var(--font); }
     .style-chip:hover { border-color: var(--primary); color: var(--text); }
     .style-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-    .error-bar { display: none; padding: 10px 24px; background: rgba(239,68,68,0.1); border-bottom: 1px solid rgba(239,68,68,0.2); color: #fca5a5; font-size: 0.82rem; }
-    .error-bar.show { display: block; }
+    .image-box { display: flex; gap: 12px; margin-bottom: 16px; }
+    .image-box input { flex: 1; padding: 14px 18px; border-radius: 12px; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 0.9rem; font-family: var(--font); outline: none; transition: 0.2s; }
+    .image-box input:focus { border-color: var(--primary); }
+    .image-box button { padding: 14px 28px; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; font-weight: 600; cursor: pointer; font-size: 0.9rem; transition: 0.2s; font-family: var(--font); white-space: nowrap; }
+    .image-box button:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(99,102,241,0.25); }
+    .image-box button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
-    @media (max-width: 768px) { .sidebar { display: none; } .image-flex { flex-direction: column; } .image-flex .image-input { margin-bottom: 12px; } }
+    .image-result { margin-top: 16px; width: 100%; border-radius: 16px; border: 1px solid var(--border); background: var(--card); overflow: hidden; min-height: 200px; display: flex; align-items: center; justify-content: center; }
+    .image-result img { width: 100%; height: auto; display: block; }
+    .image-result .placeholder { color: var(--text3); font-size: 0.9rem; padding: 40px; }
+    .image-result .loading { padding: 60px 20px; color: var(--text3); }
+    .image-result .error { padding: 40px 20px; color: #fca5a5; }
+    .dimensions-select { padding: 6px 12px; border-radius: 8px; background: var(--card); border: 1px solid var(--border); color: var(--text); font-size: 0.8rem; font-family: var(--font); cursor: pointer; }
+
+    @media (max-width: 768px) { .sidebar { display: none; } .image-box { flex-direction: column; } .welcome h1 { font-size: 1.4rem; } }
   </style>
 </head>
 <body>
-<!-- API OVERLAY -->
-<div class="api-overlay" id="apiOverlay">
-  <div class="api-card">
-    <div style="font-size:3rem;margin-bottom:16px">🔑</div>
-    <h2>Yazeed AI – API Key</h2>
-    <p>Für den Chat brauchst du einen kostenlosen Google Gemini API-Key.</p>
-    <p style="font-size:0.85rem;color:var(--success)">🎨 Bilder sind kostenlos ohne Key!</p>
-    <ol>
-      <li>👉 <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com/app/apikey</a></li>
-      <li>🔑 Klicke auf <strong>"API-Key erstellen"</strong></li>
-      <li>📋 Kopiere den Key und füge ihn unten ein</li>
-    </ol>
-    <div class="api-error" id="apiError">⚠️ Bitte gib einen gültigen API-Key ein</div>
-    <input type="text" class="api-input" id="apiKeyInput" placeholder="Dein Gemini API-Key..." autocomplete="off" />
-    <button class="api-btn" onclick="saveApiKey()">🔓 Speichern & starten</button>
-    <p style="margin-top:16px;font-size:0.8rem;color:var(--text3)">🔒 Nur lokal im Browser gespeichert</p>
-  </div>
-</div>
-
 <div class="app">
   <!-- SIDEBAR -->
   <aside class="sidebar">
@@ -173,19 +143,21 @@
       <div class="sidebar-title">Yazeed <span>AI</span></div>
     </div>
     <div class="sidebar-section">
-      <div class="sidebar-label">KI Modelle</div>
+      <div class="sidebar-label">KI Modell</div>
       <div class="model-list">
-        <div class="model-item active" onclick="selectModel(this, 'gemini-2.5-flash', 'Gemini 2.5 Flash', '#6366f1')">
-          <div class="model-dot" style="background:#6366f1"></div>
-          <span class="model-name">Gemini 2.5 Flash</span><span class="model-badge">⚡</span>
-        </div>
-        <div class="model-item" onclick="selectModel(this, 'gemini-2.5-pro', 'Gemini 2.5 Pro', '#10b981')">
+        <div class="model-item active" onclick="selectModel(this,'openai')">
           <div class="model-dot" style="background:#10b981"></div>
-          <span class="model-name">Gemini 2.5 Pro</span><span class="model-badge">PRO</span>
+          <span class="model-name">ChatGPT (OpenAI)</span>
+          <span class="model-badge">BEST</span>
         </div>
-        <div class="model-item" onclick="selectModel(this, 'gemini-2.0-flash', 'Gemini 2.0 Flash', '#22d3ee')">
-          <div class="model-dot" style="background:#22d3ee"></div>
-          <span class="model-name">Gemini 2.0 Flash</span>
+        <div class="model-item" onclick="selectModel(this,'openai-large')">
+          <div class="model-dot" style="background:#6366f1"></div>
+          <span class="model-name">GPT-4 Level</span>
+          <span class="model-badge">PRO</span>
+        </div>
+        <div class="model-item" onclick="selectModel(this,'mistral')">
+          <div class="model-dot" style="background:#f97316"></div>
+          <span class="model-name">Mistral AI</span>
         </div>
       </div>
     </div>
@@ -198,7 +170,7 @@
     </div>
     <div class="sidebar-footer">
       <div class="sidebar-avatar">Y</div>
-      <div class="sidebar-user">Yazeed<span id="apiStatus">● Gemini bereit</span></div>
+      <div class="sidebar-user">Yazeed<span>● Kostenlos · Kein API Key</span></div>
     </div>
   </aside>
 
@@ -210,24 +182,27 @@
         <button class="tab-btn" onclick="switchTab('image')">🎨 Bilder</button>
       </div>
       <div class="topbar-right">
-        <div class="model-badge-active" id="activeModelDisplay">🤖 Gemini 2.5 Flash</div>
-        <button class="settings-btn" onclick="document.getElementById('apiOverlay').classList.remove('hidden')">⚙️</button>
+        <div class="status-badge"><span class="status-dot"></span> Kostenlos · Kein Login</div>
       </div>
     </div>
-
-    <div class="error-bar" id="errorBar"></div>
 
     <!-- CHAT TAB -->
     <div id="chatTab" class="chat-area">
       <div class="welcome" id="welcomeScreen">
         <div class="welcome-icon">🤖</div>
         <h1>Yazeed AI</h1>
-        <p>Angetrieben von Google Gemini. Stelle Fragen, lass Texte schreiben, Code erstellen und mehr.</p>
+        <p>Deine kostenlose KI – wie ChatGPT aber ohne Anmeldung. Stelle Fragen, lass Texte schreiben, Code erstellen und mehr.</p>
+        <div class="welcome-features">
+          <span class="welcome-feat">💬 Echter KI-Chat</span>
+          <span class="welcome-feat">🔑 Kein API-Key</span>
+          <span class="welcome-feat">💰 100% Kostenlos</span>
+        </div>
         <div class="welcome-suggestions">
-          <span class="suggestion-chip" onclick="askSuggestion('Erkläre künstliche Intelligenz einfach und verständlich')">🧠 Was ist KI?</span>
+          <span class="suggestion-chip" onclick="askSuggestion('Erkläre künstliche Intelligenz einfach')">🧠 Was ist KI?</span>
           <span class="suggestion-chip" onclick="askSuggestion('Schreibe einen professionellen Geschäftsbrief')">📄 Geschäftsbrief</span>
-          <span class="suggestion-chip" onclick="askSuggestion('Erstelle einen HTML-Code für eine Landing Page')">💻 HTML Code</span>
-          <span class="suggestion-chip" onclick="askSuggestion('Was sind die Top 10 Technologie-Trends 2026?')">📊 Trends 2026</span>
+          <span class="suggestion-chip" onclick="askSuggestion('Schreibe HTML Code für eine coole Webseite')">💻 HTML Code</span>
+          <span class="suggestion-chip" onclick="askSuggestion('Was sind die Top 10 Trends 2026?')">📊 Trends 2026</span>
+          <span class="suggestion-chip" onclick="askSuggestion('Erstelle einen Diätplan für eine Woche')">🥗 Diätplan</span>
         </div>
       </div>
       <div id="chatMessages"></div>
@@ -237,22 +212,26 @@
     <div id="imageTab" class="image-area">
       <div class="image-generator">
         <h2>🎨 KI Bildgenerierung</h2>
-        <p style="margin-bottom:16px">Echte KI-Fotos – <strong style="color:var(--success)">kostenlos, ohne Anmeldung</strong></p>
+        <p>Echte KI-Fotos – <strong style="color:var(--success)">kostenlos, ohne Anmeldung, kein API-Key</strong></p>
         
         <div class="image-styles" id="styleChips">
           <span class="style-chip active" onclick="selectStyle(this,'Fotorealistisch')">📸 Fotorealistisch</span>
           <span class="style-chip" onclick="selectStyle(this,'Cinematic')">🎬 Kinematisch</span>
-          <span class="style-chip" onclick="selectStyle(this,'Fantasy')">🧝 Fantasy</span>
-          <span class="style-chip" onclick="selectStyle(this,'Cyberpunk')">🤖 Cyberpunk</span>
-          <span class="style-chip" onclick="selectStyle(this,'Ölgemälde')">🖼️ Ölgemälde</span>
+          <span class="style-chip" onclick="selectStyle(this,'Fantasy Art')">🧝 Fantasy</span>
+          <span class="style-chip" onclick="selectStyle(this,'3D Render')">🎯 3D Render</span>
+          <span class="style-chip" onclick="selectStyle(this,'Anime')">🌸 Anime</span>
         </div>
 
-        <div class="image-flex">
-          <input type="text" class="image-input" id="imagePrompt" placeholder="z.B. Ein Sonnenuntergang am Strand mit Palmen, fotorealistisch..." />
-          <button class="image-gen-btn" id="imageGenBtn" onclick="generateImage()">✨ Erstellen</button>
+        <div class="image-box">
+          <input type="text" id="imagePrompt" placeholder="Beschreibe dein Bild... z.B. Ein Sonnenuntergang am Meer mit Palmen" />
+          <select class="dimensions-select" id="imageSize">
+            <option value="512">512x512</option>
+            <option value="1024" selected>1024x1024</option>
+          </select>
+          <button id="imageGenBtn" onclick="generateImage()">✨ Erstellen</button>
         </div>
         <div class="image-result" id="imageResult">
-          <div class="image-result-loading">🎨 Dein Foto erscheint hier<br><small style="color:var(--text3)">Echte KI-Generierung – kostenlos</small></div>
+          <div class="placeholder">🎨 Dein Bild erscheint hier<br><small style="color:var(--text3)">Gib eine Beschreibung ein und klicke auf "Erstellen"</small></div>
         </div>
       </div>
     </div>
@@ -260,12 +239,17 @@
     <!-- INPUT -->
     <div class="input-area" id="inputArea">
       <div class="input-wrapper">
-        <textarea class="input-field" id="chatInput" placeholder="Nachricht eingeben..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}"></textarea>
+        <textarea class="input-field" id="chatInput" placeholder="Schreibe eine Nachricht..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}"></textarea>
         <button class="send-btn" id="sendBtn" onclick="sendMessage()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
       </div>
-      <div class="input-hint">🤖 Yazeed AI · Google Gemini Chat + Echte KI-Bilder · Kostenlos</div>
+      <div class="input-hint">
+        <span>🤖 Yazeed AI</span>
+        <span>💬 Wie ChatGPT</span>
+        <span>🎨 Echte Bilder</span>
+        <span>🔑 Kein API-Key nötig</span>
+      </div>
     </div>
   </div>
 </div>
@@ -274,40 +258,20 @@
   // =============================================
   // KONFIGURATION
   // =============================================
-  let API_KEY = localStorage.getItem('yazeed_gemini_key') || '';
-  let currentModelId = 'gemini-2.5-flash';
-  let currentModelName = 'Gemini 2.5 Flash';
-  let currentModelColor = '#6366f1';
+  let currentModel = 'openai';
+  let currentModelName = 'ChatGPT (OpenAI)';
   let currentStyle = 'Fotorealistisch';
   let chatHistory = [];
 
   // =============================================
-  // API KEY
-  // =============================================
-  function saveApiKey() {
-    const input = document.getElementById('apiKeyInput');
-    const key = input.value.trim();
-    if (!key) { document.getElementById('apiError').style.display = 'block'; return; }
-    document.getElementById('apiError').style.display = 'none';
-    API_KEY = key;
-    localStorage.setItem('yazeed_gemini_key', key);
-    document.getElementById('apiOverlay').classList.add('hidden');
-    document.getElementById('apiStatus').textContent = '● Gemini Aktiv';
-    document.getElementById('apiStatus').style.color = 'var(--success)';
-  }
-  if (API_KEY) {
-    document.getElementById('apiOverlay').classList.add('hidden');
-    document.getElementById('apiStatus').textContent = '● Gemini Aktiv';
-  }
-
-  // =============================================
   // MODELL
   // =============================================
-  function selectModel(el, id, name, color) {
+  function selectModel(el, model) {
     document.querySelectorAll('.model-item').forEach(m => m.classList.remove('active'));
     el.classList.add('active');
-    currentModelId = id; currentModelName = name; currentModelColor = color || '#6366f1';
-    document.getElementById('activeModelDisplay').textContent = '🤖 ' + name;
+    currentModel = model;
+    const names = { 'openai': 'ChatGPT (OpenAI)', 'openai-large': 'GPT-4 Level', 'mistral': 'Mistral AI' };
+    currentModelName = names[model] || 'ChatGPT';
   }
 
   // =============================================
@@ -337,13 +301,12 @@
   }
 
   // =============================================
-  // CHAT – GEMINI API
+  // CHAT – KOSTENLOS, KEIN API-KEY
   // =============================================
   async function sendMessage() {
     const input = document.getElementById('chatInput');
     const msg = input.value.trim();
     if (!msg) return;
-    if (!API_KEY) { document.getElementById('apiOverlay').classList.remove('hidden'); return; }
 
     const welcome = document.getElementById('welcomeScreen');
     if (welcome && welcome.style.display !== 'none') welcome.style.display = 'none';
@@ -354,107 +317,105 @@
     setSendBtnDisabled(true);
     const typingId = addTyping(chatMsgs);
 
-    const contents = chatHistory.slice(-30).map(h => ({ role: h.role, parts: [{ text: h.text }] }));
-    contents.push({ role: 'user', parts: [{ text: msg }] });
-
     try {
-      const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + currentModelId + ':generateContent?key=' + API_KEY, {
+      const res = await fetch('https://text.pollinations.ai/openai', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          systemInstruction: { parts: [{ text: 'Du bist Yazeed AI, ein professioneller KI-Assistent. Antworte immer auf Deutsch. Sei präzise, hilfreich und professionell. Formatiere mit **fett**, `code` und ---.' }] },
-          contents: contents,
-          generationConfig: { temperature: 0.7, maxOutputTokens: 4096 }
+          model: currentModel,
+          messages: [
+            { role: 'system', content: 'Du bist Yazeed AI, ein hilfreicher KI-Assistent. Antworte immer auf Deutsch. Sei präzise, freundlich und professionell. Verwende **fett** für Wichtiges, `code` für Code und Bulletpoints für Listen.' },
+            ...chatHistory.slice(-20).map(m => ({ role: m.role, content: m.text })),
+            { role: 'user', content: msg }
+          ]
         })
       });
+
       const data = await res.json();
       removeTyping(typingId);
-      if (data.error) {
-        let m = data.error.message || 'Fehler';
-        if (data.error.code === 429) m = '⚠️ **API-Limit erreicht.** Bitte warte bis morgen oder erstelle einen neuen Key.';
-        else if (data.error.code === 403 || data.error.message?.includes('API_KEY')) m = '⚠️ **Ungültiger API-Key.** Erstelle einen neuen unter https://aistudio.google.com/app/apikey (⚙️ oben rechts)';
-        addMessage(chatMsgs, 'ai', currentModelName, m);
-      } else {
-        const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Keine Antwort.';
+
+      if (data.choices && data.choices[0]) {
+        const aiText = data.choices[0].message.content;
         addMessage(chatMsgs, 'ai', currentModelName, formatResponse(aiText));
-        chatHistory.push({ role: 'user', text: msg }, { role: 'model', text: aiText });
+        chatHistory.push({ role: 'user', text: msg }, { role: 'assistant', text: aiText });
         if (chatHistory.length > 100) chatHistory = chatHistory.slice(-100);
+      } else {
+        addMessage(chatMsgs, 'ai', currentModelName, '⚠️ Keine Antwort erhalten. Bitte versuche es erneut.');
       }
     } catch (err) {
       removeTyping(typingId);
-      addMessage(chatMsgs, 'ai', currentModelName, '⚠️ **Fehler:** ' + err.message);
+      addMessage(chatMsgs, 'ai', currentModelName, '⚠️ **Fehler:** ' + err.message + '\n\nBitte überprüfe deine Internetverbindung.');
     }
+    
     setSendBtnDisabled(false);
     chatMsgs.scrollTop = chatMsgs.scrollHeight;
   }
 
   // =============================================
-  // BILD – ECHTE KI GENERIERUNG (POLLINATIONS)
+  // BILD – KOSTENLOS, KEIN API-KEY
   // =============================================
   function generateImage() {
-    let prompt = document.getElementById('imagePrompt').value.trim();
+    const prompt = document.getElementById('imagePrompt').value.trim();
     if (!prompt) { alert('Bitte gib eine Bildbeschreibung ein!'); return; }
 
-    // Style hinzufügen
-    const styleMap = {
-      'Fotorealistisch': 'fotorealistisch, ultra-realistisch, 8K, detailreich, echte Kamera, natürliches Licht',
-      'Cinematic': 'cinematic, filmisch, Blockbuster, Filmstil, dramatische Beleuchtung, kinematografisch',
-      'Fantasy': 'fantasy, magisch, märchenhaft, episch, leuchtend, traumhaft',
-      'Cyberpunk': 'cyberpunk, neon, dystopisch, futuristisch, digitale Kunst, leuchtende Farben',
-      'Ölgemälde': 'Ölgemälde, impressionistisch, Leinwand, Pinselstriche, künstlerisch, Vintage'
-    };
-    const styleAdd = styleMap[currentStyle] || 'fotorealistisch';
-    const fullPrompt = prompt + ', ' + styleAdd + ', hochwertig, professionell';
-
+    const size = document.getElementById('imageSize').value;
     const result = document.getElementById('imageResult');
     const btn = document.getElementById('imageGenBtn');
     btn.disabled = true;
-    btn.textContent = '⏳ Generiere...';
+    btn.textContent = '⏳ Erstelle...';
 
-    // Ladeanimation
-    result.innerHTML = '<div class="image-result-loading">🎨 Erstelle KI-Bild... <br><small>⚡ ' + currentStyle + ' Stil</small></div>';
+    // Style hinzufügen
+    const styleMap = {
+      'Fotorealistisch': 'fotorealistisch, ultra-realistisch, 8K, detailreich, natürliches Licht, Kamera',
+      'Cinematic': 'cinematic, film still, Blockbuster, dramatische Beleuchtung, 4K, kinematografisch',
+      'Fantasy Art': 'fantasy art, magisch, episch, leuchtend, detalireich, Konzeptkunst',
+      '3D Render': '3D Render, Octane Render, Blender, realistisch, Texturen, Schatten, global illumination',
+      'Anime': 'Anime-Stil, Studio Ghibli, Manga, bunt, Illustration, japanisch'
+    };
+    const styleAdd = styleMap[currentStyle] || 'fotorealistisch, hochqualitativ';
+    const fullPrompt = prompt + ', ' + styleAdd + ', professionell, hochwertig';
 
-    // Echte Bild-URL von Pollinations (kostenlos, kein Key)
-    const encodedPrompt = encodeURIComponent(fullPrompt.substring(0, 500));
-    const imgUrl = 'https://image.pollinations.ai/prompt/' + encodedPrompt + '?width=1024&height=1024&seed=' + Date.now() + '&nologo=true';
+    result.innerHTML = '<div class="loading">🎨 Erstelle KI-Bild...<br><small>⚡ ' + currentStyle + ' · ' + size + 'x' + size + '</small></div>';
+
+    // Bild von Pollinations laden (kostenlos, kein Key, echte KI)
+    const encoded = encodeURIComponent(fullPrompt.substring(0, 500));
+    const timestamp = Date.now();
+    const imgUrl = 'https://image.pollinations.ai/prompt/' + encoded + '?width=' + size + '&height=' + size + '&seed=' + timestamp + '&nologo=true';
 
     const img = new Image();
-    img.crossOrigin = 'anonymous';
-    
+    let loaded = false;
+
     img.onload = function() {
+      if (loaded) return;
+      loaded = true;
       result.innerHTML = '';
       result.appendChild(img);
       btn.disabled = false;
       btn.textContent = '✨ Neu erstellen';
-      document.getElementById('imagePrompt').value = prompt;
     };
 
     img.onerror = function() {
-      // Fallback: Versuche ohne Parameter
-      const fallbackUrl = 'https://image.pollinations.ai/prompt/' + encodedPrompt + '?nologo=true';
-      img.src = fallbackUrl;
-      // Wenn das auch fehlschlägt
-      setTimeout(() => {
-        if (!img.complete || img.naturalWidth === 0) {
-          result.innerHTML = '<div class="image-result-loading">⚠️ Bild konnte nicht geladen werden.<br>Bitte versuche es erneut.</div>';
-          btn.disabled = false;
-          btn.textContent = '✨ Erneut versuchen';
-        }
-      }, 10000);
+      if (loaded) return;
+      loaded = true;
+      result.innerHTML = '<div class="error">⚠️ Bild konnte nicht geladen werden.<br>Bitte versuche es erneut mit einer anderen Beschreibung.</div>';
+      btn.disabled = false;
+      btn.textContent = '✨ Erneut versuchen';
     };
 
     img.src = imgUrl;
-    img.style.cssText = 'width:100%;height:auto;display:block;border-radius:16px;';
+    img.style.cssText = 'width:100%;height:auto;display:block;';
     img.alt = prompt;
+    img.loading = 'eager';
 
-    // Timeout nach 15 Sekunden
+    // Timeout nach 20 Sekunden
     setTimeout(() => {
-      if (btn.disabled && (!img.complete || img.naturalWidth === 0)) {
-        result.innerHTML = '<div class="image-result-loading">⏱️ Zeitüberschreitung.<br>Bitte versuche es erneut mit einer kürzeren Beschreibung.</div>';
+      if (!loaded) {
+        loaded = true;
+        result.innerHTML = '<div class="error">⏱️ Zeitüberschreitung. Bitte versuche es erneut.</div>';
         btn.disabled = false;
         btn.textContent = '✨ Erneut versuchen';
       }
-    }, 15000);
+    }, 20000);
   }
 
   // =============================================
@@ -463,7 +424,7 @@
   function addMessage(container, role, name, text) {
     const div = document.createElement('div');
     div.className = 'message';
-    const c = role === 'user' ? '#f97316' : currentModelColor;
+    const c = role === 'user' ? '#f97316' : '#6366f1';
     div.innerHTML = '<div class="message-avatar ' + (role === 'user' ? 'user' : 'ai') + '" style="background:' + c + '">' + (role === 'user' ? 'Y' : 'AI') + '</div>' +
       '<div class="message-content"><div class="message-name">' + escHtml(name) + '</div><div class="message-text">' + text + '</div><div class="message-time">' + getTime() + '</div></div>';
     container.appendChild(div);
@@ -474,7 +435,7 @@
     const id = 't_' + Date.now();
     const d = document.createElement('div');
     d.className = 'message'; d.id = id;
-    d.innerHTML = '<div class="message-avatar ai" style="background:' + currentModelColor + '">AI</div><div class="message-content"><div class="message-name">' + escHtml(currentModelName) + '</div><div class="message-text"><div class="typing-dots"><span></span><span></span><span></span></div></div></div>';
+    d.innerHTML = '<div class="message-avatar ai" style="background:#6366f1">AI</div><div class="message-content"><div class="message-name">' + escHtml(currentModelName) + '</div><div class="message-text"><div class="typing-dots"><span></span><span></span><span></span></div></div></div>';
     container.appendChild(d); container.scrollTop = container.scrollHeight;
     return id;
   }
