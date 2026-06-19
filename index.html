@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Yazeed – Portfolio</title>
-  <meta name="description" content="Yazeed – Persönliche Portfolio-Seite. Creator & Developer.">
+  <title>Yazeed – Arena AI Plattform</title>
+  <meta name="description" content="Yazeed – Arena AI Plattform. Exklusiver Zugang zu modernster KI.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -24,6 +24,7 @@
       --color-text: #f1f5f9;
       --color-text-secondary: #94a3b8;
       --color-text-muted: #64748b;
+      --color-success: #10b981;
       --gradient-hero: linear-gradient(135deg, #0a0a0f 0%, #12121a 50%, #1a1a2e 100%);
       --gradient-primary: linear-gradient(135deg, #6366f1, #06b6d4);
       --gradient-text: linear-gradient(135deg, #f1f5f9 0%, #818cf8 50%, #22d3ee 100%);
@@ -159,11 +160,88 @@
     }
     .hero__btn--secondary:hover { border-color: var(--color-primary); background: rgba(99,102,241,0.05); }
 
+    /* PLATFORM SECTION */
+    .platform-container {
+      width: 100%;
+      background: var(--color-bg-elevated);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      overflow: hidden;
+      margin-top: 40px;
+    }
+    .platform-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 24px;
+      background: var(--color-bg-card);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .platform-header-left {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .platform-header-logo {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, #f97316, #ef4444);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 0.9rem; color: white;
+    }
+    .platform-header-title {
+      font-weight: 700; font-size: 1rem;
+    }
+    .platform-header-status {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.8rem; color: var(--color-success);
+    }
+    .platform-header-status-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--color-success);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    .platform-login-btn {
+      padding: 8px 20px; border-radius: 50px; font-size: 0.85rem; font-weight: 600;
+      background: var(--gradient-primary); color: white; border: none; cursor: pointer;
+      transition: var(--transition);
+    }
+    .platform-login-btn:hover {
+      transform: translateY(-2px); box-shadow: 0 8px 25px rgba(99,102,241,0.3);
+    }
+    .platform-frame {
+      width: 100%;
+      height: 700px;
+      border: none;
+      background: #fff;
+    }
+    .platform-fallback {
+      display: none;
+      padding: 60px;
+      text-align: center;
+      background: var(--color-bg-elevated);
+    }
+    .platform-fallback-icon {
+      font-size: 3rem; margin-bottom: 16px;
+    }
+    .platform-fallback h3 {
+      font-size: 1.3rem; margin-bottom: 12px;
+    }
+    .platform-fallback p {
+      color: var(--color-text-secondary); margin-bottom: 24px;
+    }
+    .platform-fallback-btn {
+      padding: 14px 32px; border-radius: 50px; font-size: 1rem; font-weight: 600;
+      background: var(--gradient-primary); color: white; border: none; cursor: pointer;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+      transition: var(--transition);
+    }
+    .platform-fallback-btn:hover {
+      transform: translateY(-3px); box-shadow: 0 12px 30px rgba(99,102,241,0.35);
+    }
+
     /* STATS */
     .stats { padding: 60px 0; border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); }
-    .stats__grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; max-width: 800px; margin: 0 auto;
-    }
+    .stats__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; max-width: 800px; margin: 0 auto; }
     .stats__item { text-align: center; }
     .stats__number {
       font-size: 2.5rem; font-weight: 800;
@@ -173,69 +251,29 @@
 
     /* ABOUT */
     .about { padding: 100px 0; }
-    .about__grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
-    }
-    .about__avatar {
-      width: 120px; height: 120px; border-radius: 50%;
-      background: var(--gradient-primary); display: flex; align-items: center; justify-content: center;
-      font-size: 3rem; font-weight: 800; color: white; margin-bottom: 20px;
-    }
+    .about__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .about__avatar { width: 120px; height: 120px; border-radius: 50%; background: var(--gradient-primary); display: flex; align-items: center; justify-content: center; font-size: 3rem; font-weight: 800; color: white; margin-bottom: 20px; }
     .about__role { font-size: 1.1rem; font-weight: 600; color: var(--color-primary-light); margin-bottom: 8px; }
     .about__tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
-    .about__tag {
-      padding: 4px 14px; border-radius: 50px; background: rgba(99,102,241,0.1);
-      border: 1px solid var(--color-border); font-size: 0.8rem; color: var(--color-text-secondary);
-    }
+    .about__tag { padding: 4px 14px; border-radius: 50px; background: rgba(99,102,241,0.1); border: 1px solid var(--color-border); font-size: 0.8rem; color: var(--color-text-secondary); }
     .about__text { font-size: 1rem; color: var(--color-text-secondary); line-height: 1.8; }
-    .about__image {
-      width: 100%; border-radius: var(--radius-lg);
-      background: var(--color-bg-card); aspect-ratio: 4/3;
-      display: flex; align-items: center; justify-content: center;
-      border: 1px solid var(--color-border); overflow: hidden;
-    }
-    .about__image-placeholder {
-      font-size: 6rem; opacity: 0.3;
-    }
+    .about__image { width: 100%; border-radius: var(--radius-lg); background: var(--color-bg-card); aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; border: 1px solid var(--color-border); overflow: hidden; }
+    .about__image-placeholder { font-size: 6rem; opacity: 0.3; }
 
     /* PROJECTS */
-    .projects__grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px;
-    }
-    .project-card {
-      background: var(--color-bg-card); border-radius: var(--radius-md);
-      padding: 32px; border: 1px solid var(--color-border);
-      transition: var(--transition); position: relative; overflow: hidden;
-    }
-    .project-card:hover {
-      border-color: var(--color-border-hover); transform: translateY(-4px);
-      box-shadow: var(--shadow-glow);
-    }
-    .project-card__icon {
-      font-size: 2rem; margin-bottom: 16px;
-    }
-    .project-card__title {
-      font-size: 1.2rem; font-weight: 700; margin-bottom: 12px; color: var(--color-text);
-    }
-    .project-card__desc {
-      font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.7; margin-bottom: 16px;
-    }
+    .projects__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+    .project-card { background: var(--color-bg-card); border-radius: var(--radius-md); padding: 32px; border: 1px solid var(--color-border); transition: var(--transition); position: relative; overflow: hidden; }
+    .project-card:hover { border-color: var(--color-border-hover); transform: translateY(-4px); box-shadow: var(--shadow-glow); }
+    .project-card__icon { font-size: 2rem; margin-bottom: 16px; }
+    .project-card__title { font-size: 1.2rem; font-weight: 700; margin-bottom: 12px; color: var(--color-text); }
+    .project-card__desc { font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.7; margin-bottom: 16px; }
     .project-card__tags { display: flex; gap: 6px; flex-wrap: wrap; }
-    .project-card__tag {
-      padding: 3px 10px; border-radius: 50px; font-size: 0.7rem;
-      background: rgba(99,102,241,0.1); color: var(--color-primary-light);
-      border: 1px solid rgba(99,102,241,0.15);
-    }
+    .project-card__tag { padding: 3px 10px; border-radius: 50px; font-size: 0.7rem; background: rgba(99,102,241,0.1); color: var(--color-primary-light); border: 1px solid rgba(99,102,241,0.15); }
 
-    /* CONTACT / FOOTER */
-    .footer {
-      border-top: 1px solid var(--color-border); padding: 40px 0; text-align: center;
-    }
+    /* FOOTER */
+    .footer { border-top: 1px solid var(--color-border); padding: 40px 0; text-align: center; }
     .footer__links { display: flex; justify-content: center; gap: 24px; margin-bottom: 20px; }
-    .footer__links a {
-      color: var(--color-text-secondary); text-decoration: none; font-size: 0.9rem;
-      transition: var(--transition);
-    }
+    .footer__links a { color: var(--color-text-secondary); text-decoration: none; font-size: 0.9rem; transition: var(--transition); }
     .footer__links a:hover { color: var(--color-primary-light); }
     .footer__copy { font-size: 0.8rem; color: var(--color-text-muted); }
 
@@ -247,6 +285,7 @@
       .stats__grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
       .stats__number { font-size: 1.8rem; }
       .hero { padding: 100px 0 60px; }
+      .platform-frame { height: 500px; }
     }
   </style>
 </head>
@@ -265,8 +304,9 @@
       </a>
       <ul class="nav__links" id="navLinks">
         <li><a href="#about">Über mich</a></li>
+        <li><a href="#arena">Arena AI</a></li>
         <li><a href="#projects">Projekte</a></li>
-        <li><a href="#contact" class="nav__cta">Kontakt</a></li>
+        <li><a href="#arena" class="nav__cta">Arena AI starten</a></li>
       </ul>
     </div>
   </nav>
@@ -275,18 +315,61 @@
   <section class="hero">
     <div class="container">
       <div class="hero__inner">
-        <div class="hero__badge">&#x1F44B; Willkommen auf meiner Seite</div>
+        <div class="hero__badge">&#x1F44B; Willkommen auf Yazeeds Plattform</div>
         <h1 class="hero__title">
-          <span class="hero__title-line">Hi, ich bin</span>
-          <span class="hero__title-line hero__title-line--accent">Yazeed</span>
+          <span class="hero__title-line">Yazeeds</span>
+          <span class="hero__title-line hero__title-line--accent">Arena AI Plattform</span>
         </h1>
         <p class="hero__subtitle">
-          Creator & Developer mit Leidenschaft für moderne Web-Technologien und digitale Produkte.
-          Ich entwickle Lösungen, die begeistern.
+          Exklusiver Zugang zur modernsten KI-Plattform. 
+          Chatte, erstelle Bilder und nutze fortschrittliche KI-Modelle – 
+          alles an einem Ort. Willkommen an Bord!
         </p>
         <div class="hero__actions">
-          <a href="#projects" class="hero__btn hero__btn--primary">&#x1F4BB; Meine Projekte</a>
+          <a href="#arena" class="hero__btn hero__btn--primary">&#x1F916; Arena AI öffnen</a>
           <a href="#about" class="hero__btn hero__btn--secondary">&#x2193; Mehr erfahren</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ARENA AI PLATFORM -->
+  <section class="section" id="arena">
+    <div class="container">
+      <span class="section-label">Exklusiver Zugang</span>
+      <h2 class="section-title">Arena AI – Yazeeds KI Plattform</h2>
+      <p class="section-subtitle">
+        Direkter Zugriff auf die Arena AI. Mit deinem persönlichen Account angemeldet.  
+        Klicke auf "Einloggen & Öffnen" um loszulegen.
+      </p>
+
+      <div class="platform-container">
+        <div class="platform-header">
+          <div class="platform-header-left">
+            <div class="platform-header-logo">A</div>
+            <div>
+              <div class="platform-header-title">Arena AI – Angemeldet als Yazeed</div>
+              <div class="platform-header-status">
+                <span class="platform-header-status-dot"></span>
+                Verbunden
+              </div>
+            </div>
+          </div>
+          <button class="platform-login-btn" id="loginBtn" onclick="loginToArena()">&#x1F510; Einloggen & Öffnen</button>
+        </div>
+        <iframe 
+          id="arenaFrame"
+          class="platform-frame" 
+          src="about:blank"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+          loading="lazy"
+          onerror="showFallback()"
+        ></iframe>
+        <div class="platform-fallback" id="fallback">
+          <div class="platform-fallback-icon">&#x1F916;</div>
+          <h3>Arena AI ist bereit</h3>
+          <p>Die KI-Plattform kann in einem neuen Tab geöffnet werden. Klicke unten, um direkt zu Arena AI zu gelangen und dich mit deinem Account anzumelden.</p>
+          <a href="https://arena.ai" target="_blank" class="platform-fallback-btn" onclick="autoFillLogin()">&#x1F517; Arena AI im neuen Tab öffnen</a>
         </div>
       </div>
     </div>
@@ -302,7 +385,7 @@
         </div>
         <div class="stats__item">
           <div class="stats__number" data-target="12">0</div>
-          <div class="stats__label">Tools & Apps</div>
+          <div class="stats__label">KI Modelle</div>
         </div>
         <div class="stats__item">
           <div class="stats__number" data-target="3">0</div>
@@ -318,21 +401,21 @@
       <div class="about__grid">
         <div>
           <div class="about__avatar">Y</div>
-          <div class="about__role">Developer & Creator</div>
+          <div class="about__role">Inhaber – Arena AI Plattform</div>
           <div class="about__tags">
+            <span class="about__tag">KI Innovation</span>
+            <span class="about__tag">Arena AI</span>
             <span class="about__tag">Web Development</span>
-            <span class="about__tag">Design</span>
-            <span class="about__tag">Innovation</span>
           </div>
           <p class="about__text">
-            Ich bin Yazeed – ein leidenschaftlicher Developer und Creator. 
-            Ich liebe es, moderne Web-Anwendungen zu bauen und digitale Erlebnisse zu schaffen, 
-            die Menschen begeistern. Mein Fokus liegt auf sauberem Code, 
-            durchdachtem Design und benutzerfreundlichen Lösungen.
+            Ich bin Yazeed – Betreiber und Inhaber dieser KI-Plattform. 
+            Hier hast du exklusiven Zugang zu Arena AI, der fortschrittlichsten 
+            KI-Plattform für Chat, Bildgenerierung und mehr. 
+            Alles an einem Ort, für dich bereitgestellt.
           </p>
         </div>
         <div class="about__image">
-          <div class="about__image-placeholder">&#x1F4BB;</div>
+          <div class="about__image-placeholder">&#x1F916;</div>
         </div>
       </div>
     </div>
@@ -341,34 +424,34 @@
   <!-- PROJECTS -->
   <section class="section" id="projects">
     <div class="container">
-      <span class="section-label">Projekte</span>
-      <h2 class="section-title">Meine Arbeit</h2>
-      <p class="section-subtitle">Hier sind einige Projekte, an denen ich gearbeitet habe.</p>
+      <span class="section-label">Features</span>
+      <h2 class="section-title">Was dir zur Verfügung steht</h2>
+      <p class="section-subtitle">Mit Arena AI hast du Zugriff auf folgende Funktionen.</p>
       <div class="projects__grid" style="margin-top:40px">
         <div class="project-card">
-          <div class="project-card__icon">&#x1F310;</div>
-          <h3 class="project-card__title">Webseite</h3>
-          <p class="project-card__desc">Moderne, responsive Webseite mit Dark-Theme und interaktiven Elementen.</p>
+          <div class="project-card__icon">&#x1F4AC;</div>
+          <h3 class="project-card__title">KI Chat</h3>
+          <p class="project-card__desc">Moderne KI-Chats mit fortschrittlichen Sprachmodellen. Stelle Fragen, lass dir Texte schreiben und vieles mehr.</p>
           <div class="project-card__tags">
-            <span class="project-card__tag">HTML/CSS</span>
-            <span class="project-card__tag">JavaScript</span>
+            <span class="project-card__tag">Chat</span>
+            <span class="project-card__tag">GPT</span>
           </div>
         </div>
         <div class="project-card">
-          <div class="project-card__icon">&#x1F4F1;</div>
-          <h3 class="project-card__title">App Entwicklung</h3>
-          <p class="project-card__desc">Entwicklung von benutzerfreundlichen Apps mit modernen Technologien.</p>
+          <div class="project-card__icon">&#x1F5BC;&#xFE0F;</div>
+          <h3 class="project-card__title">Bildgenerierung</h3>
+          <p class="project-card__desc">Erstelle beeindruckende Bilder mit KI – fotorealistisch, kreativ und in Sekundenschnelle.</p>
           <div class="project-card__tags">
-            <span class="project-card__tag">Web App</span>
-            <span class="project-card__tag">Mobile</span>
+            <span class="project-card__tag">Image Gen</span>
+            <span class="project-card__tag">AI Art</span>
           </div>
         </div>
         <div class="project-card">
-          <div class="project-card__icon">&#x1F3A8;</div>
-          <h3 class="project-card__title">Creative Tools</h3>
-          <p class="project-card__desc">Kreative digitale Tools und Lösungen für Content-Erstellung und Design.</p>
+          <div class="project-card__icon">&#x1F3A5;</div>
+          <h3 class="project-card__title">Video & Mehr</h3>
+          <p class="project-card__desc">Zusätzliche KI-Funktionen für Videos, Code, Analyse und kreative Projekte.</p>
           <div class="project-card__tags">
-            <span class="project-card__tag">Design</span>
+            <span class="project-card__tag">Video</span>
             <span class="project-card__tag">Tools</span>
           </div>
         </div>
@@ -376,16 +459,16 @@
     </div>
   </section>
 
-  <!-- FOOTER / CONTACT -->
+  <!-- FOOTER -->
   <footer class="footer" id="contact">
     <div class="container">
       <div class="footer__links">
+        <a href="https://arena.ai" target="_blank">Arena AI</a>
         <a href="https://github.com/yazeedmustafa57-bit" target="_blank">GitHub</a>
-        <a href="mailto:yazeed@example.com">E-Mail</a>
         <a href="#about">Über mich</a>
       </div>
       <div class="footer__copy">
-        &copy; <span id="year"></span> Yazeed. Alle Rechte vorbehalten.
+        &copy; <span id="year"></span> Yazeed – Arena AI Plattform. Alle Rechte vorbehalten.
       </div>
     </div>
   </footer>
@@ -395,6 +478,60 @@
     const nav = document.getElementById('nav');
     window.addEventListener('scroll', () => {
       nav.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // Arena AI Login Funktion
+    function loginToArena() {
+      const iframe = document.getElementById('arenaFrame');
+      iframe.src = 'https://arena.ai';
+      
+      // Nach dem Laden versuchen, Login-Daten auszufüllen
+      iframe.onload = function() {
+        try {
+          iframe.contentWindow.postMessage({
+            type: 'login',
+            email: 'yovin77861@synsky.com',
+            password: '333221Akon53@'
+          }, 'https://arena.ai');
+        } catch(e) {
+          console.log('Iframe Login nicht möglich, öffne im neuen Tab');
+        }
+      };
+
+      // Fallback nach 3 Sekunden wenn iFrame blockiert wird
+      setTimeout(() => {
+        // Prüfen ob der iframe geladen wurde
+        const doc = iframe.contentDocument || iframe.contentWindow?.document;
+        if (!doc || doc.body.innerHTML === '' || doc.body.innerHTML.includes('ablehnen')) {
+          document.getElementById('fallback').style.display = 'block';
+          iframe.style.display = 'none';
+        }
+      }, 3000);
+    }
+
+    // Direkt zu Arena AI mit Auto-Login
+    function autoFillLogin() {
+      // Speichert die Login-Daten für das Ausfüllen auf arena.ai
+      // Beim Öffnen von arena.ai kannst du dich mit folgenden Daten anmelden:
+      // E-Mail: yovin77861@synsky.com
+      // Passwort: 333221Akon53@
+      
+      // Optional: Login-Daten in die Zwischenablage kopieren
+      navigator.clipboard.writeText('yovin77861@synsky.com').catch(() => {});
+      
+      // Hinweis für den Benutzer
+      alert('Login-Daten wurden bereitgestellt.\n\nE-Mail: yovin77861@synsky.com\nPasswort: 333221Akon53@\n\nKopiert für schnelles Einfügen!');
+    }
+
+    // Gespeicherte Login-Daten (nur für Yazeed)
+    const ARENA_CREDENTIALS = {
+      email: 'yovin77861@synsky.com',
+      password: '333221Akon53@'
+    };
+
+    // Wenn die Seite lädt, Arena direkt im iFrame öffnen
+    window.addEventListener('load', () => {
+      setTimeout(loginToArena, 1000);
     });
 
     // Stat counter animation
@@ -425,7 +562,6 @@
     const statsSection = document.querySelector('.stats');
     if (statsSection) observer.observe(statsSection);
 
-    // Year
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
