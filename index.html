@@ -583,7 +583,7 @@
     const encoded = encodeURIComponent(fullPrompt.substring(0, 800));
     const timestamp = Date.now() + Math.floor(Math.random() * 10000);
     const imgUrl = 'https://image.pollinations.ai/prompt/' + encoded +
-      '?width=1024&height=1024&seed=' + timestamp + '&nologo=true&enhance=true&quality=high&negative_prompt=cartoon%2Cabstract%2Cillustration%2Cpainting%2Cdrawing%2Cartisticnegative_prompt=cartoon%2Cabstract%2Cillustration%2Cpainting%2Ccartoony';
+      '?width=1024&height=1024&seed=' + timestamp + '&nologo=true&negative_prompt=cartoon%2Cabstract%2Cillustration%2Cpainting%2Ccartoony';
 
     const img = new Image();
     let loaded = false;
