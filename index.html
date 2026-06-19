@@ -604,14 +604,20 @@
       addToHistory(prompt, img.src);
     };
 
+    // Debug
+    console.log('Loading image from:', imgUrl);
+    
     img.onerror = function() {
       if (loaded) return;
       loaded = true;
+      const debugInfo = 'URL: ' + imgUrl.substring(0, 80) + '...';
       result.innerHTML = '<div class="error">' +
         '⚠️ Bild konnte nicht geladen werden.<br>' +
         'Bitte versuche es erneut mit einer anderen Beschreibung.' +
+        '<br><br><small style="color:var(--text3)">🔍 ' + debugInfo + '</small>' +
         '<br><br><button class="retry-btn" onclick="generateImage()">🔄 Erneut versuchen</button>' +
         '</div>';
+      console.error('Image load failed:', debugInfo);
       btn.disabled = false;
       btn.textContent = '✨ Erneut versuchen';
     };
@@ -621,7 +627,7 @@
     img.alt = prompt;
     img.loading = 'eager';
 
-    // Timeout nach 35 Sekunden (bessere Qualität braucht länger)
+    // Timeout nach 30 Sekunden
     setTimeout(() => {
       if (!loaded) {
         loaded = true;
