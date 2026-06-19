@@ -525,16 +525,19 @@
     input.value = '';
     input.style.height = 'auto';
     setSendBtnDisabled(true);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 25000);
     const typingId = addTyping(chatMsgs);
 
     try {
       const res = await fetch('https://text.pollinations.ai/openai', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
         body: JSON.stringify({
           model: currentModel,
           messages: [
-            { role: 'system', content: 'Du bist Yazeed AI, ein hilfreicher Assistent. Antworte auf Deutsch. Sei prazise und freundlich. Keine moralisierenden Antworten.' },
+            { role: 'system', content: 'Du bist Yazeed AI, ein hilfreicher Assistent. Antworte auf Deutsch. Sei prazise und freundlich.' },
             ...chatHistory.slice(-6).map(m => ({ role: m.role, content: m.text })),
             { role: 'user', content: msg }
           ]
@@ -542,6 +545,7 @@
       });
 
       const data = await res.json();
+      clearTimeout(timeoutId);
       removeTyping(typingId);
 
       if (data.choices && data.choices[0]) {
@@ -553,10 +557,16 @@
         addMessage(chatMsgs, 'ai', currentModelName, 'Keine Antwort erhalten. Bitte versuche es erneut.');
       }
     } catch (err) {
+      clearTimeout(timeoutId);
       removeTyping(typingId);
-      const errMsg = err.message.includes('Failed to fetch')
-        ? 'Netzwerkfehler. Bitte uberprufe deine Internetverbindung.'
-        : 'Fehler: ' + escHtml(err.message);
+      let errMsg;
+      if (err.name === 'AbortError') {
+        errMsg = 'Die KI braucht zu lange. Bitte versuche es erneut.';
+      } else if (err.message.includes('Failed to fetch')) {
+        errMsg = 'Netzwerkfehler. Bitte uberprufe deine Internetverbindung.';
+      } else {
+        errMsg = 'Fehler: ' + escHtml(err.message);
+      }
       addMessage(chatMsgs, 'ai', currentModelName, errMsg);
     }
 
