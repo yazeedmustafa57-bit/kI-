@@ -133,6 +133,8 @@
     .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
     .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
     @keyframes dotPulse { 0%,80%,100% { opacity: 0.3; } 40% { opacity: 1; } }
+  .cursor-blink { animation: blink 0.8s infinite; color: var(--primary); font-weight: 300; }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
 
     .welcome {
       flex: 1; display: flex; flex-direction: column;
@@ -498,7 +500,6 @@
   // CHAT – KOSTENLOS, KEIN API-KEY
   // =============================================
   async function sendMessage(isImageRequest) {
-  // isImageRequest: true when called from image tab
     const input = document.getElementById('chatInput');
     const msg = input.value.trim();
     if (!msg) return;
@@ -524,7 +525,14 @@
     input.value = '';
     input.style.height = 'auto';
     setSendBtnDisabled(true);
-    const typingId = addTyping(chatMsgs);
+
+    // Streaming: Text erscheint wahrend die KI schreibt
+    const msgDiv = document.createElement('div');
+    msgDiv.className = 'message';
+    msgDiv.innerHTML = '<div class="message-avatar" style="background:#6366f1">AI</div><div class="message-content"><div class="message-name">' + escHtml(currentModelName) + '</div><div class="message-text" id="streamText"><span style="color:var(--text3)">\u23f3 Schreibt...</span></div><div class="message-time">' + getTime() + '</div></div>';
+    chatMsgs.appendChild(msgDiv);
+    chatMsgs.scrollTop = chatMsgs.scrollHeight;
+    const streamEl = document.getElementById('streamText');
 
     try {
       const res = await fetch('https://text.pollinations.ai/openai', {
@@ -532,44 +540,89 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: currentModel,
+          stream: true,
           messages: [
-            {
-              role: 'system',
-              content: 'Du bist Yazeed AI, ein professioneller, hilfreicher KI-Assistent. ' +
-                'Antworte immer auf Deutsch. Sei präzise, freundlich und professionell. ' +
-                'Formatiere Antworten sauber: **fett** für Wichtiges, `code` für Code, --- für Trennlinien. ' +
-                'Nutze Aufzählungspunkte für Listen. Gib bei Code immer die Sprache an (z.B. ```html). ' +
-                'Wenn du dir unsicher bist, sag es ehrlich. Keine moralisierenden Antworten.'
-            },
-            ...chatHistory.slice(-20).map(m => ({ role: m.role, content: m.text })),
+            { role: 'system', content: 'Du bist Yazeed AI, ein hilfreicher Assistent. Antworte auf Deutsch. Sei prazise und freundlich. Formatiere mit **fett** fur Wichtiges und code fur Code.' },
+            ...chatHistory.slice(-10).map(m => ({ role: m.role, content: m.text })),
             { role: 'user', content: msg }
           ]
         })
       });
 
-      const data = await res.json();
-      removeTyping(typingId);
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || 'HTTP ' + res.status);
+      }
 
-      if (data.choices && data.choices[0]) {
-        const aiText = data.choices[0].message.content;
-        const formatted = formatResponse(aiText);
-        addMessage(chatMsgs, 'ai', currentModelName, formatted);
-        chatHistory.push({ role: 'user', text: msg }, { role: 'assistant', text: aiText });
-        if (chatHistory.length > 100) chatHistory = chatHistory.slice(-100);
+      // Stream als Text lesen (SSE)
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let fullText = '';
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (trimmed.startsWith('data: ')) {
+            const data = trimmed.slice(6);
+            if (data === '[DONE]') continue;
+            try {
+              const parsed = JSON.parse(data);
+              const content = parsed.choices?.[0]?.delta?.content || '';
+              if (content) {
+                fullText += content;
+                streamEl.innerHTML = formatResponse(fullText) + '<span class="cursor-blink">|</span>';
+                chatMsgs.scrollTop = chatMsgs.scrollHeight;
+              }
+            } catch (e) {}
+          }
+        }
+      }
+
+      if (fullText) {
+        streamEl.innerHTML = formatResponse(fullText);
+        chatHistory.push({ role: 'user', text: msg }, { role: 'assistant', text: fullText });
+        if (chatHistory.length > 80) chatHistory = chatHistory.slice(-80);
       } else {
-        addMessage(chatMsgs, 'ai', currentModelName, '⚠️ Keine Antwort erhalten.<br>Bitte versuche es erneut.');
+        // Fallback: ohne Streaming versuchen
+        const res2 = await fetch('https://text.pollinations.ai/openai', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: currentModel,
+            messages: [
+              { role: 'system', content: 'Du bist Yazeed AI, ein hilfreicher Assistent. Antworte auf Deutsch.' },
+              ...chatHistory.slice(-10).map(m => ({ role: m.role, content: m.text })),
+              { role: 'user', content: msg }
+            ]
+          })
+        });
+        const data2 = await res2.json();
+        if (data2.choices?.[0]) {
+          fullText = data2.choices[0].message.content;
+          streamEl.innerHTML = formatResponse(fullText);
+          chatHistory.push({ role: 'user', text: msg }, { role: 'assistant', text: fullText });
+        } else {
+          streamEl.innerHTML = '\u26a0\ufe0f Keine Antwort erhalten. Bitte versuche es erneut.';
+        }
       }
     } catch (err) {
-      removeTyping(typingId);
       const errMsg = err.message.includes('Failed to fetch')
-        ? '⚠️ **Netzwerkfehler.**<br>Bitte überprüfe deine Internetverbindung.'
-        : '⚠️ **Fehler:** ' + escHtml(err.message);
-      addMessage(chatMsgs, 'ai', currentModelName, errMsg);
+        ? '\u26a0\ufe0f <strong>Netzwerkfehler.</strong><br>Bitte uberprufe deine Internetverbindung.'
+        : '\u26a0\ufe0f <strong>Fehler:</strong> ' + escHtml(err.message);
+      streamEl.innerHTML = errMsg;
     }
 
     setSendBtnDisabled(false);
     chatMsgs.scrollTop = chatMsgs.scrollHeight;
   }
+
 
   // =============================================
   // BILD – FOTOREALISTISCH, KOSTENLOS
