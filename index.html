@@ -525,15 +525,19 @@
     input.value = '';
     input.style.height = 'auto';
     setSendBtnDisabled(true);
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 25000);
+    // Timeout und Signal (fuer moderne Browser)
+    let controller, timeoutId;
+    if (typeof AbortController !== 'undefined') {
+      controller = new AbortController();
+      timeoutId = setTimeout(() => controller.abort(), 25000);
+    }
     const typingId = addTyping(chatMsgs);
 
     try {
       const res = await fetch('https://text.pollinations.ai/openai', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        signal: controller.signal,
+        signal: controller ? controller.signal : undefined,
         body: JSON.stringify({
           model: currentModel,
           messages: [
@@ -545,7 +549,7 @@
       });
 
       const data = await res.json();
-      clearTimeout(timeoutId);
+      if (timeoutId) clearTimeout(timeoutId);
       removeTyping(typingId);
 
       if (data.choices && data.choices[0]) {
@@ -557,7 +561,7 @@
         addMessage(chatMsgs, 'ai', currentModelName, 'Keine Antwort erhalten. Bitte versuche es erneut.');
       }
     } catch (err) {
-      clearTimeout(timeoutId);
+      if (timeoutId) clearTimeout(timeoutId);
       removeTyping(typingId);
       let errMsg;
       if (err.name === 'AbortError') {
