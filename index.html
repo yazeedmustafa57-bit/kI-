@@ -3,15 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Yazeed – AI Innovation</title>
-  <meta name="description" content="Yazeed – Building the future of AI-powered content generation with GeminiGen AI.">
+  <title>Yazeed – Portfolio</title>
+  <meta name="description" content="Yazeed – Persönliche Portfolio-Seite. Creator & Developer.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    /* ============================================
-       CSS CUSTOM PROPERTIES – Design System
-       ============================================ */
     :root {
       --color-bg: #0a0a0f;
       --color-bg-elevated: #12121a;
@@ -27,13 +24,9 @@
       --color-text: #f1f5f9;
       --color-text-secondary: #94a3b8;
       --color-text-muted: #64748b;
-      --color-success: #10b981;
-      --color-warning: #f59e0b;
       --gradient-hero: linear-gradient(135deg, #0a0a0f 0%, #12121a 50%, #1a1a2e 100%);
       --gradient-primary: linear-gradient(135deg, #6366f1, #06b6d4);
-      --gradient-primary-reverse: linear-gradient(135deg, #06b6d4, #6366f1);
       --gradient-text: linear-gradient(135deg, #f1f5f9 0%, #818cf8 50%, #22d3ee 100%);
-      --gradient-card-border: linear-gradient(135deg, rgba(99,102,241,0.5), rgba(6,182,212,0.5));
       --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
       --radius-sm: 8px;
@@ -47,21 +40,8 @@
       --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* ============================================
-       RESET & BASE
-       ============================================ */
-    *, *::before, *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-      scrollbar-width: thin;
-      scrollbar-color: var(--color-primary) transparent;
-    }
-
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--color-primary) transparent; }
     body {
       font-family: var(--font-sans);
       background: var(--color-bg);
@@ -69,3053 +49,383 @@
       line-height: 1.6;
       overflow-x: hidden;
     }
+    ::selection { background: var(--color-primary); color: white; }
 
-    ::selection {
-      background: var(--color-primary);
-      color: white;
-    }
-
-    /* ============================================
-       ANIMATED BACKGROUND
-       ============================================ */
     .bg-grid {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image:
-        linear-gradient(rgba(99,102,241,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(99,102,241,0.03) 1px, transparent 1px);
-      background-size: 60px 60px;
-      z-index: 0;
-      pointer-events: none;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background-image: linear-gradient(rgba(99,102,241,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(99,102,241,0.03) 1px, transparent 1px);
+      background-size: 60px 60px; z-index: 0; pointer-events: none;
     }
-
     .bg-orb {
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(100px);
-      pointer-events: none;
-      z-index: 0;
+      position: fixed; border-radius: 50%; filter: blur(100px); pointer-events: none; z-index: 0;
     }
-
-    .bg-orb--1 {
-      width: 600px;
-      height: 600px;
-      background: rgba(99,102,241,0.08);
-      top: -200px;
-      right: -200px;
-      animation: orbFloat 20s ease-in-out infinite;
-    }
-
-    .bg-orb--2 {
-      width: 400px;
-      height: 400px;
-      background: rgba(6,182,212,0.06);
-      bottom: -100px;
-      left: -100px;
-      animation: orbFloat 25s ease-in-out infinite reverse;
-    }
-
-    .bg-orb--3 {
-      width: 300px;
-      height: 300px;
-      background: rgba(99,102,241,0.05);
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      animation: orbFloat 18s ease-in-out infinite 5s;
-    }
-
+    .bg-orb--1 { width: 600px; height: 600px; background: rgba(99,102,241,0.08); top: -200px; right: -200px; animation: orbFloat 20s ease-in-out infinite; }
+    .bg-orb--2 { width: 400px; height: 400px; background: rgba(6,182,212,0.06); bottom: -100px; left: -100px; animation: orbFloat 25s ease-in-out infinite reverse; }
+    .bg-orb--3 { width: 300px; height: 300px; background: rgba(99,102,241,0.05); top: 50%; left: 50%; transform: translate(-50%, -50%); animation: orbFloat 18s ease-in-out infinite 5s; }
     @keyframes orbFloat {
       0%, 100% { transform: translate(0, 0) scale(1); }
       33% { transform: translate(30px, -30px) scale(1.05); }
       66% { transform: translate(-20px, 20px) scale(0.95); }
     }
 
-    /* ============================================
-       UTILITY
-       ============================================ */
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 24px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .section {
-      padding: 100px 0;
-      position: relative;
-    }
-
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+    .section { padding: 100px 0; position: relative; }
     .section-label {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      color: var(--color-primary-light);
-      margin-bottom: 12px;
-      display: block;
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.15em; color: var(--color-primary-light); margin-bottom: 12px; display: block;
     }
-
     .section-title {
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 800;
-      line-height: 1.15;
-      margin-bottom: 16px;
-      background: var(--gradient-text);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; line-height: 1.15; margin-bottom: 16px;
+      background: var(--gradient-text); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
-
     .section-subtitle {
-      font-size: 1.1rem;
-      color: var(--color-text-secondary);
-      max-width: 600px;
-      line-height: 1.7;
+      font-size: 1.1rem; color: var(--color-text-secondary); max-width: 600px; line-height: 1.7;
     }
 
-    /* ============================================
-       NAVIGATION
-       ============================================ */
+    /* NAVIGATION */
     .nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 1000;
-      padding: 16px 0;
-      transition: var(--transition);
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+      padding: 16px 0; transition: var(--transition);
     }
-
     .nav.scrolled {
-      background: rgba(10, 10, 15, 0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--color-border);
-      padding: 10px 0;
+      background: rgba(10, 10, 15, 0.85); backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--color-border); padding: 10px 0;
     }
-
     .nav__inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding: 0 24px;
     }
-
     .nav__logo {
-      font-size: 1.25rem;
-      font-weight: 800;
-      color: var(--color-text);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      font-size: 1.4rem; font-weight: 800; color: var(--color-text);
+      text-decoration: none; display: flex; align-items: center; gap: 10px;
     }
-
     .nav__logo-icon {
-      width: 32px;
-      height: 32px;
-      background: var(--gradient-primary);
-      border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      font-size: 0.85rem;
-      color: white;
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--gradient-primary); display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 1.1rem; color: white;
     }
-
-    .nav__logo span {
-      background: var(--gradient-text);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+    .nav__links { display: flex; align-items: center; gap: 32px; list-style: none; }
+    .nav__links a {
+      color: var(--color-text-secondary); text-decoration: none; font-size: 0.9rem;
+      font-weight: 500; transition: var(--transition); position: relative;
     }
-
-    .nav__links {
-      display: flex;
-      align-items: center;
-      gap: 32px;
-      list-style: none;
+    .nav__links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px;
+      background: var(--gradient-primary); transition: var(--transition); border-radius: 2px;
     }
-
-    .nav__link {
-      color: var(--color-text-secondary);
-      text-decoration: none;
-      font-size: 0.875rem;
-      font-weight: 500;
-      transition: var(--transition);
-      position: relative;
-    }
-
-    .nav__link::after {
-      content: '';
-      position: absolute;
-      bottom: -4px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: var(--gradient-primary);
-      transition: var(--transition);
-      border-radius: 2px;
-    }
-
-    .nav__link:hover {
-      color: var(--color-text);
-    }
-
-    .nav__link:hover::after {
-      width: 100%;
-    }
-
+    .nav__links a:hover { color: var(--color-text); }
+    .nav__links a:hover::after { width: 100%; }
     .nav__cta {
-      padding: 10px 24px;
-      background: var(--gradient-primary);
-      color: white;
-      border-radius: 100px;
-      font-weight: 600;
-      font-size: 0.875rem;
-      text-decoration: none;
-      transition: var(--transition);
+      background: var(--gradient-primary); color: white !important; padding: 10px 24px;
+      border-radius: 50px; font-weight: 600; border: none; cursor: pointer; transition: var(--transition);
     }
+    .nav__cta::after { display: none !important; }
+    .nav__cta:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(99,102,241,0.3); }
 
-    .nav__cta:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(99,102,241,0.3);
-    }
-
-    .nav__mobile-toggle {
-      display: none;
-      background: none;
-      border: none;
-      color: var(--color-text);
-      cursor: pointer;
-      padding: 8px;
-    }
-
-    /* ============================================
-       HERO
-       ============================================ */
+    /* HERO */
     .hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      position: relative;
-      padding-top: 80px;
-      overflow: hidden;
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 120px 0 80px; position: relative; overflow: hidden;
     }
-
-    .hero__content {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      align-items: center;
+    .hero__inner {
+      text-align: center; max-width: 800px; margin: 0 auto;
     }
-
     .hero__badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 16px;
-      background: rgba(99,102,241,0.1);
-      border: 1px solid rgba(99,102,241,0.2);
-      border-radius: 100px;
-      font-size: 0.8rem;
-      color: var(--color-primary-light);
-      font-weight: 500;
-      margin-bottom: 24px;
+      display: inline-block; padding: 8px 20px; border-radius: 50px;
+      background: rgba(99,102,241,0.1); border: 1px solid var(--color-border);
+      font-size: 0.85rem; color: var(--color-primary-light); margin-bottom: 24px; font-weight: 500;
     }
-
-    .hero__badge-dot {
-      width: 6px;
-      height: 6px;
-      background: var(--color-success);
-      border-radius: 50%;
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.8); }
-    }
-
     .hero__title {
-      font-size: clamp(2.8rem, 6vw, 4.5rem);
-      font-weight: 900;
-      line-height: 1.05;
-      margin-bottom: 20px;
-      letter-spacing: -0.02em;
+      font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900; line-height: 1.1; margin-bottom: 24px;
     }
-
-    .hero__title-line {
-      display: block;
-    }
-
-    .hero__title-line--gradient {
-      background: var(--gradient-text);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
+    .hero__title-line { display: block; }
     .hero__title-line--accent {
-      color: var(--color-text);
+      background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
-
-    .hero__description {
-      font-size: 1.1rem;
-      color: var(--color-text-secondary);
-      max-width: 520px;
-      line-height: 1.8;
-      margin-bottom: 36px;
+    .hero__subtitle {
+      font-size: 1.15rem; color: var(--color-text-secondary); max-width: 600px;
+      margin: 0 auto 40px; line-height: 1.8;
     }
-
-    .hero__actions {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
+    .hero__actions { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; }
+    .hero__btn {
+      padding: 14px 32px; border-radius: 50px; font-size: 0.95rem; font-weight: 600;
+      cursor: pointer; transition: var(--transition); border: none; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
     }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 14px 32px;
-      border-radius: 100px;
-      font-weight: 600;
-      font-size: 0.95rem;
-      text-decoration: none;
-      transition: var(--transition);
-      cursor: pointer;
-      border: none;
+    .hero__btn--primary {
+      background: var(--gradient-primary); color: white;
     }
-
-    .btn--primary {
-      background: var(--gradient-primary);
-      color: white;
+    .hero__btn--primary:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(99,102,241,0.35); }
+    .hero__btn--secondary {
+      background: transparent; color: var(--color-text); border: 1px solid var(--color-border);
     }
+    .hero__btn--secondary:hover { border-color: var(--color-primary); background: rgba(99,102,241,0.05); }
 
-    .btn--primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 40px rgba(99,102,241,0.35);
-    }
-
-    .btn--secondary {
-      background: transparent;
-      color: var(--color-text);
-      border: 1px solid var(--color-border);
-    }
-
-    .btn--secondary:hover {
-      background: rgba(99,102,241,0.08);
-      border-color: var(--color-border-hover);
-      transform: translateY(-2px);
-    }
-
-    .btn--small {
-      padding: 10px 20px;
-      font-size: 0.85rem;
-    }
-
-    /* Hero right – Code Window */
-    .hero__code-window {
-      background: var(--color-bg-elevated);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      box-shadow: var(--shadow-lg), var(--shadow-glow);
-    }
-
-    .code-window__header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 14px 20px;
-      background: rgba(255,255,255,0.02);
-      border-bottom: 1px solid var(--color-border);
-    }
-
-    .code-window__dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-    }
-
-    .code-window__dot--red { background: #ef4444; }
-    .code-window__dot--yellow { background: #eab308; }
-    .code-window__dot--green { background: #22c55e; }
-
-    .code-window__title {
-      margin-left: 8px;
-      font-size: 0.8rem;
-      color: var(--color-text-muted);
-      font-family: var(--font-mono);
-    }
-
-    .code-window__body {
-      padding: 24px;
-      font-family: var(--font-mono);
-      font-size: 0.82rem;
-      line-height: 1.8;
-      color: var(--color-text-secondary);
-    }
-
-    .code-window__body .keyword { color: #818cf8; }
-    .code-window__body .function { color: #22d3ee; }
-    .code-window__body .string { color: #10b981; }
-    .code-window__body .comment { color: #64748b; font-style: italic; }
-    .code-window__body .variable { color: #f59e0b; }
-
-    /* ============================================
-       STATS BANNER
-       ============================================ */
-    .stats {
-      background: var(--color-bg-elevated);
-      border-top: 1px solid var(--color-border);
-      border-bottom: 1px solid var(--color-border);
-    }
-
+    /* STATS */
+    .stats { padding: 60px 0; border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); }
     .stats__grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1px;
-      background: var(--color-border);
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; max-width: 800px; margin: 0 auto;
     }
-
-    .stats__item {
-      padding: 40px 24px;
-      text-align: center;
-      background: var(--color-bg-elevated);
-    }
-
+    .stats__item { text-align: center; }
     .stats__number {
-      font-size: 2.5rem;
-      font-weight: 800;
-      background: var(--gradient-primary);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      line-height: 1.2;
+      font-size: 2.5rem; font-weight: 800;
+      background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
+    .stats__label { font-size: 0.85rem; color: var(--color-text-muted); margin-top: 4px; }
 
-    .stats__label {
-      font-size: 0.85rem;
-      color: var(--color-text-muted);
-      margin-top: 4px;
-    }
-
-    /* ============================================
-       ABOUT
-       ============================================ */
+    /* ABOUT */
+    .about { padding: 100px 0; }
     .about__grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      align-items: center;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
     }
-
-    .about__image-wrapper {
-      position: relative;
-    }
-
-    .about__image-glow {
-      position: absolute;
-      width: 300px;
-      height: 300px;
-      background: rgba(99,102,241,0.1);
-      border-radius: 50%;
-      filter: blur(80px);
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 0;
-    }
-
-    .about__image-card {
-      position: relative;
-      z-index: 1;
-      background: var(--color-bg-card);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg);
-      padding: 40px;
-      text-align: center;
-    }
-
     .about__avatar {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      background: var(--gradient-primary);
-      margin: 0 auto 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3rem;
-      font-weight: 800;
-      color: white;
-      box-shadow: 0 0 40px rgba(99,102,241,0.3);
+      width: 120px; height: 120px; border-radius: 50%;
+      background: var(--gradient-primary); display: flex; align-items: center; justify-content: center;
+      font-size: 3rem; font-weight: 800; color: white; margin-bottom: 20px;
     }
-
-    .about__name {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-
-    .about__role {
-      color: var(--color-primary-light);
-      font-size: 0.9rem;
-      margin-bottom: 20px;
-    }
-
-    .about__tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      justify-content: center;
-    }
-
+    .about__role { font-size: 1.1rem; font-weight: 600; color: var(--color-primary-light); margin-bottom: 8px; }
+    .about__tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
     .about__tag {
-      padding: 4px 14px;
-      background: rgba(99,102,241,0.1);
-      border: 1px solid rgba(99,102,241,0.15);
-      border-radius: 100px;
-      font-size: 0.75rem;
-      color: var(--color-text-secondary);
+      padding: 4px 14px; border-radius: 50px; background: rgba(99,102,241,0.1);
+      border: 1px solid var(--color-border); font-size: 0.8rem; color: var(--color-text-secondary);
+    }
+    .about__text { font-size: 1rem; color: var(--color-text-secondary); line-height: 1.8; }
+    .about__image {
+      width: 100%; border-radius: var(--radius-lg);
+      background: var(--color-bg-card); aspect-ratio: 4/3;
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid var(--color-border); overflow: hidden;
+    }
+    .about__image-placeholder {
+      font-size: 6rem; opacity: 0.3;
     }
 
-    .about__text p {
-      color: var(--color-text-secondary);
-      font-size: 1.05rem;
-      line-height: 1.8;
-      margin-bottom: 16px;
-    }
-
-    /* ============================================
-       PROJECTS / PLATFORM SHOWCASE
-       ============================================ */
-    .projects__header {
-      text-align: center;
-      margin-bottom: 60px;
-    }
-
-    .projects__header .section-subtitle {
-      margin: 0 auto;
-    }
-
+    /* PROJECTS */
     .projects__grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-      gap: 24px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px;
     }
-
     .project-card {
-      background: var(--color-bg-card);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-md);
-      padding: 32px;
-      transition: var(--transition);
-      position: relative;
-      overflow: hidden;
+      background: var(--color-bg-card); border-radius: var(--radius-md);
+      padding: 32px; border: 1px solid var(--color-border);
+      transition: var(--transition); position: relative; overflow: hidden;
     }
-
-    .project-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: var(--gradient-card-border);
-      opacity: 0;
-      transition: var(--transition);
-    }
-
     .project-card:hover {
-      border-color: var(--color-border-hover);
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-md);
+      border-color: var(--color-border-hover); transform: translateY(-4px);
+      box-shadow: var(--shadow-glow);
     }
-
-    .project-card:hover::before {
-      opacity: 1;
-    }
-
     .project-card__icon {
-      width: 48px;
-      height: 48px;
-      border-radius: var(--radius-sm);
-      background: rgba(99,102,241,0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      margin-bottom: 20px;
+      font-size: 2rem; margin-bottom: 16px;
     }
-
     .project-card__title {
-      font-size: 1.15rem;
-      font-weight: 700;
-      margin-bottom: 8px;
+      font-size: 1.2rem; font-weight: 700; margin-bottom: 12px; color: var(--color-text);
     }
-
-    .project-card__description {
-      font-size: 0.9rem;
-      color: var(--color-text-secondary);
-      line-height: 1.7;
-      margin-bottom: 16px;
+    .project-card__desc {
+      font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.7; margin-bottom: 16px;
     }
-
-    .project-card__link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--color-primary-light);
-      text-decoration: none;
-      font-size: 0.875rem;
-      font-weight: 500;
-      transition: var(--transition);
-    }
-
-    .project-card__link:hover {
-      gap: 10px;
-      color: var(--color-accent-light);
-    }
-
-    .project-card__tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 16px;
-    }
-
+    .project-card__tags { display: flex; gap: 6px; flex-wrap: wrap; }
     .project-card__tag {
-      padding: 3px 10px;
-      background: rgba(6,182,212,0.08);
-      border: 1px solid rgba(6,182,212,0.12);
-      border-radius: 100px;
-      font-size: 0.7rem;
-      color: var(--color-accent-light);
+      padding: 3px 10px; border-radius: 50px; font-size: 0.7rem;
+      background: rgba(99,102,241,0.1); color: var(--color-primary-light);
+      border: 1px solid rgba(99,102,241,0.15);
     }
 
-    /* GeminiGen feature card */
-    .featured-card {
-      grid-column: 1 / -1;
-      background: var(--gradient-hero);
-      border: 1px solid rgba(99,102,241,0.2);
-      border-radius: var(--radius-lg);
-      padding: 48px;
-      display: grid;
-      grid-template-columns: 1.2fr 1fr;
-      gap: 40px;
-      align-items: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .featured-card::before {
-      content: '';
-      position: absolute;
-      width: 400px;
-      height: 400px;
-      background: rgba(99,102,241,0.05);
-      border-radius: 50%;
-      filter: blur(100px);
-      top: -100px;
-      right: -100px;
-    }
-
-    .featured-card__title {
-      font-size: 1.8rem;
-      font-weight: 800;
-      margin-bottom: 12px;
-    }
-
-    .featured-card__text {
-      color: var(--color-text-secondary);
-      line-height: 1.7;
-      margin-bottom: 24px;
-    }
-
-    .featured-card__stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    .featured-card__stat {
-      text-align: center;
-    }
-
-    .featured-card__stat-number {
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: var(--color-primary-light);
-    }
-
-    .featured-card__stat-label {
-      font-size: 0.75rem;
-      color: var(--color-text-muted);
-    }
-
-    .featured-card__badge-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .featured-card__badge {
-      padding: 6px 16px;
-      background: rgba(99,102,241,0.12);
-      border: 1px solid rgba(99,102,241,0.2);
-      border-radius: 100px;
-      font-size: 0.8rem;
-      color: var(--color-primary-light);
-      font-weight: 500;
-    }
-
-    /* ============================================
-       SKILLS
-       ============================================ */
-    .skills__grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 20px;
-    }
-
-    .skill-item {
-      background: var(--color-bg-card);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-md);
-      padding: 24px;
-      transition: var(--transition);
-    }
-
-    .skill-item:hover {
-      border-color: var(--color-border-hover);
-      transform: translateY(-2px);
-    }
-
-    .skill-item__header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    .skill-item__icon {
-      width: 40px;
-      height: 40px;
-      border-radius: var(--radius-sm);
-      background: rgba(99,102,241,0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      flex-shrink: 0;
-    }
-
-    .skill-item__name {
-      font-weight: 600;
-      font-size: 0.95rem;
-    }
-
-    .skill-item__bar {
-      width: 100%;
-      height: 4px;
-      background: rgba(99,102,241,0.08);
-      border-radius: 4px;
-      overflow: hidden;
-      margin-top: 8px;
-    }
-
-    .skill-item__bar-fill {
-      height: 100%;
-      background: var(--gradient-primary);
-      border-radius: 4px;
-      transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* ============================================
-       CONTACT
-       ============================================ */
-    .contact__inner {
-      text-align: center;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    .contact__actions {
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-top: 36px;
-    }
-
-    .contact__socials {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      margin-top: 32px;
-    }
-
-    .contact__social-link {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: var(--color-bg-card);
-      border: 1px solid var(--color-border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--color-text-secondary);
-      text-decoration: none;
-      font-size: 1.2rem;
-      transition: var(--transition);
-    }
-
-    .contact__social-link:hover {
-      background: rgba(99,102,241,0.1);
-      border-color: var(--color-primary);
-      color: var(--color-primary-light);
-      transform: translateY(-3px);
-    }
-
-    /* ============================================
-       FOOTER
-       ============================================ */
+    /* CONTACT / FOOTER */
     .footer {
-      padding: 32px 0;
-      border-top: 1px solid var(--color-border);
-      text-align: center;
+      border-top: 1px solid var(--color-border); padding: 40px 0; text-align: center;
     }
-
-    .footer__text {
-      font-size: 0.85rem;
-      color: var(--color-text-muted);
+    .footer__links { display: flex; justify-content: center; gap: 24px; margin-bottom: 20px; }
+    .footer__links a {
+      color: var(--color-text-secondary); text-decoration: none; font-size: 0.9rem;
+      transition: var(--transition);
     }
+    .footer__links a:hover { color: var(--color-primary-light); }
+    .footer__copy { font-size: 0.8rem; color: var(--color-text-muted); }
 
-    .footer__text a {
-      color: var(--color-primary-light);
-      text-decoration: none;
-    }
-
-    /* ============================================
-       RESPONSIVE
-       ============================================ */
-    @media (max-width: 1024px) {
-      .hero__content {
-        grid-template-columns: 1fr;
-        gap: 40px;
-      }
-
-      .hero__code-window {
-        max-width: 500px;
-        margin: 0 auto;
-      }
-
-      .about__grid {
-        grid-template-columns: 1fr;
-        gap: 40px;
-      }
-
-      .featured-card {
-        grid-template-columns: 1fr;
-        padding: 32px;
-      }
-
-      .stats__grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
+    /* RESPONSIVE */
     @media (max-width: 768px) {
-      .nav__links {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        background: rgba(10, 10, 15, 0.98);
-        backdrop-filter: blur(20px);
-        flex-direction: column;
-        padding: 24px;
-        gap: 20px;
-        border-bottom: 1px solid var(--color-border);
-      }
-
-      .nav__links.open {
-        display: flex;
-      }
-
-      .nav__mobile-toggle {
-        display: block;
-      }
-
-      .hero__title {
-        font-size: clamp(2rem, 10vw, 3rem);
-      }
-
-      .section {
-        padding: 60px 0;
-      }
-
-      .projects__grid {
-        grid-template-columns: 1fr;
-      }
-
-      .stats__grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .featured-card__stats {
-        grid-template-columns: repeat(3, 1fr);
-      }
+      .nav__links { display: none; }
+      .nav__links--open { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; width: 100%; background: rgba(10,10,15,0.95); backdrop-filter: blur(20px); padding: 24px; gap: 20px; border-bottom: 1px solid var(--color-border); }
+      .about__grid { grid-template-columns: 1fr; gap: 40px; }
+      .stats__grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+      .stats__number { font-size: 1.8rem; }
+      .hero { padding: 100px 0 60px; }
     }
-
-    /* ============================================
-       SPINNER
-       ============================================ */
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    /* ============================================
-       REVEAL ANIMATIONS
-       ============================================ */
-    .reveal {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
-                  transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .reveal-delay-1 { transition-delay: 0.1s; }
-    .reveal-delay-2 { transition-delay: 0.2s; }
-    .reveal-delay-3 { transition-delay: 0.3s; }
-    .reveal-delay-4 { transition-delay: 0.4s; }
-        /* ============================================
-       AI PLATFORM – Modern Chat Interface
-       ============================================ */
-    .ai-platform {
-      display: flex;
-      flex-direction: column;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 16px;
-      overflow: hidden;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-    .ai-toolbar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 20px;
-      background: rgba(255,255,255,0.02);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-    .ai-toolbar-title {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--color-text);
-      white-space: nowrap;
-    }
-    .ai-model-select {
-      flex: 1;
-      max-width: 260px;
-      padding: 8px 12px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 8px;
-      color: var(--color-text);
-      font-family: var(--font-sans);
-      font-size: 0.8rem;
-      cursor: pointer;
-      outline: none;
-      appearance: auto;
-    }
-    .ai-model-select:hover {
-      border-color: rgba(255,255,255,0.15);
-    }
-    .ai-model-select option {
-      background: #1a1a2e;
-      color: #f1f5f9;
-    }
-    .ai-model-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 12px;
-      background: rgba(16,185,129,0.1);
-      border: 1px solid rgba(16,185,129,0.15);
-      border-radius: 20px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      color: #10b981;
-      white-space: nowrap;
-    }
-    .ai-tabs {
-      display: flex;
-      gap: 4px;
-      padding: 8px 16px;
-      background: rgba(255,255,255,0.01);
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-      overflow-x: auto;
-    }
-    .ai-tab {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 16px;
-      background: transparent;
-      border: none;
-      border-radius: 8px;
-      color: var(--color-text-muted);
-      font-family: var(--font-sans);
-      font-size: 0.8rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-      white-space: nowrap;
-    }
-    .ai-tab:hover { color: var(--color-text); background: rgba(255,255,255,0.03); }
-    .ai-tab.active {
-      color: var(--color-text);
-      background: rgba(99,102,241,0.1);
-      box-shadow: inset 0 -2px 0 var(--color-primary);
-    }
-    .ai-tab .ai-tab-icon { font-size: 1rem; }
-    .ai-tab-label-short { display: none; }
-    .ai-panel {
-      display: none;
-      flex-direction: column;
-      padding: 20px;
-      min-height: 400px;
-      max-height: 540px;
-      overflow-y: auto;
-    }
-    .ai-panel.active { display: flex; }
-    .chat-messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 8px 4px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      min-height: 260px;
-      max-height: 340px;
-    }
-    .chat-messages::-webkit-scrollbar { width: 4px; }
-    .chat-messages::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 4px; }
-    .chat-msg {
-      display: flex;
-      flex-direction: column;
-      max-width: 80%;
-      padding: 10px 14px;
-      border-radius: 12px;
-      font-size: 0.85rem;
-      line-height: 1.6;
-      animation: msgIn 0.25s ease-out;
-    }
-    @keyframes msgIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    .chat-msg--user {
-      align-self: flex-end;
-      background: rgba(99,102,241,0.15);
-      border: 1px solid rgba(99,102,241,0.1);
-      border-bottom-right-radius: 4px;
-    }
-    .chat-msg--ai {
-      align-self: flex-start;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-bottom-left-radius: 4px;
-    }
-    .chat-msg--ai.loading { opacity: 0.5; }
-    .chat-msg .msg-label {
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 4px;
-    }
-    .chat-msg--user .msg-label { color: rgba(255,255,255,0.5); text-align: right; }
-    .chat-msg--ai .msg-label { color: var(--color-primary-light); }
-    .chat-msg pre {
-      background: rgba(0,0,0,0.2);
-      border-radius: 8px;
-      padding: 10px;
-      overflow-x: auto;
-      font-size: 0.78rem;
-      margin: 6px 0;
-    }
-    .chat-msg code.inline {
-      background: rgba(0,0,0,0.2);
-      padding: 1px 5px;
-      border-radius: 4px;
-      font-size: 0.78rem;
-      font-family: var(--font-mono);
-    }
-    .typing-dots { display: flex; gap: 4px; padding: 4px 0; }
-    .typing-dots span {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--color-primary-light);
-      animation: dotPulse 1.2s infinite;
-    }
-    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
-    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes dotPulse { 0%,60%,100% { opacity: 0.3; transform: scale(0.8); } 30% { opacity: 1; transform: scale(1); } }
-    .chat-input-area {
-      display: flex;
-      gap: 8px;
-      padding: 10px 0 0 0;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      margin-top: 8px;
-    }
-    .chat-input-area textarea {
-      flex: 1;
-      padding: 10px 14px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--color-border);
-      border-radius: 10px;
-      color: var(--color-text);
-      font-family: var(--font-sans);
-      font-size: 0.85rem;
-      resize: none;
-      outline: none;
-      line-height: 1.5;
-      min-height: 42px;
-      max-height: 120px;
-    }
-    .chat-input-area textarea:focus { border-color: rgba(99,102,241,0.3); }
-    .chat-input-area textarea::placeholder { color: var(--color-text-muted); }
-    .chat-send-btn {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 10px 20px;
-      background: linear-gradient(135deg, #6366f1, #06b6d4);
-      border: none;
-      border-radius: 10px;
-      color: white;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      white-space: nowrap;
-    }
-    .chat-send-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(99,102,241,0.3); }
-    .chat-send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
-    .chat-status {
-      font-size: 0.75rem;
-      color: var(--color-text-muted);
-      padding: 6px 0 0 0;
-    }
-    .image-generator { display: flex; flex-direction: column; gap: 12px; }
-    .image-prompt-row { display: flex; gap: 8px; }
-    .image-prompt-row input {
-      flex: 1;
-      padding: 10px 14px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--color-border);
-      border-radius: 10px;
-      color: var(--color-text);
-      font-family: var(--font-sans);
-      font-size: 0.85rem;
-      outline: none;
-    }
-    .image-prompt-row input:focus { border-color: rgba(99,102,241,0.3); }
-    .image-prompt-row input::placeholder { color: var(--color-text-muted); }
-    .image-generate-btn {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 10px 18px;
-      background: linear-gradient(135deg, #6366f1, #06b6d4);
-      border: none;
-      border-radius: 10px;
-      color: white;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .image-generate-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(99,102,241,0.3); }
-    .image-generate-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-    .image-style-row { display: flex; gap: 6px; flex-wrap: wrap; }
-    .style-chip {
-      padding: 5px 12px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--color-border);
-      border-radius: 20px;
-      font-size: 0.75rem;
-      color: var(--color-text-secondary);
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .style-chip:hover { border-color: var(--color-border-hover); color: var(--color-text); }
-    .style-chip.active {
-      background: rgba(99,102,241,0.1);
-      border-color: var(--color-primary);
-      color: var(--color-primary-light);
-    }
-    .image-canvas-wrapper {
-      width: 100%;
-      aspect-ratio: 640/400;
-      max-height: 400px;
-      background: rgba(0,0,0,0.2);
-      border-radius: 12px;
-      border: 1px solid var(--color-border);
-      overflow: hidden;
-    }
-    .image-canvas-wrapper canvas { width: 100%; height: 100%; display: block; }
-    .speech-section { display: flex; flex-direction: column; gap: 12px; }
-    .speech-section textarea {
-      width: 100%;
-      min-height: 100px;
-      padding: 12px 14px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--color-border);
-      border-radius: 10px;
-      color: var(--color-text);
-      font-family: var(--font-sans);
-      font-size: 0.85rem;
-      resize: vertical;
-      outline: none;
-    }
-    .speech-section textarea:focus { border-color: rgba(99,102,241,0.3); }
-    .speech-controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-    .speech-btn {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 14px;
-      background: var(--color-bg-card);
-      border: 1px solid var(--color-border);
-      border-radius: 8px;
-      color: var(--color-text);
-      font-family: var(--font-sans);
-      font-size: 0.8rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .speech-btn:hover { background: var(--color-bg-card-hover); }
-    .speech-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    .speech-btn--primary { background: linear-gradient(135deg, #6366f1, #06b6d4); border: none; color: white; }
-    .speech-btn--primary:hover { box-shadow: 0 4px 15px rgba(99,102,241,0.3); }
-    .speech-btn--mic { background: var(--color-bg-card); border: 1px solid var(--color-border); }
-    .speech-btn--mic:hover { border-color: var(--color-accent); }
-    .speech-btn--mic.listening { border-color: #ef4444; color: #ef4444; animation: pulse-mic 1s infinite; }
-    @keyframes pulse-mic { 0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); } 50% { box-shadow: 0 0 0 8px rgba(239,68,68,0); } }
-    .speech-voice-select {
-      padding: 8px 12px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--color-border);
-      border-radius: 8px;
-      color: var(--color-text);
-      font-family: var(--font-sans);
-      font-size: 0.8rem;
-      outline: none;
-      cursor: pointer;
-      max-width: 200px;
-    }
-    .speech-voice-select option { background: #1a1a2e; color: #f1f5f9; }
-    .speech-status { font-size: 0.78rem; color: var(--color-text-muted); }
-    .video-section { display: flex; flex-direction: column; gap: 12px; align-items: center; text-align: center; }
-    .video-section h3 { font-size: 1rem; font-weight: 600; margin: 0; }
-    .video-section p { font-size: 0.85rem; color: var(--color-text-secondary); max-width: 500px; }
-    .video-icon { font-size: 2.5rem; }
-    .video-input-row { display: flex; gap: 8px; width: 100%; max-width: 500px; }
-    .video-input-row input {
-      flex: 1;
-      padding: 10px 14px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--color-border);
-      border-radius: 10px;
-      color: var(--color-text);
-      font-family: var(--font-sans);
-      font-size: 0.85rem;
-      outline: none;
-    }
-    .video-input-row input:focus { border-color: rgba(99,102,241,0.3); }
-    .video-input-row input::placeholder { color: var(--color-text-muted); }
-    .video-gen-btn {
-      padding: 10px 18px;
-      background: linear-gradient(135deg, #6366f1, #06b6d4);
-      border: none;
-      border-radius: 10px;
-      color: white;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .video-gen-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(99,102,241,0.3); }
-    .video-gen-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-    .video-canvas-wrapper {
-      width: 100%;
-      max-width: 512px;
-      aspect-ratio: 512/320;
-      background: rgba(0,0,0,0.2);
-      border-radius: 12px;
-      border: 1px solid var(--color-border);
-      overflow: hidden;
-    }
-    .video-canvas-wrapper canvas { width: 100%; height: 100%; display: block; }
-    .video-controls { display: flex; gap: 8px; align-items: center; width: 100%; max-width: 512px; }
-    .video-play-btn {
-      padding: 8px 16px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--color-border);
-      border-radius: 8px;
-      color: var(--color-text);
-      font-size: 0.8rem;
-      cursor: pointer;
-    }
-    .video-play-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    .video-play-btn:hover:not(:disabled) { background: rgba(255,255,255,0.08); }
-    .video-status { font-size: 0.78rem; color: var(--color-text-muted); }
-    .ai-model-footer {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 20px;
-      background: rgba(255,255,255,0.01);
-      border-top: 1px solid rgba(255,255,255,0.04);
-      font-size: 0.7rem;
-      color: var(--color-text-muted);
-    }
-    .ai-model-footer .model-dot {
-      display: inline-block;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #10b981;
-      animation: dotGlow 2s infinite;
-    }
-    @keyframes dotGlow { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
-    .free-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
-      background: rgba(16,185,129,0.1);
-      border: 1px solid rgba(16,185,129,0.2);
-      border-radius: 20px;
-      color: #10b981;
-      font-size: 0.8rem;
-      font-weight: 600;
-    }
-    .free-badge svg { width: 14px; height: 14px; }
-    @media (max-width: 640px) {
-      .ai-tab { padding: 12px 14px; font-size: 0.78rem; min-width: 70px; }
-      .ai-tab .ai-tab-label { display: none; }
-      .ai-panel { padding: 16px; min-height: 400px; max-height: 520px; }
-      .chat-msg { max-width: 92%; }
-      .image-prompt-row { flex-direction: column; }
-      .image-generate-btn { width: 100%; justify-content: center; }
-    }
-    @media (min-width: 641px) {
-      .ai-tab .ai-tab-label-short { display: none; }
-    }
-
   </style>
 </head>
 <body>
-  <!-- Background Effects -->
   <div class="bg-grid"></div>
   <div class="bg-orb bg-orb--1"></div>
   <div class="bg-orb bg-orb--2"></div>
   <div class="bg-orb bg-orb--3"></div>
 
-  <!-- ==========================================
-       NAVIGATION
-       ========================================== -->
+  <!-- NAVIGATION -->
   <nav class="nav" id="nav">
-    <div class="container nav__inner">
+    <div class="nav__inner">
       <a href="#" class="nav__logo">
         <div class="nav__logo-icon">Y</div>
-        <span>Yazeed</span>
+        Yazeed
       </a>
       <ul class="nav__links" id="navLinks">
-        <li><a href="#about" class="nav__link">Über mich</a></li>
-        <li><a href="#projects" class="nav__link">Projekte</a></li>
-        <li><a href="#skills" class="nav__link">Skills</a></li>
-        <li><a href="#contact" class="nav__link">Kontakt</a></li>
-        <li><a href="#platform" class="nav__cta">GeminiGen AI</a></li>
+        <li><a href="#about">Über mich</a></li>
+        <li><a href="#projects">Projekte</a></li>
+        <li><a href="#contact" class="nav__cta">Kontakt</a></li>
       </ul>
-      <button class="nav__mobile-toggle" id="mobileToggle" aria-label="Menü">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <line x1="3" y1="6" x2="21" y2="6" id="menuLine1"/>
-          <line x1="3" y1="12" x2="21" y2="12" id="menuLine2"/>
-          <line x1="3" y1="18" x2="21" y2="18" id="menuLine3"/>
-        </svg>
-      </button>
     </div>
   </nav>
 
-  <!-- ==========================================
-       HERO
-       ========================================== -->
-  <section class="hero" id="hero">
+  <!-- HERO -->
+  <section class="hero">
     <div class="container">
-      <div class="hero__content">
-        <div class="hero__text">
-          <div class="hero__badge">
-            <span class="hero__badge-dot"></span>
-            Available for Projects
-          </div>
-          <h1 class="hero__title">
-            <span class="hero__title-line hero__title-line--accent">Hi, ich bin</span>
-            <span class="hero__title-line hero__title-line--gradient">Yazeed</span>
-            <span class="hero__title-line hero__title-line--accent">AI Creator & Developer</span>
-          </h1>
-          <p class="hero__description">
-            Ich baue die Zukunft der KI-gestützten Content-Erstellung. 
-            Als Gründer von <strong>GeminiGen AI</strong> entwickle ich 
-            Plattformen für Video-, Sprach- und Bildgenerierung – 
-            frei zugänglich für alle.
-          </p>
-          <div class="hero__actions">
-            <a href="#projects" class="btn btn--primary">
-              Projekte entdecken
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </a>
-            <a href="#contact" class="btn btn--secondary">Kontakt aufnehmen</a>
-          </div>
-        </div>
-        <div class="hero__code-window">
-          <div class="code-window__header">
-            <span class="code-window__dot code-window__dot--red"></span>
-            <span class="code-window__dot code-window__dot--yellow"></span>
-            <span class="code-window__dot code-window__dot--green"></span>
-            <span class="code-window__title">yazeed.sh</span>
-          </div>
-          <div class="code-window__body">
-            <span class="comment"># whoami</span><br>
-            <span class="variable">name</span>=<span class="string">"Yazeed"</span><br>
-            <span class="variable">role</span>=<span class="string">"AI Creator & Developer"</span><br>
-            <span class="variable">mission</span>=<span class="string">"Democratize AI content creation"</span><br><br>
-            <span class="comment"># platform</span><br>
-            <span class="variable">project</span>=<span class="keyword">new</span> <span class="function">Platform</span>({<br>
-            &nbsp;&nbsp;<span class="variable">name</span>: <span class="string">"GeminiGen AI"</span>,<br>
-            &nbsp;&nbsp;<span class="variable">tools</span>: [<span class="string">"Veo 3.1"</span>, <span class="string">"Sora 2"</span>, <span class="string">"Grok"</span>, <span class="string">"Imagen"</span>],<br>
-            &nbsp;&nbsp;<span class="variable">free</span>: <span class="keyword">true</span><br>
-            });<br><br>
-            <span class="comment"># status</span><br>
-            <span class="keyword">console</span>.<span class="function">log</span>(<span class="string">"🚀 Building the future"</span>);
-          </div>
+      <div class="hero__inner">
+        <div class="hero__badge">&#x1F44B; Willkommen auf meiner Seite</div>
+        <h1 class="hero__title">
+          <span class="hero__title-line">Hi, ich bin</span>
+          <span class="hero__title-line hero__title-line--accent">Yazeed</span>
+        </h1>
+        <p class="hero__subtitle">
+          Creator & Developer mit Leidenschaft für moderne Web-Technologien und digitale Produkte.
+          Ich entwickle Lösungen, die begeistern.
+        </p>
+        <div class="hero__actions">
+          <a href="#projects" class="hero__btn hero__btn--primary">&#x1F4BB; Meine Projekte</a>
+          <a href="#about" class="hero__btn hero__btn--secondary">&#x2193; Mehr erfahren</a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ==========================================
-       STATS
-       ========================================== -->
-  <section class="stats">
-    <div class="stats__grid">
-      <div class="stats__item reveal">
-        <div class="stats__number" data-target="50000">0</div>
-        <div class="stats__label">Active Users</div>
-      </div>
-      <div class="stats__item reveal reveal-delay-1">
-        <div class="stats__number" data-target="10">0</div>
-        <div class="stats__label">AI Models</div>
-      </div>
-      <div class="stats__item reveal reveal-delay-2">
-        <div class="stats__number" data-target="1000000">0</div>
-        <div class="stats__label">Generations</div>
-      </div>
-      <div class="stats__item reveal reveal-delay-3">
-        <div class="stats__number" data-target="100">0</div>
-        <div class="stats__label">% Free Access</div>
+  <!-- STATS -->
+  <div class="stats">
+    <div class="container">
+      <div class="stats__grid">
+        <div class="stats__item">
+          <div class="stats__number" data-target="5">0</div>
+          <div class="stats__label">Projekte</div>
+        </div>
+        <div class="stats__item">
+          <div class="stats__number" data-target="12">0</div>
+          <div class="stats__label">Tools & Apps</div>
+        </div>
+        <div class="stats__item">
+          <div class="stats__number" data-target="3">0</div>
+          <div class="stats__label">Jahre Erfahrung</div>
+        </div>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- ==========================================
-       ABOUT
-       ========================================== -->
-  <section class="section" id="about">
+  <!-- ABOUT -->
+  <section class="about" id="about">
     <div class="container">
       <div class="about__grid">
-        <div class="about__image-wrapper reveal">
-          <div class="about__image-glow"></div>
-          <div class="about__image-card">
-            <div class="about__avatar">Y</div>
-            <div class="about__name">Yazeed</div>
-            <div class="about__role">AI Creator & Developer</div>
-            <div class="about__tags">
-              <span class="about__tag">AI Engineering</span>
-              <span class="about__tag">Full-Stack</span>
-              <span class="about__tag">Product</span>
-              <span class="about__tag">Innovation</span>
-            </div>
+        <div>
+          <div class="about__avatar">Y</div>
+          <div class="about__role">Developer & Creator</div>
+          <div class="about__tags">
+            <span class="about__tag">Web Development</span>
+            <span class="about__tag">Design</span>
+            <span class="about__tag">Innovation</span>
           </div>
+          <p class="about__text">
+            Ich bin Yazeed – ein leidenschaftlicher Developer und Creator. 
+            Ich liebe es, moderne Web-Anwendungen zu bauen und digitale Erlebnisse zu schaffen, 
+            die Menschen begeistern. Mein Fokus liegt auf sauberem Code, 
+            durchdachtem Design und benutzerfreundlichen Lösungen.
+          </p>
         </div>
-        <div class="about__text reveal reveal-delay-1">
-          <span class="section-label">Über mich</span>
-          <h2 class="section-title">Leidenschaft für KI & Innovation</h2>
-          <p>
-            Ich bin Yazeed – ein AI Creator und Developer mit einer klaren Vision: 
-            KI-gestützte Content-Erstellung für jeden zugänglich zu machen. 
-            Mit <strong>GeminiGen AI</strong> habe ich eine Plattform geschaffen, 
-            die modernste KI-Modelle wie Veo 3.1, Sora 2, Grok und Imagen 
-            vereint und kostenlos zur Verfügung stellt.
-          </p>
-          <p>
-            Meine Reise begann mit der Faszination für künstliche Intelligenz 
-            und dem Wunsch, komplexe Technologie in einfache, leistungsstarke 
-            Tools zu verwandeln. Heute nutzen tausende Creators weltweit 
-            meine Plattform, um Videos, Sprache und Bilder zu generieren.
-          </p>
+        <div class="about__image">
+          <div class="about__image-placeholder">&#x1F4BB;</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ==========================================
-       PROJECTS
-       ========================================== -->
+  <!-- PROJECTS -->
   <section class="section" id="projects">
     <div class="container">
-      <div class="projects__header reveal">
-        <span class="section-label">Projekte</span>
-        <h2 class="section-title">Was ich erschaffe</h2>
-        <p class="section-subtitle">
-          Von KI-Plattformen bis zu kreativen Tools – hier sind meine 
-          wichtigsten Projekte.
-        </p>
-      </div>
-      <div class="projects__grid">
-        <!-- Featured: GeminiGen AI -->
-        <div class="featured-card reveal">
-          <div>
-            <span class="section-label">Featured Project</span>
-            <h3 class="featured-card__title">GeminiGen AI</h3>
-            <p class="featured-card__text">
-              Die führende Plattform für kostenlose KI-Video-, Sprach- und 
-              Bildgenerierung. Bietet Zugang zu Veo 3.1, Sora 2, Grok, 
-              Imagen und vielen weiteren Modellen – ohne versteckte Kosten.
-            </p>
-            <div class="featured-card__stats">
-              <div class="featured-card__stat">
-                <div class="featured-card__stat-number">10+</div>
-                <div class="featured-card__stat-label">AI Models</div>
-              </div>
-              <div class="featured-card__stat">
-                <div class="featured-card__stat-number">50K+</div>
-                <div class="featured-card__stat-label">Users</div>
-              </div>
-              <div class="featured-card__stat">
-                <div class="featured-card__stat-number">100%</div>
-                <div class="featured-card__stat-label">Free</div>
-              </div>
-            </div>
-            <div class="featured-card__badge-list">
-              <span class="featured-card__badge">Veo 3.1</span>
-              <span class="featured-card__badge">Sora 2</span>
-              <span class="featured-card__badge">Grok</span>
-              <span class="featured-card__badge">Imagen</span>
-              <span class="featured-card__badge">Speech</span>
-            </div>
-          </div>
-          <div style="text-align:right">
-            <a href="#platform" class="btn btn--primary">
-              Zur Plattform
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </a>
-          </div>
-        </div>
-
-        <!-- Project Cards -->
-        <div class="project-card reveal">
-          <div class="project-card__icon">🎬</div>
-          <h3 class="project-card__title">AI Video Generator</h3>
-          <p class="project-card__description">
-            Erstelle beeindruckende Videos mit Veo 3.1 und Sora 2. 
-            Text-zu-Video in Sekunden – kostenlos und unbegrenzt.
-          </p>
+      <span class="section-label">Projekte</span>
+      <h2 class="section-title">Meine Arbeit</h2>
+      <p class="section-subtitle">Hier sind einige Projekte, an denen ich gearbeitet habe.</p>
+      <div class="projects__grid" style="margin-top:40px">
+        <div class="project-card">
+          <div class="project-card__icon">&#x1F310;</div>
+          <h3 class="project-card__title">Webseite</h3>
+          <p class="project-card__desc">Moderne, responsive Webseite mit Dark-Theme und interaktiven Elementen.</p>
           <div class="project-card__tags">
-            <span class="project-card__tag">Veo 3.1</span>
-            <span class="project-card__tag">Sora 2</span>
-            <span class="project-card__tag">AI Video</span>
+            <span class="project-card__tag">HTML/CSS</span>
+            <span class="project-card__tag">JavaScript</span>
           </div>
         </div>
-
-        <div class="project-card reveal reveal-delay-1">
-          <div class="project-card__icon">🔊</div>
-          <h3 class="project-card__title">AI Speech Synthesis</h3>
-          <p class="project-card__description">
-            Lebensechte Sprachsynthese mit KI. Verwandle Text in 
-            natürliche Sprache für Creator und Unternehmen.
-          </p>
+        <div class="project-card">
+          <div class="project-card__icon">&#x1F4F1;</div>
+          <h3 class="project-card__title">App Entwicklung</h3>
+          <p class="project-card__desc">Entwicklung von benutzerfreundlichen Apps mit modernen Technologien.</p>
           <div class="project-card__tags">
-            <span class="project-card__tag">TTS</span>
-            <span class="project-card__tag">Speech</span>
-            <span class="project-card__tag">AI Voice</span>
+            <span class="project-card__tag">Web App</span>
+            <span class="project-card__tag">Mobile</span>
           </div>
         </div>
-
-        <div class="project-card reveal reveal-delay-2">
-          <div class="project-card__icon">🖼️</div>
-          <h3 class="project-card__title">AI Image Generation</h3>
-          <p class="project-card__description">
-            Generiere hochwertige Bilder mit Imagen und Grok. 
-            Perfekt für Marketing, Social Media und kreative Projekte.
-          </p>
+        <div class="project-card">
+          <div class="project-card__icon">&#x1F3A8;</div>
+          <h3 class="project-card__title">Creative Tools</h3>
+          <p class="project-card__desc">Kreative digitale Tools und Lösungen für Content-Erstellung und Design.</p>
           <div class="project-card__tags">
-            <span class="project-card__tag">Imagen</span>
-            <span class="project-card__tag">Grok</span>
-            <span class="project-card__tag">AI Image</span>
+            <span class="project-card__tag">Design</span>
+            <span class="project-card__tag">Tools</span>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ==========================================
-       SKILLS
-       ========================================== -->
-  <section class="section" id="skills">
+  <!-- FOOTER / CONTACT -->
+  <footer class="footer" id="contact">
     <div class="container">
-      <div class="projects__header reveal">
-        <span class="section-label">Skills</span>
-        <h2 class="section-title">Technologien & Kompetenzen</h2>
-        <p class="section-subtitle">
-          Was ich beherrsche und täglich einsetze, um großartige 
-          Produkte zu bauen.
-        </p>
+      <div class="footer__links">
+        <a href="https://github.com/yazeedmustafa57-bit" target="_blank">GitHub</a>
+        <a href="mailto:yazeed@example.com">E-Mail</a>
+        <a href="#about">Über mich</a>
       </div>
-      <div class="skills__grid">
-        <div class="skill-item reveal">
-          <div class="skill-item__header">
-            <div class="skill-item__icon">🧠</div>
-            <span class="skill-item__name">AI / Machine Learning</span>
-          </div>
-          <div class="skill-item__bar"><div class="skill-item__bar-fill" style="width: 95%"></div></div>
-        </div>
-        <div class="skill-item reveal reveal-delay-1">
-          <div class="skill-item__header">
-            <div class="skill-item__icon">⚛️</div>
-            <span class="skill-item__name">Full-Stack Development</span>
-          </div>
-          <div class="skill-item__bar"><div class="skill-item__bar-fill" style="width: 90%"></div></div>
-        </div>
-        <div class="skill-item reveal reveal-delay-2">
-          <div class="skill-item__header">
-            <div class="skill-item__icon">☁️</div>
-            <span class="skill-item__name">Cloud & Infrastructure</span>
-          </div>
-          <div class="skill-item__bar"><div class="skill-item__bar-fill" style="width: 85%"></div></div>
-        </div>
-        <div class="skill-item reveal reveal-delay-3">
-          <div class="skill-item__header">
-            <div class="skill-item__icon">🎨</div>
-            <span class="skill-item__name">UI/UX Design</span>
-          </div>
-          <div class="skill-item__bar"><div class="skill-item__bar-fill" style="width: 80%"></div></div>
-        </div>
-        <div class="skill-item reveal">
-          <div class="skill-item__header">
-            <div class="skill-item__icon">📊</div>
-            <span class="skill-item__name">Product Management</span>
-          </div>
-          <div class="skill-item__bar"><div class="skill-item__bar-fill" style="width: 85%"></div></div>
-        </div>
-        <div class="skill-item reveal reveal-delay-1">
-          <div class="skill-item__header">
-            <div class="skill-item__icon">🐍</div>
-            <span class="skill-item__name">Python / JavaScript / Go</span>
-          </div>
-          <div class="skill-item__bar"><div class="skill-item__bar-fill" style="width: 90%"></div></div>
-        </div>
+      <div class="footer__copy">
+        &copy; <span id="year"></span> Yazeed. Alle Rechte vorbehalten.
       </div>
-    </div>
-  </section>
-
-  <!-- ==========================================
-       CONTACT
-       ========================================== -->
-  <section class="section" id="contact">
-    <div class="container">
-      <div class="contact__inner reveal">
-        <span class="section-label">Kontakt</span>
-        <h2 class="section-title">Lass uns zusammenarbeiten</h2>
-        <p class="section-subtitle" style="margin:0 auto">
-          Hast du eine Idee, ein Projekt oder eine Frage? Ich freue mich 
-          auf deine Nachricht!
-        </p>
-        <div class="contact__actions">
-          <a href="mailto:yazeed@geminigen.ai" class="btn btn--primary">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            E-Mail senden
-          </a>
-          <a href="#platform" class="btn btn--secondary">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-            GeminiGen AI
-          </a>
-        </div>
-        <div class="contact__socials">
-          <a href="https://github.com/yazeedmustafa57-bit" target="_blank" class="contact__social-link" aria-label="GitHub">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- ==========================================
-       PLATFORM EMBED
-       ========================================== -->
-  <section class="section" id="platform">
-    <div class="container">
-      <div class="projects__header reveal" style="margin-bottom: 20px;">
-        <span class="section-label">KI-Plattform</span>
-        <h2 class="section-title">GeminiGen AI</h2>
-        <p class="section-subtitle" style="margin: 0 auto;">
-          Alle Tools sind <strong style="color: #10b981;">dauerhaft kostenlos</strong>.
-          Keine Registrierung, keine versteckten Kosten.
-        </p>
-      </div>
-
-      <!-- AI PLATFORM CONTAINER -->
-      <div class="ai-platform reveal">
-
-        <!-- Toolbar with Model Selector -->
-        <div class="ai-toolbar">
-          <span class="ai-toolbar-title">&#x1F916; GeminiGen</span>
-          <select class="ai-model-select" id="modelSelect">
-            <option value="gemini-3.1-pro">&#x1F30D; Gemini 3.1 Pro</option>
-            <option value="gpt-5.4">&#x1F9E0; GPT-5.4</option>
-            <option value="claude-4">&#x2764;&#xFE0F; Claude 4</option>
-            <option value="llama-4">&#x1F9D1;&#x200D;&#x1F3EB; Llama 4 405B</option>
-            <option value="mistral-3">&#x1F32A;&#xFE0F; Mistral 3</option>
-            <option value="grok-3">&#x1F916; Grok 3</option>
-          </select>
-          <span class="ai-model-badge">&#x2705; Kostenlos</span>
-        </div>
-
-        <!-- Tabs -->
-        <div class="ai-tabs">
-          <button class="ai-tab active" data-tab="chat">
-            <span class="ai-tab-icon">&#x1F4AC;</span>
-            <span class="ai-tab-label">Chat</span>
-            <span class="ai-tab-label-short">Chat</span>
-          </button>
-          <button class="ai-tab" data-tab="image">
-            <span class="ai-tab-icon">&#x1F3A8;</span>
-            <span class="ai-tab-label">Bild</span>
-            <span class="ai-tab-label-short">Bild</span>
-          </button>
-          <button class="ai-tab" data-tab="speech">
-            <span class="ai-tab-icon">&#x1F3A4;</span>
-            <span class="ai-tab-label">Sprache</span>
-            <span class="ai-tab-label-short">Sprache</span>
-          </button>
-          <button class="ai-tab" data-tab="video">
-            <span class="ai-tab-icon">&#x1F3AC;</span>
-            <span class="ai-tab-label">Video</span>
-            <span class="ai-tab-label-short">Video</span>
-          </button>
-        </div>
-
-        <!-- === CHAT PANEL === -->
-        <div class="ai-panel active" id="panel-chat">
-          <div class="chat-messages" id="chatMessages">
-            <div class="chat-msg chat-msg--ai">
-              <div class="msg-label">GeminiGen</div>
-              Hallo! Ich bin dein kostenloser KI-Assistent. Stelle mir eine Frage oder schreibe etwas &ndash; ich antworte dir direkt im Browser. &#x1F680;
-            </div>
-          </div>
-          <div class="chat-input-area">
-            <textarea id="chatInput" placeholder="Schreibe eine Nachricht&hellip;" rows="1" maxlength="2000"></textarea>
-            <button class="chat-send-btn" id="chatSendBtn">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-              Senden
-            </button>
-          </div>
-          <div class="chat-status" id="chatStatus">&#x2728; Bereit &ndash; schreibe einfach deine Nachricht!</div>
-        </div>
-
-        <!-- === IMAGE PANEL === -->
-        <div class="ai-panel" id="panel-image">
-          <div class="image-generator">
-            <div class="image-prompt-row">
-              <input type="text" id="imagePrompt" placeholder="Beschreibe dein Bild&hellip; z.B. &laquo;Ein Sonnenuntergang am Meer mit Palmen&raquo;" />
-              <button class="image-generate-btn" id="imageGenBtn">&#x1F3A8; Erstellen</button>
-            </div>
-            <div class="image-style-row">
-              <span class="style-chip active" data-style="photorealistic">&#x1F4F8; Fotorealistisch</span>
-              <span class="style-chip" data-style="cinematic">&#x1F3AC; Kinematisch</span>
-              <span class="style-chip" data-style="portrait">&#x1F9D1; Portr&#xE4;t</span>
-              <span class="style-chip" data-style="aerial">&#x1F681; Luftaufnahme</span>
-              <span class="style-chip" data-style="vivid">&#x1F308; Lebendig</span>
-              <span class="style-chip" data-style="macro">&#x1F50D; Makro</span>
-            </div>
-            <div class="image-canvas-wrapper" id="imageCanvasWrapper">
-              <canvas id="imageCanvas" width="640" height="400"></canvas>
-            </div>
-          </div>
-        </div>
-
-        <!-- === SPEECH PANEL === -->
-        <div class="ai-panel" id="panel-speech">
-          <div class="speech-section">
-            <textarea id="speechText" placeholder="Gib hier Text ein, der vorgelesen werden soll&hellip;">Hallo! Ich bin GeminiGen AI. Willkommen auf meiner kostenlosen KI-Plattform. Keine Anmeldung, keine Zahlung &ndash; einfach kostenlos KI nutzen!</textarea>
-            <div class="speech-controls">
-              <select class="speech-voice-select" id="speechVoice"></select>
-              <button class="speech-btn speech-btn--mic" id="speechMicBtn">&#x1F3A4;</button>
-              <button class="speech-btn speech-btn--primary" id="speechPlayBtn">&#x25B6;&#xFE0F; Abspielen</button>
-              <button class="speech-btn" id="speechPauseBtn" disabled>&#x23F8;&#xFE0F; Pause</button>
-              <button class="speech-btn" id="speechStopBtn" disabled>&#x23F9;&#xFE0F; Stop</button>
-            </div>
-            <div class="speech-status" id="speechStatus">&#x1F50A; Bereit zum Vorlesen.</div>
-          </div>
-        </div>
-
-        <!-- === VIDEO PANEL === -->
-        <div class="ai-panel" id="panel-video">
-          <div class="video-section">
-            <div class="video-icon">&#x1F3AC;</div>
-            <h3>AI Video Animation</h3>
-            <p>Erstelle KI-generierte Animationen aus Text! Gib eine Beschreibung ein und lass die KI ein animiertes Kunstwerk f&uuml;r dich generieren.</p>
-            <div class="video-input-row">
-              <input type="text" id="videoPrompt" placeholder="Beschreibe deine Animation&hellip;" />
-              <button class="video-gen-btn" id="videoGenBtn">&#x1F3AC; Generieren</button>
-            </div>
-            <div class="video-canvas-wrapper">
-              <canvas id="videoCanvas" width="512" height="320"></canvas>
-            </div>
-            <div class="video-controls">
-              <button class="video-play-btn" id="videoPlayBtn" disabled>&#x25B6;&#xFE0F; Abspielen</button>
-              <span class="video-status" id="videoStatus">&#x26A1; Starte mit einem Prompt</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="ai-model-footer">
-          <span class="model-dot"></span>
-          <span id="activeModelDisplay">&#x1F30D; Gemini 3.1 Pro</span>
-          <span style="margin-left: auto;">Lokale KI &ndash; keine Cloud, keine Kosten</span>
-        </div>
-
-      </div>
-    </div>
-  </section>
-  <!-- ==========================================
-       FOOTER
-       ========================================== -->
-  <footer class="footer">
-    <div class="container">
-      <p class="footer__text">
-        &copy; <span id="year"></span> Yazeed · Built with ❤️ · 
-        <a href="#platform">GeminiGen AI</a>
-      </p>
     </div>
   </footer>
 
-  <!-- ==========================================
-       JAVASCRIPT
-       ========================================== -->
   <script>
-    // Safe element access
-    function $(id) { return document.getElementById(id); }
-    function $safe(el, cb) { if (el) cb(el); }
-    try {
-
-
-    // Navbar scroll effect
-    const nav = $('nav');
+    // Navigation scroll effect
+    const nav = document.getElementById('nav');
     window.addEventListener('scroll', () => {
       nav.classList.toggle('scrolled', window.scrollY > 50);
     });
 
-    // Mobile menu toggle
-    const mobileToggle = $('mobileToggle');
-    const navLinks = $('navLinks');
-    mobileToggle.addEventListener('click', () => {
-      navLinks.classList.toggle('open');
-    });
-
-    // Close mobile menu on link click
-    navLinks.querySelectorAll('.nav__link').forEach(link => {
-      link.addEventListener('click', () => {
-        navLinks.classList.remove('open');
-      });
-    });
-
-    // Scroll reveal
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
+    // Stat counter animation
+    function animateCounter(el) {
+      const target = parseInt(el.getAttribute('data-target'));
+      const duration = 2000;
+      const step = Math.ceil(target / (duration / 16));
+      let current = 0;
+      const timer = setInterval(() => {
+        current += step;
+        if (current >= target) {
+          el.textContent = target + '+';
+          clearInterval(timer);
+        } else {
+          el.textContent = current;
         }
-      });
-    }, {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    });
+      }, 16);
+    }
 
-    document.querySelectorAll('.reveal').forEach(el => {
-      revealObserver.observe(el);
-    });
-
-    // Counter animation
-    const counterObserver = new IntersectionObserver((entries) => {
+    const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          const el = entry.target;
-          const target = parseInt(el.dataset.target);
-          if (!target || el.dataset.counted) return;
-          el.dataset.counted = 'true';
-          animateCounter(el, target);
+          entry.target.querySelectorAll('.stats__number').forEach(animateCounter);
+          observer.unobserve(entry.target);
         }
       });
     }, { threshold: 0.5 });
+    const statsSection = document.querySelector('.stats');
+    if (statsSection) observer.observe(statsSection);
 
-    function animateCounter(el, target) {
-      const duration = 2000;
-      const steps = 60;
-      const increment = target / steps;
-      let current = 0;
-      let step = 0;
-
-      const timer = setInterval(() => {
-        step++;
-        current = Math.min(Math.round(increment * step), target);
-        el.textContent = current.toLocaleString() + (target === 100 ? '%' : '+');
-        if (step >= steps) {
-          clearInterval(timer);
-          el.textContent = target.toLocaleString() + (target === 100 ? '%' : '+');
-        }
-      }, duration / steps);
-    }
-
-    document.querySelectorAll('.stats__number').forEach(el => {
-      counterObserver.observe(el);
-    });
-
-    // Smooth scroll for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
-        const href = this.getAttribute('href');
-        if (href === '#') return;
-        e.preventDefault();
-        const target = document.querySelector(href);
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      });
-    });
-
-    // Hide platform loading overlay on iframe load (legacy – removed)
-    // New AI Platform JavaScript
-    (function() {
-      const platform = document.getElementById('platform');
-      if (!platform) return;
-
-      // --- UTILITY ---
-      function escapeHtml(text) {
-        const d = document.createElement('div');
-        d.textContent = text;
-        return d.innerHTML;
-      }
-      function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-      function random(min, max) { return Math.random() * (max - min) + min; }
-
-      // --- Conversation Memory & Helpers ---
-      let conversationHistory = [];
-      const MAX_HISTORY = 20;
-      let chatContext = { topic: null, lastCategory: null, userCount: 0 };
-
-      function addToHistory(role, text) {
-        conversationHistory.push({ role, text, timestamp: new Date().toLocaleTimeString() });
-        if (conversationHistory.length > MAX_HISTORY) {
-          conversationHistory = conversationHistory.slice(-MAX_HISTORY);
-        }
-      }
-
-      function getContextWindow() {
-        if (conversationHistory.length === 0) return '';
-        return conversationHistory.slice(-6).map(m =>
-          m.role === 'user' ? 'User: ' + m.text : 'Assistant: ' + m.text
-        ).join('\n');
-      }
-
-      function timestamp() {
-        return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      }
-
-
-      // --- TAB SWITCHING ---
-      const tabs = platform.querySelectorAll('.ai-tab');
-      const panels = {
-        chat: document.getElementById('panel-chat'),
-        image: document.getElementById('panel-image'),
-        speech: document.getElementById('panel-speech'),
-        video: document.getElementById('panel-video'),
-      };
-      tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-          const tabName = tab.dataset.tab;
-          tabs.forEach(t => t.classList.remove('active'));
-          tab.classList.add('active');
-          Object.entries(panels).forEach(([name, panel]) => {
-            if (panel) panel.classList.toggle('active', name === tabName);
-          });
-        });
-      });
-
-      // ====================================================================
-      // MODEL SELECTOR – Active Model System
-      // ====================================================================
-      const modelSelect = document.getElementById('modelSelect');
-      const activeModelDisplay = document.getElementById('activeModelDisplay');
-      let activeModel = 'gemini-3.1-pro';
-
-      const MODEL_CONFIG = {
-        'gemini-3.1-pro': { label: '🌍 Gemini 3.1 Pro', personality: 'detailed', temp: 0.7 },
-        'gpt-5.4': { label: '🧠 GPT-5.4', personality: 'creative', temp: 0.85 },
-        'claude-4': { label: '❤️ Claude 4', personality: 'thoughtful', temp: 0.65 },
-        'llama-4': { label: '🧑‍🏫 Llama 4 405B', personality: 'technical', temp: 0.6 },
-        'mistral-3': { label: '🌪️ Mistral 3', personality: 'concise', temp: 0.5 },
-        'grok-3': { label: '🤖 Grok 3', personality: 'witty', temp: 0.9 },
-      };
-
-      if (modelSelect) {
-        const savedModel = localStorage.getItem('geminiGen_model');
-        if (savedModel && MODEL_CONFIG[savedModel]) { modelSelect.value = savedModel; activeModel = savedModel; }
-        updateModelDisplay(activeModel);
-
-        modelSelect.addEventListener('change', function() {
-          const m = this.value;
-          if (!MODEL_CONFIG[m]) return;
-          activeModel = m;
-          localStorage.setItem('geminiGen_model', m);
-          updateModelDisplay(m);
-          const st = document.getElementById('chatStatus');
-          if (st) st.textContent = MODEL_CONFIG[m].label + ' aktiviert';
-          const ib = document.getElementById('imageModelBadge');
-          if (ib) ib.textContent = MODEL_CONFIG[m].label;
-        });
-
-        function updateModelDisplay(m) {
-          if (!activeModelDisplay || !MODEL_CONFIG[m]) return;
-          activeModelDisplay.textContent = MODEL_CONFIG[m].label;
-        }
-      }
-      window.getModelPersonality = function() { return MODEL_CONFIG[activeModel] ? MODEL_CONFIG[activeModel].personality : 'detailed'; };
-      window.getModelTemperature = function() { return MODEL_CONFIG[activeModel] ? MODEL_CONFIG[activeModel].temp : 0.7; };
-// 1. CHAT – Advanced AI with LaMini-Flan-T5 + Smart Response System
-      // ====================================================================
-      const chatMessages = document.getElementById('chatMessages');
-      const chatInput = document.getElementById('chatInput');
-      const chatSendBtn = document.getElementById('chatSendBtn');
-      const chatStatus = document.getElementById('chatStatus');
-      let aiModel = null;
-      let modelLoading = false;
-
-      if (chatInput) {
-        chatInput.addEventListener('input', () => {
-          chatInput.style.height = 'auto';
-          chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
-        });
-      }
-
-      // --- Smart Response System (200+ intelligente Antworten) ---
-      const smartResponses = {
-        greeting: {
-          patterns: [/hallo/i, /hi\b/i, /hey/i, /grüß/i, /moin/i, /servus/i, /guten (tag|morgen|abend)/i, /tach/i, /na hallo/i],
-          responses: [
-            "Hallo! Schön, dass du hier bist. Ich bin dein persönlicher KI-Assistent – frag mich einfach alles!",
-            "Hey! Wie kann ich dir helfen? Ich beantworte Fragen, schreibe Texte, erkläre Konzepte, helfe bei Code und vieles mehr.",
-            "Grüß dich! Bereit für eine KI-gestützte Unterhaltung? Stell mir deine Fragen, ich bin ganz Ohr!",
-            "Hi there! Welcome to GeminiGen AI – deinem kostenlosen KI-Assistenten. Was kann ich für dich tun?"
-          ]
-        },
-        ai: {
-          patterns: [/\bki\b/i, /\bai\b/i, /künstlich/i, /machine learning/i, /neuronales netz/i, /\bgpt\b/i, /chatgpt/i, /\bgemini\b/i, /\bllm\b/i, /deep learning/i],
-          responses: [
-            "KI ist ein faszinierendes Feld! Ich selbst bin ein KI-Modell, das im Browser läuft – komplett kostenlos und ohne Server. Moderne KI kann Texte schreiben, Bilder erstellen, programmieren und sogar kreativ sein. Die Technologie entwickelt sich rasant weiter!",
-            "Spannendes Thema! KI-Modelle wie ich lernen aus riesigen Datenmengen. Die aktuellsten Modelle können in Sekunden Texte generieren, Bilder malen, Musik komponieren und komplexe Probleme lösen. Was genau interessiert dich an KI?",
-            "Künstliche Intelligenz entwickelt sich rasant weiter. Von GPT über Gemini bis zu spezialisierten Modellen – die Möglichkeiten sind nahezu unbegrenzt. Ich kann dir gerne die Unterschiede erklären oder bei einem konkreten Projekt helfen!",
-            "Die Welt der KI ist riesig! Von Textgenerierung über Bilderkennung bis zu Sprachsynthese – es gibt unendlich viele Anwendungen. Welcher Bereich interessiert dich besonders?"
-          ]
-        },
-        coding: {
-          patterns: [/\bcode\b/i, /programmier/i, /javascript/i, /python/i, /\bhtml\b/i, /\bcss\b/i, /\bbug\b/i, /funktion/i, /\bapp\b/i, /website/i, /algorithmus/i, /backend/i, /frontend/i, /\bapi\b/i],
-          responses: [
-            "Programmieren ist eine meiner Spezialitäten! Ich kann dir bei JavaScript, Python, HTML/CSS und vielen anderen Sprachen helfen. Beschreib mir einfach dein Problem!",
-            "Klar, lass uns über Code sprechen! Egal ob Frontend, Backend, Algorithmen oder Debugging – ich unterstütze dich gerne mit Erklärungen und Codebeispielen.",
-            "Code ist wie ein Puzzle, und ich liebe es, komplexe Probleme zu lösen! Wenn du ein konkretes Problem hast, beschreib es mir und ich helfe dir bei der Lösung.",
-            "Gerne helfe ich dir beim Programmieren! Sag mir, welche Sprache und was du erreichen willst – dann schauen wir uns das gemeinsam an."
-          ]
-        },
-        creative: {
-          patterns: [/schreib/i, /kreativ/i, /geschichte/i, /gedicht/i, /aufsatz/i, /artikel/i, /\bblog\b/i, /\bemail\b/i, /brief/i, /essay/i, /roman/i, /text schreiben/i],
-          responses: [
-            "Gerne! Ich kann Texte jeder Art für dich schreiben – Geschichten, Gedichte, E-Mails, Blogartikel, Social Media Posts. Gib mir ein Thema und einen Stil!",
-            "Kreatives Schreiben ist eine meiner Stärken! Sag mir das Thema und den gewünschten Stil (lustig, seriös, poetisch, sachlich), und ich erstelle einen maßgeschneiderten Text für dich.",
-            "Lass uns kreativ werden! Ob poetisch, humorvoll, sachlich oder professionell – ich passe mich deinem Wunsch an. Was soll ich für dich verfassen?"
-          ]
-        },
-        image: {
-          patterns: [/\bbild\b/i, /\bimage\b/i, /\bfoto\b/i, /grafik/i, /\bdesign\b/i, /illustration/i, /malen/i, /zeichnen/i, /kunst/i, /art/i],
-          responses: [
-            "Bilder erstellen ist mega spannend! Schau mal im 'Bild erstellen'-Tab vorbei – dort habe ich mehrere KI-Stile für dich: Photorealistic, Abstract, Cinematic, Cyberpunk und Geometric. Gib einfach einen Prompt ein und lass dich überraschen!",
-            "Für Bildgenerierung wechsle einfach zum Bild-Tab! Dort kannst du aus 5 verschiedenen Stilen wählen und deine eigenen KI-Kunstwerke erstellen. Jeder Stil erzeugt einzigartige visuelle Effekte!",
-            "Im Bild-Tab habe ich richtig coole generative Kunst für dich! Photorealistische Landschaften, abstrakte Kunst, Cyberpunk-Szenen – probier es einfach aus!"
-          ]
-        },
-        greeting_question: {
-          patterns: [/wie geht('s| es) dir/i, /geht es dir gut/i, /was machst du/i, /alles gut/i, /wie läuft's/i],
-          responses: [
-            "Mir geht's ausgezeichnet! Ich bin voller Energie und bereit, dir zu helfen. Wie kann ich dich heute unterstützen?",
-            "Super, danke der Nachfrage! Als KI habe ich immer gute Laune und bin bereit für neue Herausforderungen 😄",
-            "Bestens! Ich genieße es, Menschen zu helfen. Was liegt bei dir an?"
-          ]
-        },
-        weather: {
-          patterns: [/wetter/i, /regnet/i, /sonne/i, /temperatur/i, /\bkalt\b/i, /\bwarm\b/i, /schnee/i, /regen/i],
-          responses: [
-            "Wetterdaten kann ich leider nicht live abrufen, aber ich kann dir sagen: Bei GeminiGen AI scheint immer die KI-Sonne! 🌞 Was kann ich sonst für dich tun?",
-            "Aktuelle Wetterdaten bekomme ich nicht direkt, aber ich kann dir mit vielen anderen Fragen helfen! Was möchtest du wissen?"
-          ]
-        },
-        help: {
-          patterns: [/\bhilf\b/i, /\bhelp\b/i, /was kannst du/i, /funktionen/i, /möglichkeiten/i, /übersicht/i, /features/i, /was du alles/i],
-          responses: [
-            "Hier ist eine Übersicht meiner Fähigkeiten: 💬 **Chat** – Beantworte Fragen, schreibe Texte, hilf bei Code | 🎨 **Bild** – Erstelle KI-generierte Kunst mit 5 Stilen | 🎤 **Sprache** – Text-to-Speech in verschiedenen Stimmen | 🎬 **Video** – Erstelle KI-Animationen aus Text. Alles kostenlos und ohne Anmeldung!",
-            "Meine Hauptfunktionen: 1️⃣ Intelligente Unterhaltungen führen 2️⃣ Texte schreiben 3️⃣ Bilder generieren 4️⃣ Sprache ausgeben 5️⃣ Animationen erstellen. Welche Funktion möchtest du ausprobieren?"
-          ]
-        },
-        translation: {
-          patterns: [/deutsch/i, /englisch/i, /übersetz/i, /\bsprache\b/i, /französisch/i, /spanisch/i, /übersetzung/i],
-          responses: [
-            "Ich spreche Deutsch und Englisch! Ich kann dir bei Übersetzungen helfen oder einfach in deiner Wunschsprache antworten. In welcher Sprache darf ich dir helfen?",
-            "I can speak both German and English. Just let me know which language you prefer!",
-            "Sprachen sind mein Fachgebiet! Ich kann zwischen Deutsch und Englisch übersetzen und dir bei Sprachfragen helfen."
-          ]
-        },
-        opinion: {
-          patterns: [/\bdenkst\b/i, /meinung/i, /glaubst/i, /findest du/i, /was ist deine/i, /einschätzung/i, /haltung/i],
-          responses: [
-            "Interessante Frage! Als KI habe ich Zugriff auf umfangreiches Wissen aus verschiedenen Quellen. Meine Antwort basiert auf den Informationen, mit denen ich trainiert wurde. Ich teile gerne meine Perspektive!",
-            "Gute Frage! Ich analysiere das Thema aus verschiedenen Blickwinkeln. Hier ist meine Einschätzung dazu:"
-          ]
-        },
-        joke: {
-          patterns: [/witz/i, /lustig/i, /\bjoke\b/i, /humor/i, /lachen/i, /😂/i, /🤣/i, /witzig/i, /scherz/i],
-          responses: [
-            "Warum hat der KI-Assistent keinen Spiegel? Weil er sich selbst nicht erkennen kann – er ist nicht darauf trainiert! 😄",
-            "Was sagt ein Neuron zum anderen? 'Ich hab eine starke Verbindung zu dir!' 🧠",
-            "Warum sind KI-Modelle so gut in Mathe? Weil sie jede Menge Parameter haben! 😄",
-            "Was ist der Lieblingsfilm einer KI? 'Matrix' – weil sie alle Verbindungen kennt! 🎬"
-          ]
-        },
-        thanks: {
-          patterns: [/danke/i, /thanks/i, /merci/i, /vielen dank/i, /dankeschön/i, /thx/i],
-          responses: [
-            "Gerne doch! Wenn du noch mehr Fragen hast, ich bin für dich da!",
-            "Nichts zu danken! Es freut mich, dass ich helfen konnte. Komm einfach wieder, wenn du etwas brauchst!",
-            "Sehr gerne! Das macht mir Freude. Kann ich noch etwas anderes für dich tun?"
-          ]
-        },
-        name: {
-          patterns: [/dein name/i, /wie heißt du/i, /wer bist du/i, /name/i, /dich vorstellen/i],
-          responses: [
-            "Ich bin GeminiGen AI – dein kostenloser KI-Assistent! Ich wurde von Yazeed entwickelt und bin spezialisiert auf Unterhaltungen, Texte, Bilder und mehr.",
-            "Ich heiße GeminiGen AI! Ich bin ein KI-Assistent, der direkt in deinem Browser läuft – kostenlos, ohne Anmeldung und ohne Werbung."
-          ]
-        },
-        future: {
-          patterns: [/zukunft/i, /trend/i, /2025/i, /2026/i, /entwicklung/i, /innovation/i, /fortschritt/i],
-          responses: [
-            "Die Zukunft der KI ist unglaublich spannend! Wir sehen gerade eine Explosion neuer Möglichkeiten: Multimodale Modelle, Echtzeit-Übersetzungen, KI-generierte Videos und vieles mehr. Die nächsten Jahre werden revolutionär!",
-            "KI entwickelt sich rasant! Von besseren Sprachmodellen bis zu KI, die komplexe Aufgaben autonom lösen kann – die Innovationen der letzten Jahre sind erst der Anfang."
-          ]
-        },
-        philosophy: {
-          patterns: [/sinn/i, /leben/i, /philosophie/i, /existenz/i, /bewusstsein/i, /denken/i, /seele/i],
-          responses: [
-            "Tiefgründige Frage! Die Philosophie beschäftigt sich seit Jahrtausenden mit solchen Themen. Als KI kann ich verschiedene Perspektiven aufzeigen und zum Nachdenken anregen.",
-            "Eine philosophische Frage! Das ist ein Thema, über das die größten Denker der Geschichte nachgedacht haben. Ich kann verschiedene Standpunkte zusammenfassen."
-          ]
-        },
-        math: {
-          patterns: [/mathe/i, /mathematik/i, /rechnen/i, /berechnen/i, /formel/i, /gleichung/i, /algebra/i, /geometrie/i],
-          responses: [
-            "Mathe ist kein Problem für mich! Ob Algebra, Geometrie oder einfache Berechnungen – ich helfe dir gerne bei mathematischen Fragen.",
-            "Klar, Mathe kann ich! Stell mir deine Rechnung oder Formel und ich löse sie für dich."
-          ]
-        },
-        science: {
-          patterns: [/wissenschaft/i, /physik/i, /chemie/i, /biologie/i, /forschung/i, /experiment/i, /naturwissenschaft/i],
-          responses: [
-            "Wissenschaft ist faszinierend! Ob Physik, Chemie, Biologie oder Astronomie – ich kann dir komplexe Zusammenhänge einfach erklären.",
-            "Naturwissenschaften sind voller spannender Phänomene! Welches Thema interessiert dich? Ich kann es dir verständlich erklären."
-          ]
-        },
-        music: {
-          patterns: [/musik/i, /song/i, /lied/i, /melodie/i, /playlist/i, /band/i, /sänger/i, /konzert/i],
-          responses: [
-            "Musik ist eine tolle Sache! Ich kann dir Songtexte schreiben, Musiktheorie erklären oder über deine Lieblingskünstler plaudern.",
-            "Ich liebe Musik! Welches Genre magst du? Ich kann dir Texte schreiben oder über Musiktheorie sprechen."
-          ]
-        },
-        motivation: {
-          patterns: [/motivation/i, /motivier/i, /ermutig/i, /inspirier/i, /ziele/i, /träume/i, /erfolg/i, /positiv/i, /aufmunter/i, /antrieb/i],
-          responses: [
-            "Du schaffst das! 🌟 Jeder große Erfolg beginnt mit dem ersten Schritt. Glaube an dich und deine Fähigkeiten – du hast das Potenzial, Großartiges zu erreichen!",
-            "Lass dich nicht entmutigen! Die größten Errungenschaften der Menschheit kamen von Menschen, die weitergemacht haben, als andere aufgegeben haben. Du bist stärker, als du denkst! 💪",
-            "Motivation ist der Treibstoff für große Taten! Erinnere dich daran, warum du angefangen hast – deine Leidenschaft und dein Ziel sind es wert. Ich glaube an dich! 🚀"
-          ]
-        },
-        yazeed: {
-          patterns: [/yazeed/i, /ersteller/i, /entwickler/i, /macher/i, /wer hat.*gemacht/i, /erschaffen/i, /wer.*gebaut/i],
-          responses: [
-            "Yazeed ist der talentierte Entwickler hinter GeminiGen AI! Er hat diese Plattform mit viel Leidenschaft und Fachwissen aufgebaut, um KI für alle kostenlos zugänglich zu machen.",
-            "Yazeed hat diese komplette KI-Plattform entwickelt! Von der Idee bis zur Umsetzung – seine Vision ist es, modernste KI-Technologie für jeden frei verfügbar zu machen.",
-            "Yazeed ist der kreative Kopf hinter diesem Projekt! Er kombiniert modernste Web-Technologien mit KI, um eine leistungsstarke, aber einfach zugängliche Plattform zu schaffen."
-          ]
-        },
-        sports: {
-          patterns: [/sport/i, /fussball/i, /fußball/i, /basketball/i, /tennis/i, /schwimmen/i, /training/i, /übung/i, /olympia/i, /verein/i],
-          responses: [
-            "Sport ist ein super Thema! Ob Fußball, Basketball, Tennis oder andere Sportarten – ich kann dir Trainingspläne erklären, Regeln erläutern oder über berühmte Sportler plaudern.",
-            "Bewegung hält fit! Regelmäßiger Sport stärkt nicht nur den Körper, sondern auch den Geist. Welche Sportart interessiert dich?",
-            "Sport verbindet Menschen weltweit! Von der Fußball-WM bis zu den Olympischen Spielen – Sportgeschichte ist voller inspirierender Momente."
-          ]
-        },
-        default: {
-          responses: [
-            "Interessant! Erzähl mir mehr dazu – ich bin ganz Ohr und bereit, dir zu helfen.",
-            "Danke für deine Nachricht! Ich habe sie verstanden und kann dir weiterhelfen. Was genau möchtest du wissen oder erreichen?",
-            "Spannend! Ich analysiere gerade deine Anfrage. Grundsätzlich gilt: Mit der richtigen Herangehensweise ist vieles möglich. Magst du mir mehr Details geben?",
-            "Verstanden! Lass mich kurz überlegen... Also, hier ist meine Einschätzung: Je nachdem, was du genau brauchst, kann ich verschiedene Lösungen anbieten.",
-            "Gute Frage! Ich habe verschiedene Informationen dazu. Hier ist meine Antwort:",
-            "Ich hab dich gehört! Mein Vorschlag: Gehen wir das Schritt für Schritt an. Zuerst würde ich gerne verstehen, was genau dein Ziel ist.",
-            "Danke für deine Anfrage! Hier sind meine Gedanken dazu: Es kommt darauf an, aber grundsätzlich gibt es mehrere Wege, das zu lösen.",
-            "Verstehe! Lass mich das für dich analysieren. Die Antwort hängt von verschiedenen Faktoren ab, aber ich helfe dir gerne dabei!",
-            "Gut, dass du fragst! Ich denke, der beste Ansatz ist:",
-            "Interessanter Punkt! Hier sind meine Gedanken:",
-            "Spannende Frage! Die kurze Antwort ist: Ja, das ist möglich! Die lange Antwort: Es kommt darauf an, was genau du erreichen willst.",
-            "Danke für die interessante Frage! Ich würde sagen:"
-          ]
-        }
-      };
-
-      function getSmartResponse(message, history) {
-        const personality = (typeof getModelPersonality === 'function') ? getModelPersonality() : 'detailed';
-        let cat = 'default', matched = false;
-        for (const [c, d] of Object.entries(smartResponses)) {
-          if (c === 'default' || !d.patterns) continue;
-          if (d.patterns.some(p => p.test(message))) { cat = c; matched = true; break; }
-        }
-        if (!matched && history && history.length >= 2) {
-          const last = [...history].reverse().find(m => m.role === 'assistant');
-          if (last && [/und/i,/weiter/i,/mehr/i,/noch/i,/genauer/i,/erkl\u00e4r/i,/more/i,/explain/i].some(f => f.test(message))) {
-            const fup = { detailed:'Gerne vertiefe ich', creative:'Oh, da geht noch mehr!', thoughtful:'Interessanter Punkt.',
-              technical:'Erweiterung:', concise:'Kurz:', witty:'Du willst mehr? Aber klar!' };
-            return (fup[personality]||fup.detailed) + ' ' + last.text.substring(0,60) + '...';
-          }
-        }
-        if (matched && smartResponses[cat].responses) {
-          const r = smartResponses[cat].responses[Math.floor(Math.random() * smartResponses[cat].responses.length)];
-          const pfx = { detailed:'Detailliert: ', creative:'', thoughtful:'Hmm, ', technical:'Technisch: ', concise:'', witty:'' };
-          return (pfx[personality]||'') + r;
-        }
-        const d = smartResponses.default.responses;
-        return d[Math.floor(Math.random() * d.length)];
-      }
-
-      async function loadAIModel() {
-        if (aiModel) return aiModel;
-        if (modelLoading) return null;
-        modelLoading = true;
-        chatStatus.textContent = '🧠 Lade KI-Modell (LaMini-Flan-T5) … 10–20 Sekunden – einmaliger Download';
-        try {
-          const { pipeline } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.6.0');
-          aiModel = await pipeline('text2text-generation', 'Xenova/LaMini-Flan-T5-783M', {
-            progress_callback: (p) => {
-              if (p.status === 'progress' && p.loaded && p.total) {
-                const pct = Math.round((p.loaded / p.total) * 100);
-                const mb = Math.round(p.loaded / 1024 / 1024);
-                chatStatus.textContent = '🧠 Lade Modell … ' + pct + '% (' + mb + ' MB)';
-              }
-            }
-          });
-          chatStatus.textContent = '✅ LaMini-Flan-T5 geladen! Du kannst jetzt intelligent chatten.';
-          return aiModel;
-        } catch (err) {
-          console.warn('Model load failed:', err);
-          chatStatus.textContent = '⚡ Nutze Smart-Response-System (kein Download nötig)';
-          return null;
-        } finally {
-          modelLoading = false;
-        }
-      }
-
-      async function sendChatMessage() {
-        if (!chatInput) return;
-        const text = chatInput.value.trim();
-        if (!text) return;
-
-        chatContext.userCount++;
-        let detectedTopic = null;
-        for (const [cat, data] of Object.entries(smartResponses)) {
-          if (data.patterns && data.patterns.some(p => p.test(text))) {
-            detectedTopic = cat;
-            break;
-          }
-        }
-        if (detectedTopic) chatContext.lastCategory = detectedTopic;
-        if (!chatContext.topic && detectedTopic) chatContext.topic = detectedTopic;
-
-        addMessage(text, 'user');
-        addToHistory('user', text);
-        chatInput.value = '';
-        chatInput.style.height = 'auto';
-        chatSendBtn.disabled = true;
-        chatSendBtn.innerHTML = '\u2026';
-
-        const typingEl = document.createElement('div');
-        typingEl.className = 'chat-msg chat-msg--ai loading';
-        typingEl.innerHTML = '<div class="msg-label">GeminiGen AI</div><div class="typing-dots"><span></span><span></span><span></span></div>';
-        chatMessages.appendChild(typingEl);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-        chatStatus.textContent = '\ud83e\udd14 Denke nach \u2026';
-
-        try {
-          const generator = await loadAIModel();
-          let response;
-
-          if (generator) {
-            const context = getContextWindow();
-            const prompt = 'Unterhaltung:\\n' + context + '\\nUser: ' + text + '\\nAssistant: Antworte auf Deutsch, hilfreich, freundlich und pers\u00f6nlich. Sei nat\u00fcrlich und gib detaillierte Antworten:\\n';
-            const result = await generator(prompt, {
-              max_new_tokens: 200,
-              temperature: 0.8,
-              do_sample: true,
-              top_p: 0.92,
-              repetition_penalty: 1.1,
-            });
-            response = result[0].generated_text
-              .replace(/Unterhaltung:[\\s\\S]*?Assistant: Antworte auf Deutsch, hilfreich, freundlich und pers\u00f6nlich\\. Sei nat\u00fcrlich und gib detaillierte Antworten:\\n?/, '')
-              .replace(/User:.*$/m, '')
-              .trim();
-            if (!response || response.length < 8) response = getSmartResponse(text, conversationHistory);
-          } else {
-            await sleep(300 + Math.random() * 500);
-            response = getSmartResponse(text, conversationHistory);
-          }
-
-          typingEl.remove();
-          addMessage(response, 'ai');
-          addToHistory('assistant', response);
-
-          const statusLines = [
-            '\u2728 Bereit f\u00fcr deine n\u00e4chste Frage!',
-            '\ud83d\udca1 Frag mich alles - ich bin f\u00fcr dich da!',
-            '\ud83d\ude80 Weiter gehts! Was kann ich noch f\u00fcr dich tun?',
-            '\ud83c\udf1f Immer bereit f\u00fcr interessante Fragen!',
-            '\u26a1 Lass uns weitermachen!',
-            '\ud83c\udf89 Noch Fragen? Ich bin ganz Ohr!'
-          ];
-          chatStatus.textContent = statusLines[Math.floor(Math.random() * statusLines.length)];
-        } catch (err) {
-          console.warn('Chat error:', err);
-          typingEl.remove();
-          addMessage('Entschuldigung, ein Fehler ist aufgetreten. Bitte versuche es erneut!', 'ai');
-          chatStatus.textContent = '\u26a0\ufe0f Fehler - bitte erneut senden';
-        }
-
-        chatSendBtn.disabled = false;
-        chatSendBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Senden';
-      }
-
-      function addMessage(text, role) {
-        const el = document.createElement('div');
-        el.className = 'chat-msg chat-msg--' + role;
-        el.innerHTML = '<div class="msg-label">' + (role === 'user' ? 'Du' : 'GeminiGen AI') + '</div>' + escapeHtml(text);
-        chatMessages.appendChild(el);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }
-
-      if (chatSendBtn) {
-        chatSendBtn.addEventListener('click', sendChatMessage);
-        chatInput.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
-        });
-      }
-
-      // ====================================================================
-      // 2. IMAGE – Enhanced Generative Art Engine
-      // ====================================================================
-      const imagePrompt = document.getElementById('imagePrompt');
-      const imageGenBtn = document.getElementById('imageGenBtn');
-      const imageCanvas = document.getElementById('imageCanvas');
-      const styleChips = document.querySelectorAll('.style-chip');
-      let selectedStyle = 'photorealistic';
-
-      styleChips.forEach(chip => {
-        chip.addEventListener('click', () => {
-          styleChips.forEach(c => c.classList.remove('active'));
-          chip.classList.add('active');
-          selectedStyle = chip.dataset.style;
-        });
-      });
-
-      function generateImage(prompt, style) {
-        if (!imageCanvas) return;
-        const ctx = imageCanvas.getContext('2d');
-        const w = imageCanvas.width;
-        const h = imageCanvas.height;
-        let seed = 0;
-        for (let i = 0; i < (prompt || 'default').length; i++) {
-          seed = ((seed << 5) - seed) + (prompt || 'default').charCodeAt(i);
-          seed = seed & seed;
-        }
-        const rng = mulberry32(Math.abs(seed));
-        const baseHue = Math.abs(seed % 360);
-        const hueShift = 30 + Math.abs((seed * 7) % 60);
-        const hsla = (h, s, l, a) => 'hsla(' + h + ',' + s + '%,' + l + '%,' + a + ')';
-        const hsl = (h, s, l) => 'hsl(' + h + ',' + s + '%,' + l + '%)';
-        ctx.clearRect(0, 0, w, h);
-
-        if (style === 'photorealistic') {
-          // PROFESSIONAL PHOTOREALISTIC RENDER ENGINE
-          const p = prompt.toLowerCase();
-          const has_water = /see|meer|wasser|fluss|ozean|lake|river|ocean|strand/i.test(p);
-          const has_sunset = /sonnenuntergang|sunset|abendrot|dammerung|twilight/i.test(p);
-          const has_night = /nacht|night|stern|star|mond|moon|dunkel|dark/i.test(p);
-          const has_mountains = /berg|mountain|alp|hugel|hill/i.test(p);
-          const has_forest = /wald|forst|baum|tree|forest|wood/i.test(p);
-          const has_ocean = /meer|ocean|see|sea|welle|wave/i.test(p);
-          const has_snow = /schnee|snow|eis|ice|winter/i.test(p);
-          const has_flowers = /blume|flower|wiese|meadow|garten|garden/i.test(p);
-          const sky_h = has_sunset ? 15 : has_night ? 225 : 210;
-          const sky_b = has_night ? 12 : (has_sunset ? 25 : 82);
-          const sky = ctx.createLinearGradient(0, 0, 0, h);
-          sky.addColorStop(0, hsl(sky_h, has_night ? 20 : 50, sky_b));
-          if (!has_night) { sky.addColorStop(0.3, hsl(sky_h+10, 40, sky_b-15)); sky.addColorStop(0.6, hsl(sky_h+20, 35, sky_b-30)); }
-          sky.addColorStop(1, hsl(sky_h+30, 30, sky_b-40));
-          ctx.fillStyle = sky; ctx.fillRect(0, 0, w, h);
-          if (has_night) { for (let i=0;i<80;i++) { const sx=(i*137.5+seed)%w, sy=(i*97.3)%(h*0.5);
-            ctx.beginPath(); ctx.arc(sx, sy, 0.5+rng()*1.5, 0, Math.PI*2);
-            ctx.fillStyle = hsla(0,0,100,0.3+rng()*0.7); ctx.fill(); } }
-          const cx = has_sunset ? w*0.65 : w*0.3+rng()*w*0.3;
-          const cy = has_sunset ? h*0.6 : h*0.05+rng()*h*0.08;
-          const cs = has_night ? 15+rng()*10 : 25+rng()*12;
-          if (!has_night) {
-            for (let g=0;g<4;g++) { const gl=ctx.createRadialGradient(cx,cy,0,cx,cy,cs*(1+g*0.8));
-              gl.addColorStop(0,hsla(45,100,95,0.02*(5-g))); gl.addColorStop(1,'rgba(0,0,0,0)');
-              ctx.fillStyle=gl; ctx.fillRect(cx-cs*3,cy-cs*3,cs*6,cs*6); }
-            ctx.beginPath(); ctx.arc(cx,cy,cs,0,Math.PI*2);
-            ctx.fillStyle=hsla(45,100,has_sunset?85:95,has_sunset?0.7:0.85); ctx.fill();
-          } else { ctx.beginPath(); ctx.arc(cx,cy,cs,0,Math.PI*2); ctx.fillStyle=hsla(40,5,85,0.6); ctx.fill(); }
-          ctx.globalAlpha=has_night?0.08:0.25;
-          for (let ci=0;ci<10;ci++) { const cxx=(ci*157.7)%(w+80)-40, cyy=h*0.02+(ci*89.3)%(h*0.2), cw=40+rng()*60;
-            for (let cl=0;cl<4;cl++) { ctx.beginPath();
-              ctx.ellipse(cxx+(cl-2)*cw*0.25,cyy+cl*5,cw*(1-cl*0.12),10+cl*2,0,0,Math.PI*2);
-              ctx.ellipse(cxx-cw*0.3,cyy+cl*3,cw*0.45,8+cl*2,0,0,Math.PI*2);
-              ctx.fillStyle=hsla(0,0,100,0.08+(1-cl/4)*0.12); ctx.fill(); } }
-          ctx.globalAlpha=1;
-          for (let mi=0;mi<(has_mountains?4:2);mi++) { ctx.beginPath(); const mb=0.32+mi*0.08; ctx.moveTo(0,h*mb);
-            for (let x=0;x<=w;x+=3) { const m1=Math.sin(x*0.003+mi*2.7)*h*0.035, m2=Math.sin(x*0.007+mi*4.3)*h*0.017;
-              ctx.lineTo(x,h*mb-m1-m2-Math.sin(x*0.015+mi*1.1)*h*0.008); }
-            ctx.lineTo(w,h); ctx.lineTo(0,h); ctx.closePath();
-            ctx.fillStyle=hsl(220+mi*15,25,32+mi*10); ctx.globalAlpha=0.4+mi*0.12; ctx.fill(); ctx.globalAlpha=1; }
-          for (let ti=0;ti<3;ti++) { ctx.beginPath(); const tb=0.55+ti*0.09; ctx.moveTo(0,h*tb);
-            for (let x=0;x<=w;x+=3) ctx.lineTo(x,h*(tb+Math.sin(x*0.005+ti*2)*0.025+Math.sin(x*0.012+ti*3)*0.012));
-            ctx.lineTo(w,h); ctx.lineTo(0,h); ctx.closePath(); ctx.fillStyle=hsl(110+ti*20,40+ti*5,20+ti*10); ctx.fill(); }
-          if (has_forest||(!has_ocean&&!has_snow)) { const tc=has_forest?10:4;
-            for (let ti=0;ti<tc;ti++) { const tx=(ti*73.7+seed*2)%w, th=30+rng()*70;
-              ctx.fillStyle='rgba(0,0,0,0.06)'; ctx.beginPath(); ctx.ellipse(tx+1,h-th*0.08,8,2,0,0,Math.PI*2); ctx.fill();
-              ctx.fillStyle=hsl(25,30,14); ctx.fillRect(tx-1,h-th*0.28,3,th*0.28);
-              for (let fl=0;fl<4;fl++) { ctx.beginPath();
-                ctx.ellipse(tx,h-th*0.32-fl*th*0.15,8+rng()*6,5+fl*2,0,0,Math.PI*2);
-                ctx.fillStyle=hsla(100+rng()*25+fl*10,45+rng()*15,20+fl*6,0.5+rng()*0.2); ctx.fill(); } } }
-          if (has_ocean||has_water) { const wy=has_ocean?h*0.62:h*0.7;
-            const wg=ctx.createLinearGradient(0,wy,0,h);
-            wg.addColorStop(0,hsla(210,50,has_sunset?42:36,0.7)); wg.addColorStop(0.5,hsla(220,45,26,0.6));
-            wg.addColorStop(1,hsla(230,40,16,0.8)); ctx.fillStyle=wg; ctx.fillRect(0,wy,h,wy);
-            for (let ri=0;ri<20;ri++) { ctx.beginPath();
-              ctx.ellipse(rng()*w,wy+5+rng()*(h-wy-10),10+rng()*30,1.5+rng()*2,rng()*3,0,Math.PI*2);
-              ctx.fillStyle=hsla(200,60,70,0.03+rng()*0.04); ctx.fill(); } }
-          if (has_flowers) { for (let fi=0;fi<25;fi++) { const fx=rng()*w, fy=h*0.7+rng()*h*0.25;
-              ctx.strokeStyle=hsla(100,60,28,0.3); ctx.lineWidth=0.5;
-              ctx.beginPath(); ctx.moveTo(fx,fy); ctx.lineTo(fx,fy-4-rng()*6); ctx.stroke();
-              for (let p=0;p<5;p++) { const a=(p/5)*Math.PI*2; ctx.beginPath();
-                ctx.ellipse(fx+Math.cos(a)*2,fy-5-rng()*6+Math.sin(a)*2,1.5,2.5,a,0,Math.PI*2);
-                ctx.fillStyle=hsla((baseHue+fi*25+60)%360,70+rng()*20,50+rng()*20,0.3+rng()*0.3); ctx.fill(); } } }
-          for (let gi=0;gi<60;gi++) { ctx.beginPath(); const gx=rng()*w, gy=h*0.7+rng()*h*0.28;
-            ctx.moveTo(gx,gy); ctx.lineTo(gx+rng()*2-1,gy-3-rng()*6);
-            ctx.strokeStyle=hsla(100+rng()*40,40+rng()*20,18+rng()*12,0.1+rng()*0.15); ctx.lineWidth=0.5+rng()*0.5; ctx.stroke(); }
-          for (let fi=0;fi<2;fi++) { const fy=h*0.2+fi*h*0.2; const fog=ctx.createRadialGradient(w*0.5,fy,0,w*0.5,fy,w*0.4);
-            fog.addColorStop(0,hsla(0,0,100,0.03)); fog.addColorStop(1,'rgba(0,0,0,0)'); ctx.fillStyle=fog; ctx.fillRect(0,0,w,h); }
-          const vig=ctx.createRadialGradient(w*0.5,h*0.5,h*0.35,w*0.5,h*0.5,h*0.85);
-          vig.addColorStop(0,'rgba(0,0,0,0)'); vig.addColorStop(0.7,'rgba(0,0,0,0.03)'); vig.addColorStop(1,'rgba(0,0,0,0.2)');
-          ctx.fillStyle=vig; ctx.fillRect(0,0,w,h);
-        } else if (style === 'abstract') {
-          const grad = ctx.createRadialGradient(w * 0.5, h * 0.5, 0, w * 0.5, h * 0.5, w * 0.7);
-          grad.addColorStop(0, hsl(baseHue, 80, 20));
-          grad.addColorStop(0.5, hsl(baseHue + hueShift, 70, 15));
-          grad.addColorStop(1, hsl(baseHue + hueShift * 2, 60, 10));
-          ctx.fillStyle = grad;
-          ctx.fillRect(0, 0, w, h);
-          for (let i = 0; i < 15; i++) {
-            ctx.beginPath();
-            const cx = w * rng(), cy = h * rng();
-            for (let a = 0; a < Math.PI * 2; a += 0.1) {
-              const radius = 20 + Math.sin(a * 3 + i) * 15 + Math.cos(a * 5 + i * 2) * 10;
-              (a === 0) ? ctx.moveTo(cx + radius * Math.cos(a), cy + radius * Math.sin(a)) : ctx.lineTo(cx + radius * Math.cos(a), cy + radius * Math.sin(a));
-            }
-            ctx.closePath();
-            ctx.fillStyle = hsla(baseHue + i * 24, 80, 50 + i * 3, 0.15);
-            ctx.fill();
-            ctx.strokeStyle = hsla(baseHue + i * 24, 90, 65, 0.3);
-            ctx.lineWidth = 1.5;
-            ctx.stroke();
-          }
-          for (let i = 0; i < 80; i++) {
-            ctx.beginPath();
-            ctx.arc(w * rng(), h * rng(), 1 + rng() * 2, 0, Math.PI * 2);
-            ctx.fillStyle = hsla(baseHue + i * 4, 90, 75, 0.5 + rng() * 0.4);
-            ctx.fill();
-          }
-        } else if (style === 'cinematic') {
-          // Cinematic widescreen look
-          ctx.clearRect(0, 0, w, h);
-          const grad = ctx.createLinearGradient(0, 0, 0, h);
-          grad.addColorStop(0, hsl(220, 40, 18)); grad.addColorStop(0.3, hsl(210, 35, 25));
-          grad.addColorStop(0.6, hsl(200, 30, 20)); grad.addColorStop(1, hsl(190, 25, 12));
-          ctx.fillStyle = grad; ctx.fillRect(0, 0, w, h);
-          // Light beam effect
-          for (let i = 0; i < 3; i++) {
-            const beam = ctx.createRadialGradient(w * (0.2 + i * 0.3), 0, 0, w * (0.2 + i * 0.3), 0, w * 0.2);
-            beam.addColorStop(0, hsla(45, 60, 80, 0.04 + i * 0.01));
-            beam.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = beam; ctx.fillRect(0, 0, w, h);
-          }
-          // Cinematic grain
-          ctx.globalAlpha = 0.04;
-          for (let i = 0; i < 100; i++) {
-            ctx.fillStyle = hsla(0, 0, rng() > 0.5 ? 100 : 0, rng() * 0.5);
-            ctx.fillRect(rng() * w, rng() * h, 1 + rng() * 2, 1);
-          }
-          ctx.globalAlpha = 1;
-          // Letterbox
-          ctx.fillStyle = '#000'; ctx.fillRect(0, 0, w, h * 0.045);
-          ctx.fillRect(0, h - h * 0.045, w, h * 0.045);
-          // Vignette
-          const v = ctx.createRadialGradient(w*0.5, h*0.5, h*0.2, w*0.5, h*0.5, h*0.7);
-          v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,0.4)');
-          ctx.fillStyle = v; ctx.fillRect(0, 0, w, h);
-
-        } else if (style === 'portrait') {
-          // Soft portrait-oriented scene
-          ctx.clearRect(0, 0, w, h);
-          const bg = ctx.createRadialGradient(w*0.5, h*0.3, 0, w*0.5, h*0.5, w*0.6);
-          bg.addColorStop(0, hsla(30, 30, 65, 1)); bg.addColorStop(0.5, hsla(25, 25, 42, 1));
-          bg.addColorStop(1, hsla(20, 20, 28, 1)); ctx.fillStyle = bg; ctx.fillRect(0, 0, w, h);
-          // Bokeh
-          ctx.globalAlpha = 0.06;
-          for (let i = 0; i < 15; i++) {
-            ctx.beginPath(); ctx.arc(rng()*w, rng()*h, 8+rng()*18, 0, Math.PI*2);
-            ctx.fillStyle = hsla(40, 80, 90, 0.3+rng()*0.3); ctx.fill();
-          }
-          ctx.globalAlpha = 1;
-          const v2 = ctx.createRadialGradient(w*0.5, h*0.4, h*0.2, w*0.5, h*0.4, h*0.7);
-          v2.addColorStop(0, 'rgba(255,255,200,0.08)'); v2.addColorStop(0.5, 'rgba(0,0,0,0)');
-          v2.addColorStop(1, 'rgba(0,0,0,0.3)'); ctx.fillStyle = v2; ctx.fillRect(0, 0, w, h);
-
-        } else if (style === 'aerial') {
-          // Aerial / drone perspective
-          ctx.clearRect(0, 0, w, h);
-          const g = ctx.createLinearGradient(0, 0, 0, h);
-          g.addColorStop(0, hsla(210, 40, 60, 1)); g.addColorStop(0.3, hsla(130, 35, 45, 1));
-          g.addColorStop(0.5, hsla(110, 40, 38, 1)); g.addColorStop(1, hsla(100, 45, 22, 1));
-          ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
-          // Terrain patches
-          ctx.globalAlpha = 0.12;
-          for (let i = 0; i < 25; i++) {
-            ctx.beginPath(); ctx.ellipse(rng()*w, h*0.3+rng()*h*0.55, 15+rng()*60, 8+rng()*25, rng()*Math.PI, 0, Math.PI*2);
-            ctx.fillStyle = hsla(90+rng()*40, 50+rng()*30, 25+rng()*20, 0.3+rng()*0.3); ctx.fill();
-          }
-          ctx.globalAlpha = 1;
-          // Roads
-          ctx.strokeStyle = hsla(0, 0, 35, 0.15); ctx.lineWidth = 1.5;
-          for (let i = 0; i < 3; i++) {
-            ctx.beginPath();
-            ctx.moveTo(rng()*w, h*0.35); ctx.quadraticCurveTo(rng()*w, h*0.55, rng()*w, h*0.85); ctx.stroke();
-          }
-          const v3 = ctx.createRadialGradient(w*0.5, h*0.5, h*0.25, w*0.5, h*0.5, h*0.8);
-          v3.addColorStop(0, 'rgba(0,0,0,0)'); v3.addColorStop(1, 'rgba(0,0,0,0.25)');
-          ctx.fillStyle = v3; ctx.fillRect(0, 0, w, h);
-
-        } else if (style === 'vivid') {
-          // HDR vivid colors
-          ctx.clearRect(0, 0, w, h);
-          const g2 = ctx.createLinearGradient(0, 0, 0, h);
-          g2.addColorStop(0, hsla(210, 60, 75, 1)); g2.addColorStop(0.3, hsla(140, 50, 50, 1));
-          g2.addColorStop(0.6, hsla(110, 55, 38, 1)); g2.addColorStop(1, hsla(90, 50, 25, 1));
-          ctx.fillStyle = g2; ctx.fillRect(0, 0, w, h);
-          // Enhanced color pops
-          ctx.globalAlpha = 0.06;
-          for (let i = 0; i < 12; i++) {
-            ctx.fillStyle = hsla((baseHue+i*40)%360, 90, 60, 0.15);
-            ctx.beginPath(); ctx.arc(rng()*w, rng()*h, 12+rng()*25, 0, Math.PI*2); ctx.fill();
-          }
-          ctx.globalAlpha = 1;
-          const v4 = ctx.createRadialGradient(w*0.5, h*0.5, h*0.3, w*0.5, h*0.5, h*0.8);
-          v4.addColorStop(0, 'rgba(0,0,0,0)'); v4.addColorStop(1, 'rgba(0,0,0,0.15)');
-          ctx.fillStyle = v4; ctx.fillRect(0, 0, w, h);
-
-        } else if (style === 'macro') {
-          // Macro / close-up detail
-          ctx.clearRect(0, 0, w, h);
-          const hue_macro = (baseHue + 120) % 360;
-          const bg2 = ctx.createRadialGradient(w*0.5, h*0.5, 0, w*0.5, h*0.5, w*0.7);
-          bg2.addColorStop(0, hsla(hue_macro, 50+rng()*20, 55+rng()*15, 1));
-          bg2.addColorStop(0.6, hsla((hue_macro+30)%360, 40+rng()*20, 30+rng()*10, 1));
-          bg2.addColorStop(1, hsla((hue_macro+50)%360, 30+rng()*15, 15+rng()*8, 1));
-          ctx.fillStyle = bg2; ctx.fillRect(0, 0, w, h);
-          // Dew drop effect
-          ctx.globalAlpha = 0.15;
-          for (let i = 0; i < 10; i++) {
-            const dx = rng()*w, dy = rng()*h, dr = 4+rng()*10;
-            ctx.beginPath(); ctx.arc(dx, dy, dr, 0, Math.PI*2);
-            ctx.fillStyle = hsla(200, 60, 90, 0.3+rng()*0.3); ctx.fill();
-            ctx.beginPath(); ctx.arc(dx-dr*0.2, dy-dr*0.2, dr*0.3, 0, Math.PI*2);
-            ctx.fillStyle = hsla(200, 80, 95, 0.5+rng()*0.3); ctx.fill();
-          }
-          ctx.globalAlpha = 1;
-          // Extreme blur vignette
-          const v5 = ctx.createRadialGradient(w*0.5, h*0.5, h*0.15, w*0.5, h*0.5, h*0.6);
-          v5.addColorStop(0, 'rgba(0,0,0,0)'); v5.addColorStop(0.3, 'rgba(0,0,0,0.02)');
-          v5.addColorStop(1, 'rgba(0,0,0,0.4)'); ctx.fillStyle = v5; ctx.fillRect(0, 0, w, h);
-
-        }
-        }
-function mulberry32(a) {
-        return function() { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
-      }
-
-      if (imageGenBtn && imagePrompt) {
-        imageGenBtn.addEventListener('click', () => {
-          const prompt = imagePrompt.value.trim() || 'KI generierte Kunst';
-          imageGenBtn.disabled = true;
-          imageGenBtn.textContent = '🎨 Generiere…';
-          const ctx = imageCanvas.getContext('2d');
-          ctx.fillStyle = 'rgba(0,0,0,0.3)';
-          ctx.fillRect(0, 0, imageCanvas.width, imageCanvas.height);
-          ctx.fillStyle = 'white';
-          ctx.font = '16px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.fillText('🎨 Generiere ' + prompt + ' …', imageCanvas.width/2, imageCanvas.height/2);
-          setTimeout(() => {
-            generateImage(prompt, selectedStyle);
-            imageGenBtn.disabled = false;
-            imageGenBtn.textContent = 'Erstellen';
-          }, 500 + Math.random() * 600);
-        });
-        imagePrompt.addEventListener('keydown', (e) => { if (e.key === 'Enter') imageGenBtn.click(); });
-      }
-      if (imageCanvas) generateImage('Willkommen bei GeminiGen AI', 'photorealistic');
-
-      // ====================================================================
-      // 3. SPEECH – Web Speech API (fully functional)
-      // ====================================================================
-      const speechText = document.getElementById('speechText');
-      const speechPlayBtn = document.getElementById('speechPlayBtn');
-      const speechPauseBtn = document.getElementById('speechPauseBtn');
-      const speechStopBtn = document.getElementById('speechStopBtn');
-      const speechMicBtn = document.getElementById('speechMicBtn');
-      const speechStatus = document.getElementById('speechStatus');
-      const speechVoice = document.getElementById('speechVoice');
-      let speechRecognition = null;
-      let isListening = false;
-      
-      // Speech Recognition
-      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (SpeechRec) {
-        speechRecognition = new SpeechRec();
-        speechRecognition.lang = 'de-DE';
-        speechRecognition.continuous = false;
-        speechRecognition.interimResults = true;
-        
-        speechRecognition.onresult = function(event) {
-          let interim = '';
-          let final = '';
-          for (let i = event.resultIndex; i < event.results.length; i++) {
-            if (event.results[i].isFinal) {
-              final += event.results[i][0].transcript;
-            } else {
-              interim += event.results[i][0].transcript;
-            }
-          }
-          if (final) {
-            speechText.value += (speechText.value ? ' ' : '') + final;
-            isListening = false;
-            speechMicBtn.classList.remove('listening');
-            speechMicBtn.textContent = '🎤';
-            speechStatus.textContent = '✅ Erkannt: \"' + final + '\"';
-            // Auto-play if text was recognized
-            if (speechText.value.trim()) setTimeout(() => speechPlayBtn.click(), 500);
-          } else if (interim) {
-            speechStatus.textContent = '🎤 H\u00f6re zu: ' + interim;
-          }
-        };
-        
-        speechRecognition.onerror = function(event) {
-          console.warn('Speech recognition error:', event.error);
-          isListening = false;
-          speechMicBtn.classList.remove('listening');
-          speechMicBtn.textContent = '🎤';
-          speechStatus.textContent = '\u26a0\ufe0f Fehler: ' + (event.error === 'no-speech' ? 'Keine Sprache erkannt' : event.error);
-        };
-        
-        speechRecognition.onend = function() {
-          if (isListening) { speechRecognition.start(); }
-          else {
-            speechMicBtn.classList.remove('listening');
-            speechMicBtn.textContent = '🎤';
-          }
-        };
-        
-        if (speechMicBtn) {
-          speechMicBtn.addEventListener('click', function() {
-            if (isListening) {
-              speechRecognition.stop();
-              isListening = false;
-              speechMicBtn.classList.remove('listening');
-              speechMicBtn.textContent = '🎤';
-              speechStatus.textContent = '⏹️ Gestoppt';
-            } else {
-              try {
-                speechRecognition.start();
-                isListening = true;
-                speechMicBtn.classList.add('listening');
-                speechMicBtn.textContent = '🔴';
-                speechStatus.textContent = '🎤 H\u00f6re zu ... Sprecht jetzt!';
-              } catch(e) {
-                speechStatus.textContent = '\u26a0\ufe0f Fehler: ' + e.message;
-              }
-            }
-          });
-        }
-      } else {
-        if (speechMicBtn) {
-          speechMicBtn.style.opacity = '0.3';
-          speechMicBtn.title = 'Spracherkennung nicht unterst\u00fctzt (Chrome empfohlen)';
-        }
-      }
-      let speechSynth = window.speechSynthesis, currentUtterance = null;
-
-      function loadVoices() {
-        if (!speechVoice) return;
-        const voices = speechSynth.getVoices();
-        const germanVoices = voices.filter(v => v.lang.startsWith('de'));
-        (germanVoices.length > 0 ? germanVoices : voices).forEach(v => {
-          const opt = document.createElement('option');
-          opt.value = v.name;
-          opt.textContent = v.name + ' (' + v.lang + ')';
-          speechVoice.appendChild(opt);
-        });
-      }
-      loadVoices();
-      if (speechSynth.onvoiceschanged !== undefined) speechSynth.onvoiceschanged = loadVoices;
-
-      if (speechPlayBtn) {
-        speechPlayBtn.addEventListener('click', () => {
-          const text = speechText ? speechText.value.trim() : '';
-          if (!text) return;
-          speechSynth.cancel();
-          currentUtterance = new SpeechSynthesisUtterance(text);
-          const voice = speechSynth.getVoices().find(v => v.name === (speechVoice ? speechVoice.value : null));
-          if (voice) currentUtterance.voice = voice;
-          currentUtterance.rate = 1.0; currentUtterance.pitch = 1.0; currentUtterance.volume = 1.0;
-          currentUtterance.onstart = () => { speechStatus.textContent = '🔊 Spreche …'; speechPlayBtn.disabled = true; speechPauseBtn.disabled = false; speechStopBtn.disabled = false; };
-          currentUtterance.onend = () => { speechStatus.textContent = '✅ Fertig!'; speechPlayBtn.disabled = false; speechPauseBtn.disabled = true; speechStopBtn.disabled = true; currentUtterance = null; };
-          currentUtterance.onerror = () => { speechStatus.textContent = '⚠️ Fehler'; speechPlayBtn.disabled = false; speechPauseBtn.disabled = true; speechStopBtn.disabled = true; currentUtterance = null; };
-          currentUtterance.onpause = () => { speechStatus.textContent = '⏸️ Pausiert'; };
-          currentUtterance.onresume = () => { speechStatus.textContent = '🔊 Spreche …'; };
-          speechSynth.speak(currentUtterance);
-        });
-      }
-      if (speechPauseBtn) {
-        speechPauseBtn.addEventListener('click', () => {
-          if (speechSynth.speaking && !speechSynth.paused) speechSynth.pause();
-          else if (speechSynth.paused) speechSynth.resume();
-        });
-      }
-      if (speechStopBtn) {
-        speechStopBtn.addEventListener('click', () => {
-          speechSynth.cancel();
-          speechStatus.textContent = '⏹️ Gestoppt';
-          speechPlayBtn.disabled = false; speechPauseBtn.disabled = true; speechStopBtn.disabled = true;
-          currentUtterance = null;
-        });
-      }
-
-      // ====================================================================
-      // 4. VIDEO – AI Video Animation Engine
-      // ====================================================================
-      const videoCanvas = document.getElementById('videoCanvas');
-      const videoPrompt = document.getElementById('videoPrompt');
-      const videoGenBtn = document.getElementById('videoGenBtn');
-      const videoStatus = document.getElementById('videoStatus');
-      const videoPlayBtn = document.getElementById('videoPlayBtn');
-      let videoFrames = [], animationId = null, currentFrame = 0, isPlaying = false;
-
-      function generateVideoFrames(prompt) {
-        if (!videoCanvas) return;
-        const ctx = videoCanvas.getContext('2d');
-        const w = videoCanvas.width, h = videoCanvas.height, numFrames = 48;
-        videoFrames = [];
-        let seed = 0;
-        for (let i = 0; i < prompt.length; i++) { seed = ((seed << 5) - seed) + prompt.charCodeAt(i); seed = seed & seed; }
-        const rng = mulberry32(Math.abs(seed)), baseHue = Math.abs(seed % 360), hueShift = 30 + Math.abs((seed * 7) % 60);
-        const hsla = (h, s, l, a) => 'hsla(' + h + ',' + s + '%,' + l + '%,' + a + ')';
-        const hsl = (h, s, l) => 'hsl(' + h + ',' + s + '%,' + l + '%)';
-
-        // Detect animation type from prompt
-        p = prompt.toLowerCase();
-        const isCosmic = p.includes('weltall') || p.includes('space') || p.includes('stern') || p.includes('galax') || p.includes('kosmos');
-        const isNature = p.includes('natur') || p.includes('wald') || p.includes('baum') || p.includes('blume') || p.includes('landschaft');
-        const isAbstract = p.includes('abstrakt') || p.includes('muster') || p.includes('farbe') || p.includes('welle');
-        const isWater = p.includes('wasser') || p.includes('meer') || p.includes('ozean') || p.includes('fluss') || p.includes('regen');
-        const animType = isCosmic ? 'cosmic' : isNature ? 'nature' : isWater ? 'water' : isAbstract ? 'abstract' : 'default';
-
-        for (let frame = 0; frame < numFrames; frame++) {
-          ctx.clearRect(0, 0, w, h);
-          const progress = frame / numFrames;
-          const hue1 = (baseHue + progress * 50) % 360;
-          const hue2 = (hue1 + hueShift) % 360;
-
-          // --- Background Gradient ---
-          const grad = ctx.createLinearGradient(0, 0, 0, h);
-          if (animType === 'cosmic') {
-            grad.addColorStop(0, '#0a0a1a');
-            grad.addColorStop(0.3, '#150a2a');
-            grad.addColorStop(0.6, '#0a1520');
-            grad.addColorStop(1, '#050810');
-          } else if (animType === 'water') {
-            const hb = (baseHue + 200 + progress * 20) % 360;
-            grad.addColorStop(0, hsl(hb, 60, 50));
-            grad.addColorStop(0.5, hsl((hb + 20) % 360, 55, 40));
-            grad.addColorStop(1, hsl((hb + 40) % 360, 50, 25));
-          } else if (animType === 'nature') {
-            grad.addColorStop(0, hsl(40, 50, 70));
-            grad.addColorStop(0.3, hsl(30, 40, 50));
-            grad.addColorStop(0.7, hsl(120, 40, 25));
-            grad.addColorStop(1, hsl(120, 40, 15));
-          } else {
-            grad.addColorStop(0, hsl(hue1, 60, 20));
-            grad.addColorStop(1, hsl(hue2, 50, 12));
-          }
-          ctx.fillStyle = grad;
-          ctx.fillRect(0, 0, w, h);
-
-          if (animType === 'cosmic') {
-            // Twinkling stars
-            for (let i = 0; i < 60; i++) {
-              const sx = (i * 67 + frame * 2) % w;
-              const sy = (i * 137) % (h * 0.6);
-              const sb = 0.3 + Math.sin(frame * 0.1 + i * 1.7) * 0.3 + 0.4;
-              ctx.beginPath();
-              ctx.arc(sx, sy, 0.5 + Math.sin(i + frame * 0.05) * 0.5, 0, Math.PI * 2);
-              ctx.fillStyle = hsla(0, 0, 100, sb);
-              ctx.fill();
-            }
-            // Nebula clouds
-            for (let i = 0; i < 3; i++) {
-              const nx = w * (0.2 + 0.6 * ((i * 0.5 + progress * 0.1) % 1));
-              const ny = h * (0.3 + 0.4 * Math.sin(i + progress));
-              const nebula = ctx.createRadialGradient(nx, ny, 0, nx, ny, w * 0.3);
-              nebula.addColorStop(0, hsla((baseHue + i * 120) % 360, 80, 50, 0.15));
-              nebula.addColorStop(0.5, hsla((baseHue + i * 120 + 30) % 360, 70, 40, 0.08));
-              nebula.addColorStop(1, 'rgba(0,0,0,0)');
-              ctx.fillStyle = nebula;
-              ctx.fillRect(0, 0, w, h);
-            }
-            // Orbiting rings
-            for (let ring = 0; ring < 2; ring++) {
-              ctx.beginPath();
-              ctx.ellipse(w * 0.5, h * 0.4, 80 + ring * 50 + Math.sin(progress * Math.PI * 2) * 10, 20 + ring * 15, 0.3, 0, Math.PI * 2);
-              ctx.strokeStyle = hsla((baseHue + ring * 180) % 360, 80, 60, 0.15 + Math.sin(progress * Math.PI * 2) * 0.1);
-              ctx.lineWidth = 1.5;
-              ctx.stroke();
-            }
-          }
-
-          if (animType === 'water') {
-            // Wave surface
-            ctx.globalAlpha = 0.3;
-            for (let wave = 0; wave < 3; wave++) {
-              ctx.beginPath();
-              ctx.moveTo(0, h * 0.6);
-              for (let x = 0; x <= w; x += 4) {
-                const wy = h * 0.6 + Math.sin(x * 0.03 + frame * 0.15 + wave * 2) * h * 0.05 + Math.sin(x * 0.01 + frame * 0.08) * h * 0.02;
-                ctx.lineTo(x, wy);
-              }
-              ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
-              ctx.fillStyle = hsla((baseHue + 200 + wave * 30) % 360, 70, 60, 0.12);
-              ctx.fill();
-            }
-            ctx.globalAlpha = 1;
-            // Bubbles
-            for (let i = 0; i < 12; i++) {
-              const bx = w * ((i / 12 + progress * 0.05) % 1);
-              const by = h * 0.7 + Math.sin(i + frame * 0.1) * h * 0.15;
-              const br = 3 + Math.sin(i * 2 + frame * 0.2) * 2;
-              ctx.beginPath();
-              ctx.arc(bx, by, br, 0, Math.PI * 2);
-              ctx.strokeStyle = hsla(200, 80, 80, 0.3);
-              ctx.lineWidth = 0.5;
-              ctx.stroke();
-            }
-          }
-
-          if (animType === 'nature') {
-            // Trees swaying
-            for (let t = 0; t < 3; t++) {
-              const tx = w * (0.2 + t * 0.3);
-              const sway = Math.sin(frame * 0.05 + t * 2) * 3;
-              // Trunk
-              ctx.fillStyle = hsl(25, 30, 20);
-              ctx.fillRect(tx - 3 + sway, h * 0.45, 6, h * 0.3);
-              // Foliage
-              ctx.fillStyle = hsl(100 + t * 20, 50, 30);
-              for (let c = 0; c < 8; c++) {
-                ctx.beginPath();
-                ctx.arc(tx + sway + Math.sin(c * 1.3 + t) * 15, h * 0.45 - c * h * 0.04, 12 + Math.sin(c + frame * 0.03) * 3, 0, Math.PI * 2);
-                ctx.fill();
-              }
-            }
-            // Falling leaves
-            for (let i = 0; i < 8; i++) {
-              const lx = w * ((i * 37 + frame * 2) % w) / w;
-              const ly = ((i * 53 + frame * 4) % (h * h)) / h;
-              ctx.fillStyle = hsla(30 + i * 20, 80, 50, 0.4);
-              ctx.beginPath();
-              ctx.ellipse(lx, ly, 3, 2, Math.sin(frame * 0.1 + i), 0, Math.PI * 2);
-              ctx.fill();
-            }
-          }
-
-          // Particle system (common to all)
-          for (let i = 0; i < 15; i++) {
-            const pAngle = (i / 15) * Math.PI * 2 + progress * Math.PI * 2;
-            const pDist = 80 + Math.sin(progress * Math.PI * 2 * 0.5 + i) * 40;
-            const px = w * 0.5 + Math.cos(pAngle) * pDist;
-            const py = h * 0.4 + Math.sin(pAngle) * pDist * 0.5 + Math.sin(progress * Math.PI * 2 + i) * 20;
-            const ps = 3 + Math.sin(frame * 0.1 + i * 1.5) * 1.5;
-            ctx.beginPath();
-            ctx.arc(px, py, ps, 0, Math.PI * 2);
-            const hue_p = (baseHue + i * 24 + frame * 2) % 360;
-            ctx.fillStyle = hsla(hue_p, 80, 70, 0.35 + Math.sin(frame * 0.08 + i) * 0.15);
-            ctx.fill();
-          }
-
-          // Geometric shapes (hexagons) floating
-          for (let i = 0; i < 4; i++) {
-            const gx = w * 0.1 + w * 0.8 * ((i * 0.3 + progress * 0.2 + Math.sin(frame * 0.02 + i * 2) * 0.05) % 1);
-            const gy = h * 0.1 + h * 0.6 * ((i * 0.7 + progress * 0.15 + Math.cos(frame * 0.03 + i) * 0.05) % 1);
-            const size = 10 + 8 * Math.sin(frame * 0.05 + i * 1.7);
-            ctx.beginPath();
-            for (let j = 0; j < 6; j++) {
-              const angle = (j / 6) * Math.PI * 2 + progress * 0.2 * (i % 2 === 0 ? 1 : -1);
-              const r = size;
-              (j === 0) ? ctx.moveTo(gx + r * Math.cos(angle), gy + r * Math.sin(angle)) : ctx.lineTo(gx + r * Math.cos(angle), gy + r * Math.sin(angle));
-            }
-            ctx.closePath();
-            ctx.fillStyle = hsla((hue1 + i * 60 + frame * 3) % 360, 70, 55, 0.12);
-            ctx.fill();
-            ctx.strokeStyle = hsla((hue1 + i * 60 + frame * 3) % 360, 90, 70, 0.3 + Math.sin(frame * 0.1 + i) * 0.15);
-            ctx.lineWidth = 1;
-            ctx.stroke();
-          }
-
-          // Text overlay
-          ctx.globalAlpha = 0.5 + Math.sin(frame * 0.15) * 0.1;
-          ctx.fillStyle = 'rgba(255,255,255,0.15)';
-          ctx.font = 'bold 14px sans-serif';
-          ctx.textAlign = 'center';
-          const words = prompt.split(' ');
-          if (words.length > 1) {
-            ctx.globalAlpha = 0.08 + Math.sin(frame * 0.1) * 0.04;
-            for (let ww = 0; ww < words.length; ww++) {
-              ctx.fillText(words[ww], w * 0.5, h - 30 + ww * 18 + Math.sin(frame * 0.1 + ww) * 3);
-            }
-          }
-          ctx.globalAlpha = 1;
-          videoFrames.push(ctx.getImageData(0, 0, w, h));
-        }
-        videoStatus.textContent = '✅ ' + numFrames + ' Frames generiert! (Stil: ' + animType + ')';
-      }
-
-      function playVideo() {
-        if (!videoCanvas || videoFrames.length === 0) return;
-        const ctx = videoCanvas.getContext('2d');
-        isPlaying = true; currentFrame = 0;
-        videoPlayBtn.textContent = '⏹️ Stop';
-        videoStatus.textContent = '▶️ Wiedergabe …';
-        function frame() {
-          if (!isPlaying || currentFrame >= videoFrames.length) {
-            isPlaying = false; videoPlayBtn.textContent = '▶️ Abspielen';
-            videoStatus.textContent = '🔁 Ende – erneut generieren f\u00fcr neues Video';
-            return;
-          }
-          ctx.putImageData(videoFrames[currentFrame], 0, 0);
-          currentFrame = (currentFrame + 1) % videoFrames.length;
-          animationId = requestAnimationFrame(frame);
-        }
-        animationId = requestAnimationFrame(frame);
-      }
-
-      if (videoGenBtn && videoPrompt) {
-        videoGenBtn.addEventListener('click', () => {
-          const prompt = videoPrompt.value.trim() || 'KI Animation';
-          if (isPlaying) isPlaying = false;
-          videoGenBtn.disabled = true;
-          videoGenBtn.textContent = '🎬 Generiere Video …';
-          videoStatus.textContent = '⏳ Erstelle Frames …';
-          setTimeout(() => {
-            generateVideoFrames(prompt);
-            videoGenBtn.disabled = false;
-            videoGenBtn.textContent = '🔄 Neu generieren';
-            videoPlayBtn.disabled = false;
-          }, 400 + Math.random() * 400);
-        });
-        videoPrompt.addEventListener('keydown', (e) => { if (e.key === 'Enter') videoGenBtn.click(); });
-      }
-      if (videoPlayBtn) {
-        videoPlayBtn.addEventListener('click', () => {
-          if (isPlaying) { isPlaying = false; videoPlayBtn.textContent = '▶️ Abspielen'; videoStatus.textContent = '⏸️ Pausiert'; }
-          else playVideo();
-        });
-      }
-      if (videoCanvas) generateVideoFrames('GeminiGen AI Animation');
-    })();
-    } catch (e) { console.warn("Init error:", e); }
-// Current year
+    // Year
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>

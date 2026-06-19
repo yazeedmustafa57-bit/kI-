@@ -1,24 +1,22 @@
-# Yazeed – Persönliche Seite
+# Yazeed – Portfolio
 
-Eine moderne, KI-thematisierte persönliche Landing Page für **Yazeed**, 
-AI Creator und Gründer von [GeminiGen AI](https://geminigen.ai).
+Eine moderne, personalisierte Portfolio-Webseite für **Yazeed**.
 
 ## Features
 
-- 🎨 Modernes Dark-Theme mit AI-Design-System
-- ⚡ Animierte Stats-Counter
-- 📱 Voll responsive (Desktop, Tablet, Mobile)
-- 🔍 Scroll-Animationen mit Intersection Observer
-- 🧩 Code-Window-Hero-Element
-- 🌐 Integrierte GeminiGen AI Plattform-Showcase
+- 🎨 Modernes Dark-Design mit Gradienten
+- ⚡ Animierte Statistik-Zähler
+- 📱 Voll responsive
+- 🔍 Intersection Observer Animationen
+- 🧩 Sauberes, minimalistisches Layout
 
 ## Technologien
 
 - HTML5 / CSS3 (Custom Properties, Grid, Flexbox)
-- Vanilla JavaScript (Intersection Observer, Scroll-Effects)
+- Vanilla JavaScript
 - Google Fonts (Inter, JetBrains Mono)
-- Keine Abhängigkeiten – läuft in jedem Browser
+- Keine Abhängigkeiten
 
 ## Verwendung
 
-Einfach `index.html` im Browser öffnen – kein Build-Server nötig.
+Einfach `index.html` im Browser öffnen.
