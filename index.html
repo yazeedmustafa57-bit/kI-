@@ -497,10 +497,24 @@
   // =============================================
   // CHAT – KOSTENLOS, KEIN API-KEY
   // =============================================
-  async function sendMessage() {
+  async function sendMessage(isImageRequest) {
+  // isImageRequest: true when called from image tab
     const input = document.getElementById('chatInput');
     const msg = input.value.trim();
     if (!msg) return;
+
+    // Wenn Nutzer nach Bild fragt, automatisch wechseln
+    if (!isImageRequest) {
+      const lower = msg.toLowerCase();
+      const wantsAction = lower.includes('erstelle') || lower.includes('generiere') || lower.includes('erzeuge') || lower.includes('zeichne') || lower.includes('male') || lower.includes('mach mir');
+      const wantsMedia = lower.includes('bild') || lower.includes('foto') || lower.includes('photo') || lower.includes('image');
+      if (wantsAction && wantsMedia) {
+        switchTab('image');
+        document.getElementById('imagePrompt').value = msg;
+        document.getElementById('imageTab').scrollIntoView({ behavior: 'smooth' });
+        return;
+      }
+    }
 
     const welcome = document.getElementById('welcomeScreen');
     if (welcome && welcome.style.display !== 'none') welcome.style.display = 'none';
