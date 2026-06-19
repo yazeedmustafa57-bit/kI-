@@ -3,372 +3,678 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Yazeed – Arena KI Plattform</title>
-  <meta name="description" content="Yazeed – Arena KI Plattform. Exklusiver Zugang zu modernster KI.">
+  <title>Yazeed AI – Chat, Bilder & Modelle</title>
+  <meta name="description" content="Yazeed AI – Die moderne KI-Plattform. Chatte mit KI, erstelle Bilder und vergleiche Modelle.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --color-bg: #0a0a0f;
-      --color-bg-elevated: #12121a;
-      --color-bg-card: #1a1a26;
-      --color-bg-card-hover: #22223a;
-      --color-border: rgba(99, 102, 241, 0.15);
-      --color-border-hover: rgba(99, 102, 241, 0.35);
-      --color-primary: #6366f1;
-      --color-primary-light: #818cf8;
-      --color-accent: #06b6d4;
-      --color-text: #f1f5f9;
-      --color-text-secondary: #94a3b8;
-      --color-text-muted: #64748b;
-      --gradient-hero: linear-gradient(135deg, #0a0a0f 0%, #12121a 50%, #1a1a2e 100%);
-      --gradient-primary: linear-gradient(135deg, #6366f1, #06b6d4);
-      --gradient-text: linear-gradient(135deg, #f1f5f9 0%, #818cf8 50%, #22d3ee 100%);
-      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
-      --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 20px;
-      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --bg: #0a0a0f;
+      --bg2: #12121a;
+      --bg3: #1c1c2a;
+      --card: #23233a;
+      --card-hover: #2a2a45;
+      --border: rgba(99,102,241,0.15);
+      --border-hover: rgba(99,102,241,0.3);
+      --primary: #6366f1;
+      --primary-light: #818cf8;
+      --accent: #06b6d4;
+      --text: #f1f5f9;
+      --text2: #94a3b8;
+      --text3: #64748b;
+      --success: #10b981;
+      --danger: #ef4444;
+      --orange: #f97316;
+      --font: 'Inter', sans-serif;
+      --mono: 'JetBrains Mono', monospace;
     }
-
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--color-primary) transparent; }
+    html { scroll-behavior: smooth; }
     body {
-      font-family: var(--font-sans);
-      background: var(--color-bg);
-      color: var(--color-text);
-      line-height: 1.6;
-      overflow-x: hidden;
+      font-family: var(--font); background: var(--bg); color: var(--text);
+      overflow: hidden; height: 100vh;
     }
-    ::selection { background: var(--color-primary); color: white; }
+    ::selection { background: var(--primary); color: white; }
 
-    .bg-grid {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background-image: linear-gradient(rgba(99,102,241,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(99,102,241,0.03) 1px, transparent 1px);
-      background-size: 60px 60px; z-index: 0; pointer-events: none;
+    /* LAYOUT */
+    .app { display: flex; height: 100vh; width: 100vw; }
+    .sidebar {
+      width: 260px; background: var(--bg2); border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; flex-shrink: 0;
     }
-    .bg-orb { position: fixed; border-radius: 50%; filter: blur(100px); pointer-events: none; z-index: 0; }
-    .bg-orb--1 { width: 600px; height: 600px; background: rgba(99,102,241,0.08); top: -200px; right: -200px; animation: orbFloat 20s ease-in-out infinite; }
-    .bg-orb--2 { width: 400px; height: 400px; background: rgba(6,182,212,0.06); bottom: -100px; left: -100px; animation: orbFloat 25s ease-in-out infinite reverse; }
-    .bg-orb--3 { width: 300px; height: 300px; background: rgba(99,102,241,0.05); top: 50%; left: 50%; transform: translate(-50%, -50%); animation: orbFloat 18s ease-in-out infinite 5s; }
-    @keyframes orbFloat {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      33% { transform: translate(30px, -30px) scale(1.05); }
-      66% { transform: translate(-20px, 20px) scale(0.95); }
+    .sidebar-header {
+      padding: 20px 16px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .sidebar-logo {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; color: white; font-size: 1rem;
+    }
+    .sidebar-title { font-weight: 700; font-size: 1.1rem; }
+    .sidebar-title span { color: var(--primary-light); font-weight: 300; }
+
+    .sidebar-section { padding: 16px; }
+    .sidebar-label {
+      font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--text3); font-weight: 600; margin-bottom: 12px;
+    }
+    .model-list { display: flex; flex-direction: column; gap: 4px; }
+    .model-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; border-radius: 8px; cursor: pointer;
+      transition: all 0.2s; font-size: 0.85rem; color: var(--text2);
+    }
+    .model-item:hover { background: var(--bg3); color: var(--text); }
+    .model-item.active { background: var(--card); color: var(--text); border: 1px solid var(--border-hover); }
+    .model-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    }
+    .model-item .model-name { font-weight: 500; flex: 1; }
+    .model-item .model-badge {
+      font-size: 0.6rem; padding: 2px 6px; border-radius: 4px;
+      background: rgba(99,102,241,0.15); color: var(--primary-light);
     }
 
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
-    .section { padding: 80px 0; position: relative; }
-    .section-label {
-      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
-      text-transform: uppercase; letter-spacing: 0.15em; color: var(--color-primary-light); margin-bottom: 12px; display: block;
+    .sidebar-footer {
+      margin-top: auto; padding: 16px;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
     }
-    .section-title {
-      font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; line-height: 1.15; margin-bottom: 16px;
-      background: var(--gradient-text); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    .sidebar-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--orange), var(--danger));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 700; color: white;
     }
-    .section-subtitle {
-      font-size: 1.1rem; color: var(--color-text-secondary); max-width: 600px; line-height: 1.7;
+    .sidebar-user { font-size: 0.85rem; flex: 1; }
+    .sidebar-user span { display: block; font-size: 0.7rem; color: var(--text3); }
+
+    /* MAIN */
+    .main {
+      flex: 1; display: flex; flex-direction: column; overflow: hidden;
+    }
+    .topbar {
+      padding: 12px 24px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 16px; background: var(--bg2);
+    }
+    .topbar-tabs { display: flex; gap: 4px; }
+    .tab-btn {
+      padding: 8px 18px; border-radius: 8px; border: none;
+      background: transparent; color: var(--text3); cursor: pointer;
+      font-size: 0.85rem; font-weight: 500; transition: 0.2s;
+    }
+    .tab-btn:hover { color: var(--text); background: var(--bg3); }
+    .tab-btn.active { color: var(--text); background: var(--card); }
+
+    .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+    .model-selector {
+      padding: 6px 12px; border-radius: 8px; background: var(--card);
+      border: 1px solid var(--border); color: var(--text);
+      font-size: 0.8rem; cursor: pointer;
     }
 
-    /* NAV */
-    .nav { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; padding: 16px 0; transition: var(--transition); }
-    .nav.scrolled { background: rgba(10,10,15,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--color-border); padding: 10px 0; }
-    .nav__inner { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
-    .nav__logo { font-size: 1.4rem; font-weight: 800; color: var(--color-text); text-decoration: none; display: flex; align-items: center; gap: 10px; }
-    .nav__logo-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--gradient-primary); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.1rem; color: white; }
-    .nav__links { display: flex; align-items: center; gap: 32px; list-style: none; }
-    .nav__links a { color: var(--color-text-secondary); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: var(--transition); position: relative; }
-    .nav__links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: var(--gradient-primary); transition: var(--transition); border-radius: 2px; }
-    .nav__links a:hover { color: var(--color-text); }
-    .nav__links a:hover::after { width: 100%; }
-    .nav__cta { background: var(--gradient-primary); color: white !important; padding: 10px 24px; border-radius: 50px; font-weight: 600; }
-    .nav__cta::after { display: none !important; }
+    /* CHAT AREA */
+    .chat-area {
+      flex: 1; overflow-y: auto; padding: 24px;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .chat-area::-webkit-scrollbar { width: 6px; }
+    .chat-area::-webkit-scrollbar-track { background: transparent; }
+    .chat-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-    /* HERO */
-    .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 120px 0 80px; text-align: center; }
-    .hero__badge { display: inline-block; padding: 8px 20px; border-radius: 50px; background: rgba(99,102,241,0.1); border: 1px solid var(--color-border); font-size: 0.85rem; color: var(--color-primary-light); margin-bottom: 24px; font-weight: 500; }
-    .hero__title { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900; line-height: 1.1; margin-bottom: 24px; }
-    .hero__title-line { display: block; }
-    .hero__title-line--accent { background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .hero__subtitle { font-size: 1.15rem; color: var(--color-text-secondary); max-width: 600px; margin: 0 auto 40px; line-height: 1.8; }
-    .hero__actions { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; }
-    .hero__btn { padding: 14px 32px; border-radius: 50px; font-size: 0.95rem; font-weight: 600; cursor: pointer; border: none; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: var(--transition); }
-    .hero__btn--primary { background: var(--gradient-primary); color: white; }
-    .hero__btn--primary:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(99,102,241,0.35); }
-    .hero__btn--secondary { background: transparent; color: var(--color-text); border: 1px solid var(--color-border); }
-    .hero__btn--secondary:hover { border-color: var(--color-primary); }
+    .message {
+      display: flex; gap: 12px; max-width: 800px; width: 100%;
+      margin: 0 auto;
+    }
+    .message-avatar {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 700;
+    }
+    .message-avatar.ai { background: var(--primary); }
+    .message-avatar.user { background: var(--orange); }
+    .message-content {
+      flex: 1; padding-top: 4px;
+    }
+    .message-name { font-size: 0.8rem; color: var(--text3); margin-bottom: 4px; }
+    .message-text {
+      font-size: 0.95rem; line-height: 1.7; color: var(--text2);
+    }
+    .message-text strong { color: var(--text); }
+    .message-text p { margin-bottom: 8px; }
+    .message-time { font-size: 0.7rem; color: var(--text3); margin-top: 8px; }
 
-    /* LAUNCH PAGE – Vollbild KI-Startseite */
-    .launch {
-      min-height: 90vh;
-      display: flex;
+    /* WELCOME */
+    .welcome {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; text-align: center;
+      padding: 40px;
+    }
+    .welcome-icon {
+      width: 80px; height: 80px; border-radius: 20px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem; margin-bottom: 24px;
+      box-shadow: 0 0 60px rgba(99,102,241,0.2);
+    }
+    .welcome h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; }
+    .welcome p { color: var(--text2); max-width: 400px; line-height: 1.6; }
+    .welcome-suggestions {
+      display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+      margin-top: 32px;
+    }
+    .suggestion-chip {
+      padding: 8px 16px; border-radius: 50px; background: var(--card);
+      border: 1px solid var(--border); color: var(--text2);
+      font-size: 0.8rem; cursor: pointer; transition: 0.2s;
+    }
+    .suggestion-chip:hover { border-color: var(--primary); color: var(--text); background: var(--bg3); }
+
+    /* INPUT */
+    .input-area {
+      padding: 16px 24px 24px; border-top: 1px solid var(--border);
+      background: var(--bg2);
+    }
+    .input-wrapper {
+      max-width: 800px; margin: 0 auto;
+      display: flex; gap: 8px; align-items: flex-end;
+    }
+    .input-field {
+      flex: 1; padding: 14px 18px; border-radius: 12px;
+      border: 1px solid var(--border); background: var(--card);
+      color: var(--text); font-size: 0.9rem; font-family: var(--font);
+      outline: none; resize: none; transition: 0.2s;
+      min-height: 52px; max-height: 150px;
+    }
+    .input-field:focus { border-color: var(--primary); }
+    .input-field::placeholder { color: var(--text3); }
+    .send-btn {
+      width: 52px; height: 52px; border-radius: 12px; border: none;
+      background: var(--primary); color: white; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: 0.2s; flex-shrink: 0;
+    }
+    .send-btn:hover { background: var(--primary-light); }
+    .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* IMAGE TAB */
+    .image-area {
+      flex: 1; overflow-y: auto; padding: 24px;
+      display: none; flex-direction: column; gap: 24px;
+    }
+    .image-area.active { display: flex; }
+    .image-area::-webkit-scrollbar { width: 6px; }
+    .image-area::-webkit-scrollbar-track { background: transparent; }
+    .image-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    .image-generator {
+      max-width: 600px; margin: 0 auto; width: 100%; text-align: center;
+    }
+    .image-generator h2 { font-size: 1.3rem; margin-bottom: 8px; }
+    .image-generator p { color: var(--text2); font-size: 0.9rem; margin-bottom: 24px; }
+    .image-prompt-box {
+      display: flex; flex-direction: column; gap: 12px;
       align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 60px 0;
     }
-    .launch__card {
-      background: var(--color-bg-card);
-      border: 1px solid var(--color-border);
-      border-radius: 24px;
-      padding: 60px 40px;
-      max-width: 560px;
-      width: 100%;
-      transition: var(--transition);
+    .image-input {
+      width: 100%; padding: 14px 18px; border-radius: 12px;
+      border: 1px solid var(--border); background: var(--card);
+      color: var(--text); font-size: 0.9rem; font-family: var(--font);
+      outline: none; transition: 0.2s;
     }
-    .launch__card:hover {
-      border-color: var(--color-border-hover);
-      box-shadow: 0 0 60px rgba(99,102,241,0.1);
+    .image-input:focus { border-color: var(--primary); }
+    .image-generate-btn {
+      padding: 12px 36px; border-radius: 12px; border: none;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white; font-weight: 600; cursor: pointer;
+      font-size: 0.9rem; transition: 0.2s;
     }
-    .launch__icon {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #f97316, #ef4444);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3rem;
-      margin: 0 auto 24px;
-      box-shadow: 0 0 40px rgba(249,115,22,0.3);
-      animation: glowPulse 3s ease-in-out infinite;
-    }
-    @keyframes glowPulse {
-      0%, 100% { box-shadow: 0 0 40px rgba(249,115,22,0.3); }
-      50% { box-shadow: 0 0 70px rgba(249,115,22,0.5); }
-    }
-    .launch__title {
-      font-size: 2rem;
-      font-weight: 800;
-      margin-bottom: 8px;
-    }
-    .launch__sub {
-      color: var(--color-text-secondary);
-      margin-bottom: 8px;
-      font-size: 1rem;
-    }
-    .launch__user {
-      color: var(--color-primary-light);
-      font-size: 0.9rem;
-      margin-bottom: 32px;
-      font-family: var(--font-mono);
-    }
-    .launch__btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      padding: 18px 48px;
-      border-radius: 60px;
-      font-size: 1.2rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #f97316, #ef4444);
-      color: white;
-      border: none;
-      cursor: pointer;
-      text-decoration: none;
-      transition: var(--transition);
-      animation: btnPulse 2s ease-in-out infinite;
-    }
-    @keyframes btnPulse {
-      0%, 100% { box-shadow: 0 0 20px rgba(249,115,22,0.3); }
-      50% { box-shadow: 0 0 50px rgba(249,115,22,0.6); }
-    }
-    .launch__btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 80px rgba(249,115,22,0.5);
-    }
-    .launch__btn:active {
-      transform: scale(0.98);
-    }
-    .launch__hint {
+    .image-generate-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(99,102,241,0.3); }
+    .image-result {
       margin-top: 24px;
-      font-size: 0.8rem;
-      color: var(--color-text-muted);
+      width: 100%; aspect-ratio: 1;
+      border-radius: 16px; border: 1px solid var(--border);
+      background: var(--card);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; position: relative;
     }
-    .launch__status {
-      margin-top: 20px;
-      padding: 16px;
-      border-radius: 12px;
-      background: rgba(16,185,129,0.1);
-      border: 1px solid rgba(16,185,129,0.2);
+    .image-result canvas {
+      width: 100%; height: 100%;
+    }
+    .image-result-placeholder {
+      color: var(--text3); font-size: 0.9rem;
+    }
+
+    /* MODELS TAB */
+    .models-area {
+      flex: 1; overflow-y: auto; padding: 24px;
       display: none;
     }
-    .launch__status--visible {
-      display: block;
-      animation: fadeIn 0.5s ease;
+    .models-area.active { display: block; }
+    .models-grid {
+      max-width: 800px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+    .model-card {
+      background: var(--card); border-radius: 12px; padding: 20px;
+      border: 1px solid var(--border); transition: 0.2s;
     }
-    .launch__status-title {
-      font-weight: 600;
-      color: var(--color-success);
-      margin-bottom: 4px;
+    .model-card:hover { border-color: var(--accent); }
+    .model-card-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .model-card-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; color: white; font-size: 0.9rem;
     }
-    .launch__status-text {
-      font-size: 0.85rem;
-      color: var(--color-text-secondary);
-    }
+    .model-card h3 { font-size: 1rem; }
+    .model-card p { font-size: 0.8rem; color: var(--text2); line-height: 1.5; }
+    .model-card-stats { display: flex; gap: 16px; margin-top: 12px; }
+    .model-stat { text-align: center; }
+    .model-stat-value { font-size: 1rem; font-weight: 700; color: var(--primary-light); }
+    .model-stat-label { font-size: 0.6rem; color: var(--text3); text-transform: uppercase; }
 
-    /* INFO */
-    .info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; margin-top: 40px; }
-    .info-card { background: var(--color-bg-card); border-radius: var(--radius-md); padding: 32px; border: 1px solid var(--color-border); transition: var(--transition); }
-    .info-card:hover { border-color: var(--color-border-hover); transform: translateY(-4px); }
-    .info-card__icon { font-size: 2rem; margin-bottom: 16px; }
-    .info-card__title { font-size: 1.2rem; font-weight: 700; margin-bottom: 12px; }
-    .info-card__desc { font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.7; }
-
-    /* FOOTER */
-    .footer { border-top: 1px solid var(--color-border); padding: 40px 0; text-align: center; }
-    .footer__links { display: flex; justify-content: center; gap: 24px; margin-bottom: 20px; }
-    .footer__links a { color: var(--color-text-secondary); text-decoration: none; font-size: 0.9rem; transition: var(--transition); }
-    .footer__links a:hover { color: var(--color-primary-light); }
-    .footer__copy { font-size: 0.8rem; color: var(--color-text-muted); }
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
     @media (max-width: 768px) {
-      .nav__links { display: none; }
-      .launch__card { padding: 40px 24px; }
-      .launch__btn { padding: 16px 32px; font-size: 1rem; }
+      .sidebar { display: none; }
+      .models-grid { grid-template-columns: 1fr; }
+      .welcome h1 { font-size: 1.4rem; }
     }
   </style>
 </head>
 <body>
-  <div class="bg-grid"></div>
-  <div class="bg-orb bg-orb--1"></div>
-  <div class="bg-orb bg-orb--2"></div>
-  <div class="bg-orb bg-orb--3"></div>
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">Y</div>
+      <div class="sidebar-title">Yazeed <span>AI</span></div>
+    </div>
 
-  <!-- NAV -->
-  <nav class="nav" id="nav">
-    <div class="nav__inner">
-      <a href="#" class="nav__logo">
-        <div class="nav__logo-icon">Y</div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">KI Modelle</div>
+      <div class="model-list">
+        <div class="model-item active" onclick="selectModel(this, 'gpt5')">
+          <div class="model-dot" style="background:#10b981"></div>
+          <span class="model-name">GPT-5.4</span>
+          <span class="model-badge">NEU</span>
+        </div>
+        <div class="model-item" onclick="selectModel(this, 'gemini3')">
+          <div class="model-dot" style="background:#6366f1"></div>
+          <span class="model-name">Gemini 3.1 Pro</span>
+          <span class="model-badge">TOP</span>
+        </div>
+        <div class="model-item" onclick="selectModel(this, 'claude4')">
+          <div class="model-dot" style="background:#f97316"></div>
+          <span class="model-name">Claude 4</span>
+        </div>
+        <div class="model-item" onclick="selectModel(this, 'llama4')">
+          <div class="model-dot" style="background:#ec4899"></div>
+          <span class="model-name">Llama 4</span>
+        </div>
+        <div class="model-item" onclick="selectModel(this, 'grok3')">
+          <div class="model-dot" style="background:#22d3ee"></div>
+          <span class="model-name">Grok 3</span>
+        </div>
+        <div class="model-item" onclick="selectModel(this, 'mistral')">
+          <div class="model-dot" style="background:#a855f7"></div>
+          <span class="model-name">Mistral Large</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Funktionen</div>
+      <div class="model-list">
+        <div class="model-item active" onclick="switchTab('chat')">
+          <span>💬</span>
+          <span class="model-name">Chat</span>
+        </div>
+        <div class="model-item" onclick="switchTab('image')">
+          <span>🎨</span>
+          <span class="model-name">Bildgenerierung</span>
+        </div>
+        <div class="model-item" onclick="switchTab('models')">
+          <span>🏆</span>
+          <span class="model-name">Modellübersicht</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-avatar">Y</div>
+      <div class="sidebar-user">
         Yazeed
-      </a>
-      <ul class="nav__links" id="navLinks">
-        <li><a href="#start">Arena KI</a></li>
-        <li><a href="#info">Features</a></li>
-        <li><a href="#start" class="nav__cta">&#x1F680; Starten</a></li>
-      </ul>
-    </div>
-  </nav>
-
-  <!-- HERO -->
-  <section class="hero">
-    <div class="container">
-      <div class="hero__badge">&#x1F44B; Willkommen auf Yazeeds Plattform</div>
-      <h1 class="hero__title">
-        <span class="hero__title-line">Yazeeds</span>
-        <span class="hero__title-line hero__title-line--accent">Arena KI Plattform</span>
-      </h1>
-      <p class="hero__subtitle">
-        Deine persönliche KI-Plattform. Chatten, Bilder erstellen, 
-        Videos generieren – mit den modernsten KI-Modellen. 
-        Ein Klick und du bist drin.
-      </p>
-      <div class="hero__actions">
-        <a href="#start" class="hero__btn hero__btn--primary">&#x1F680; Jetzt starten</a>
-        <a href="#info" class="hero__btn hero__btn--secondary">&#x2193; Mehr erfahren</a>
+        <span>Inhaber · Arena Style</span>
       </div>
     </div>
-  </section>
+  </aside>
 
-  <!-- LAUNCH PAGE -->
-  <section class="section" id="start">
-    <div class="container">
-      <div class="launch">
-        <div class="launch__card">
-          <div class="launch__icon">&#x1F916;</div>
-          <h2 class="launch__title">Arena KI</h2>
-          <p class="launch__sub">Exklusiver Zugang für</p>
-          <p class="launch__user">&#x1F464; Yazeed</p>
-          
-          <a href="https://arena.ai" target="_blank" class="launch__btn" id="launchBtn" onclick="handleLaunch()">
-            &#x1F510; Arena KI öffnen
-          </a>
-          
-          <div class="launch__hint">
-            &#x2139;&#xFE0F; Wird in einem neuen Tab geöffnet – melde dich mit deinem Account an
+  <!-- MAIN -->
+  <div class="main">
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-tabs">
+        <button class="tab-btn active" onclick="switchTab('chat')">💬 Chat</button>
+        <button class="tab-btn" onclick="switchTab('image')">🎨 Bilder</button>
+        <button class="tab-btn" onclick="switchTab('models')">🏆 Modelle</button>
+      </div>
+      <div class="topbar-right">
+        <span style="font-size:0.8rem;color:var(--text3)">🌐 Yazeed AI</span>
+        <span style="font-size:0.7rem;color:var(--success);display:flex;align-items:center;gap:4px">
+          <span style="width:6px;height:6px;border-radius:50%;background:var(--success);display:inline-block"></span>
+          Kostenlos
+        </span>
+      </div>
+    </div>
+
+    <!-- CHAT TAB -->
+    <div id="chatTab" class="chat-area">
+      <div class="welcome" id="welcomeScreen">
+        <div class="welcome-icon">🤖</div>
+        <h1>Yazeed AI</h1>
+        <p>Wähle ein Modell aus der Seitenleiste und starte einen Chat. Deine KI – keine Limits.</p>
+        <div class="welcome-suggestions">
+          <span class="suggestion-chip" onclick="askSuggestion('Schreibe einen kreativen Text über die Zukunft der KI')">🚀 Zukunft der KI</span>
+          <span class="suggestion-chip" onclick="askSuggestion('Erkläre Quantencomputing einfach')">⚛️ Quantencomputing</span>
+          <span class="suggestion-chip" onclick="askSuggestion('Schreibe einen Poem über das Internet')">📝 Gedicht</span>
+          <span class="suggestion-chip" onclick="askSuggestion('Was sind die neuesten KI-Trends?')">📊 KI Trends</span>
+        </div>
+      </div>
+      <div id="chatMessages"></div>
+    </div>
+
+    <!-- IMAGE TAB -->
+    <div id="imageTab" class="image-area">
+      <div class="image-generator">
+        <h2>🎨 KI Bildgenerierung</h2>
+        <p>Beschreibe dein Wunschbild und die KI erstellt es für dich.</p>
+        <div class="image-prompt-box">
+          <input type="text" class="image-input" id="imagePrompt" placeholder="z.B. Ein fotorealistischer Sonnenuntergang am Strand mit Palmen..." />
+          <button class="image-generate-btn" onclick="generateImage()">✨ Bild erstellen</button>
+        </div>
+        <div class="image-result" id="imageResult">
+          <span class="image-result-placeholder">Dein Bild erscheint hier</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODELS TAB -->
+    <div id="modelsTab" class="models-area">
+      <div class="models-grid">
+        <div class="model-card">
+          <div class="model-card-top">
+            <div class="model-card-icon" style="background:#10b981">G</div>
+            <h3>GPT-5.4</h3>
           </div>
-
-          <div class="launch__status" id="launchStatus">
-            <div class="launch__status-title">&#x2705; Arena KI geöffnet!</div>
-            <div class="launch__status-text" id="loginInfo">
-              E-Mail: yovin77861@synsky.com<br>
-              Passwort: 333221Akon53@
-            </div>
+          <p>OpenAIs fortschrittlichstes Modell. Hervorragend in Reasoning, Kreativität und Coding.</p>
+          <div class="model-card-stats">
+            <div class="model-stat"><div class="model-stat-value">#1</div><div class="model-stat-label">Ranking</div></div>
+            <div class="model-stat"><div class="model-stat-value">128K</div><div class="model-stat-label">Kontext</div></div>
+            <div class="model-stat"><div class="model-stat-value">GPT</div><div class="model-stat-label">Typ</div></div>
+          </div>
+        </div>
+        <div class="model-card">
+          <div class="model-card-top">
+            <div class="model-card-icon" style="background:#6366f1">G</div>
+            <h3>Gemini 3.1 Pro</h3>
+          </div>
+          <p>Googles multimodales Kraftpaket. Text, Bilder, Audio – alles in einem Modell.</p>
+          <div class="model-card-stats">
+            <div class="model-stat"><div class="model-stat-value">#2</div><div class="model-stat-label">Ranking</div></div>
+            <div class="model-stat"><div class="model-stat-value">1M</div><div class="model-stat-label">Kontext</div></div>
+            <div class="model-stat"><div class="model-stat-value">Multi</div><div class="model-stat-label">Typ</div></div>
+          </div>
+        </div>
+        <div class="model-card">
+          <div class="model-card-top">
+            <div class="model-card-icon" style="background:#f97316">C</div>
+            <h3>Claude 4</h3>
+          </div>
+          <p>Anthropics sicherstes und nuanciertestes Modell. Ideal für komplexe Analysen.</p>
+          <div class="model-card-stats">
+            <div class="model-stat"><div class="model-stat-value">#3</div><div class="model-stat-label">Ranking</div></div>
+            <div class="model-stat"><div class="model-stat-value">200K</div><div class="model-stat-label">Kontext</div></div>
+            <div class="model-stat"><div class="model-stat-value">Safe</div><div class="model-stat-label">Typ</div></div>
+          </div>
+        </div>
+        <div class="model-card">
+          <div class="model-card-top">
+            <div class="model-card-icon" style="background:#ec4899">L</div>
+            <h3>Llama 4</h3>
+          </div>
+          <p>Metas Open-Source-Spitzenmodell. Leistungsstark und vollständig transparent.</p>
+          <div class="model-card-stats">
+            <div class="model-stat"><div class="model-stat-value">Open</div><div class="model-stat-label">Source</div></div>
+            <div class="model-stat"><div class="model-stat-value">128K</div><div class="model-stat-label">Kontext</div></div>
+            <div class="model-stat"><div class="model-stat-value">Meta</div><div class="model-stat-label">Typ</div></div>
+          </div>
+        </div>
+        <div class="model-card">
+          <div class="model-card-top">
+            <div class="model-card-icon" style="background:#22d3ee">G</div>
+            <h3>Grok 3</h3>
+          </div>
+          <p>xAI's neuestes Modell mit Echtzeit-Wissen und humorvollem Ton.</p>
+          <div class="model-card-stats">
+            <div class="model-stat"><div class="model-stat-value">Real</div><div class="model-stat-label">Time</div></div>
+            <div class="model-stat"><div class="model-stat-value">128K</div><div class="model-stat-label">Kontext</div></div>
+            <div class="model-stat"><div class="model-stat-value">xAI</div><div class="model-stat-label">Typ</div></div>
+          </div>
+        </div>
+        <div class="model-card">
+          <div class="model-card-top">
+            <div class="model-card-icon" style="background:#a855f7">M</div>
+            <h3>Mistral Large</h3>
+          </div>
+          <p>Europas bestes KI-Modell. Effizient, mehrsprachig und datenschutzorientiert.</p>
+          <div class="model-card-stats">
+            <div class="model-stat"><div class="model-stat-value">EU</div><div class="model-stat-label">Top</div></div>
+            <div class="model-stat"><div class="model-stat-value">32K</div><div class="model-stat-label">Kontext</div></div>
+            <div class="model-stat"><div class="model-stat-value">Mistral</div><div class="model-stat-label">Typ</div></div>
           </div>
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- INFO -->
-  <section class="section" id="info">
-    <div class="container">
-      <span class="section-label">Features</span>
-      <h2 class="section-title">Was dich erwartet</h2>
-      <p class="section-subtitle">Mit Arena AI hast du Zugriff auf diese Funktionen.</p>
-      <div class="info-grid">
-        <div class="info-card">
-          <div class="info-card__icon">&#x1F4AC;</div>
-          <h3 class="info-card__title">KI Chat</h3>
-          <p class="info-card__desc">Chatte mit fortschrittlichen KI-Modellen. Stelle Fragen, lass Texte schreiben und vieles mehr.</p>
-        </div>
-        <div class="info-card">
-          <div class="info-card__icon">&#x1F5BC;&#xFE0F;</div>
-          <h3 class="info-card__title">Bildgenerierung</h3>
-          <p class="info-card__desc">Erstelle beeindruckende, fotorealistische Bilder mit KI – in Sekundenschnelle.</p>
-        </div>
-        <div class="info-card">
-          <div class="info-card__icon">&#x1F3A5;</div>
-          <h3 class="info-card__title">Video & Mehr</h3>
-          <p class="info-card__desc">KI-Videos, Code-Generierung, Analyse und kreative Tools – alles in einer Plattform.</p>
-        </div>
+    <!-- INPUT -->
+    <div class="input-area" id="inputArea">
+      <div class="input-wrapper">
+        <textarea class="input-field" id="chatInput" placeholder="Nachricht eingeben..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}"></textarea>
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
       </div>
     </div>
-  </section>
+  </div>
+</div>
 
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer__links">
-        <a href="https://arena.ai" target="_blank">Arena KI</a>
-        <a href="https://github.com/yazeedmustafa57-bit" target="_blank">GitHub</a>
-        <a href="#start">KI starten</a>
-      </div>
-      <div class="footer__copy">
-        &copy; <span id="year"></span> Yazeed – Arena KI Plattform
-      </div>
-    </div>
-  </footer>
+<script>
+  let currentModel = 'GPT-5.4';
+  let currentModelDot = '#10b981';
 
-  <script>
-    const nav = document.getElementById('nav');
-    window.addEventListener('scroll', () => {
-      nav.classList.toggle('scrolled', window.scrollY > 50);
+  function selectModel(el, model) {
+    document.querySelectorAll('.model-item').forEach(m => m.classList.remove('active'));
+    el.classList.add('active');
+    const names = { gpt5: 'GPT-5.4', gemini3: 'Gemini 3.1 Pro', claude4: 'Claude 4', llama4: 'Llama 4', grok3: 'Grok 3', mistral: 'Mistral Large' };
+    const dots = { gpt5: '#10b981', gemini3: '#6366f1', claude4: '#f97316', llama4: '#ec4899', grok3: '#22d3ee', mistral: '#a855f7' };
+    currentModel = names[model] || 'GPT-5.4';
+    currentModelDot = dots[model] || '#6366f1';
+    switchTab('chat');
+  }
+
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.model-item').forEach(m => m.classList.remove('active'));
+    document.getElementById('chatTab').style.display = tab === 'chat' ? 'flex' : 'none';
+    document.getElementById('imageTab').style.display = tab === 'image' ? 'flex' : 'none';
+    document.getElementById('modelsTab').style.display = tab === 'models' ? 'block' : 'none';
+    document.getElementById('inputArea').style.display = tab === 'chat' ? 'block' : 'none';
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    if (tab === 'chat') tabBtns[0].classList.add('active');
+    else if (tab === 'image') tabBtns[1].classList.add('active');
+    else if (tab === 'models') tabBtns[2].classList.add('active');
+    // Also highlight in sidebar
+    const sidebarItems = document.querySelectorAll('.sidebar-section:last-child .model-item');
+    sidebarItems.forEach((item, i) => {
+      item.classList.toggle('active', (tab === 'chat' && i === 0) || (tab === 'image' && i === 1) || (tab === 'models' && i === 2));
     });
+  }
 
-    function handleLaunch() {
-      const status = document.getElementById('launchStatus');
-      const info = document.getElementById('loginInfo');
-      status.classList.add('launch__status--visible');
+  function askSuggestion(text) {
+    document.getElementById('chatInput').value = text;
+    sendMessage();
+  }
+
+  function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const msg = input.value.trim();
+    if (!msg) return;
+
+    const welcome = document.getElementById('welcomeScreen');
+    if (welcome) welcome.style.display = 'none';
+
+    const chatMsgs = document.getElementById('chatMessages');
+    
+    // User message
+    const userDiv = document.createElement('div');
+    userDiv.className = 'message';
+    userDiv.innerHTML = '<div class="message-avatar user">Y</div><div class="message-content"><div class="message-name">Du</div><div class="message-text"><p>' + escapeHtml(msg) + '</p></div><div class="message-time">' + getTime() + '</div></div>';
+    chatMsgs.appendChild(userDiv);
+    
+    input.value = '';
+    input.style.height = 'auto';
+    document.getElementById('sendBtn').disabled = true;
+
+    // AI typing indicator
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'message';
+    typingDiv.id = 'typingIndicator';
+    typingDiv.innerHTML = '<div class="message-avatar ai" style="background:' + currentModelDot + '">AI</div><div class="message-content"><div class="message-name">' + currentModel + '</div><div class="message-text"><i>denkt nach...</i></div></div>';
+    chatMsgs.appendChild(typingDiv);
+    chatMsgs.scrollTop = chatMsgs.scrollHeight;
+
+    // Antwort nach kurzer Verzögerung
+    setTimeout(() => {
+      const typing = document.getElementById('typingIndicator');
+      if (typing) typing.remove();
+
+      const aiDiv = document.createElement('div');
+      aiDiv.className = 'message';
+      aiDiv.innerHTML = '<div class="message-avatar ai" style="background:' + currentModelDot + '">AI</div><div class="message-content"><div class="message-name">' + currentModel + '</div><div class="message-text">' + generateResponse(msg) + '</div><div class="message-time">' + getTime() + '</div></div>';
+      chatMsgs.appendChild(aiDiv);
+      chatMsgs.scrollTop = chatMsgs.scrollHeight;
+      document.getElementById('sendBtn').disabled = false;
+    }, 800 + Math.random() * 1200);
+  }
+
+  function generateResponse(msg) {
+    const lower = msg.toLowerCase();
+    const responses = [
+      'Das ist eine ausgezeichnete Frage! Hier ist meine Perspektive dazu:\n\n' + 
+      'Die Technologie entwickelt sich rasant weiter und wir stehen erst am Anfang. ' +
+      'In den nächsten Jahren werden wir bahnbrechende Innovationen sehen, die unsere Arbeits- und Lebensweise grundlegend verändern werden.',
       
-      // Login-Daten in Zwischenablage kopieren
-      const loginText = 'E-Mail: yovin77861@synsky.com\nPasswort: 333221Akon53@';
-      navigator.clipboard.writeText(loginText).catch(() => {});
+      'Gute Frage! Lass mich dir das erklären:\n\n**Zusammenfassung:**\n' +
+      '• Moderne KI-Modelle wie ' + currentModel + ' sind extrem leistungsfähig\n' +
+      '• Sie können Texte, Bilder, Code und mehr verarbeiten\n' +
+      '• Die Entwicklung schreitet exponentiell voran\n\n' +
+      'Hoffe das hilft dir weiter!',
       
-      // Countdown für erneutes Öffnen
-      setTimeout(() => {
-        status.classList.remove('launch__status--visible');
-      }, 8000);
+      'Spannendes Thema! 🚀\n\n' +
+      'Hier sind meine Gedanken dazu:\n\n' +
+      '1. **Innovation** – Wir sehen gerade den Beginn einer neuen Ära\n' +
+      '2. **Zugänglichkeit** – KI wird für immer mehr Menschen nutzbar\n' +
+      '3. **Kreativität** – Neue Möglichkeiten für Content-Erstellung\n\n' +
+      'Was genau interessiert dich daran?',
+      
+      'Sehr gute Frage! \n\n' +
+      'Ich bin ' + currentModel + ', eines der fortschrittlichsten KI-Modelle. ' +
+      'Ich kann dir helfen bei:\n' +
+      '• Texte schreiben und verbessern\n' +
+      '• Code erstellen und erklären\n' +
+      '• Fragen beantworten und recherchieren\n' +
+      '• Kreative Ideen entwickeln\n\n' +
+      'Was kann ich für dich tun? 😊',
+    ];
+    if (lower.includes('hallo') || lower.includes('hi') || lower.includes('hey')) {
+      return 'Hallo! 😊 Schön, dass du da bist. Ich bin **' + currentModel + '** – dein KI-Assistent. Wie kann ich dir heute helfen?';
     }
+    if (lower.includes('wer bist') || lower.includes('was bist')) {
+      return 'Ich bin **' + currentModel + '**, ein KI-Assistent auf der **Yazeed AI** Plattform. Ich bin hier, um dir bei Fragen, Texten, Code und kreativen Projekten zu helfen – alles kostenlos! 🚀';
+    }
+    if (lower.includes('danke')) {
+      return 'Gerne! 😊 Freut mich, dass ich helfen konnte. Wenn du noch mehr Fragen hast, melde dich einfach wieder!';
+    }
+    return responses[Math.floor(Math.random() * responses.length)];
+  }
 
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
+  // Image Generation
+  function generateImage() {
+    const prompt = document.getElementById('imagePrompt').value.trim();
+    if (!prompt) { alert('Bitte gib eine Bildbeschreibung ein!'); return; }
+    
+    const result = document.getElementById('imageResult');
+    result.innerHTML = '<div style="color:var(--text3)"><i>🎨 Generiere Bild...</i></div>';
+    
+    setTimeout(() => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 400; canvas.height = 400;
+      const ctx = canvas.getContext('2d');
+      
+      // Generate abstract art based on prompt
+      const seed = prompt.length + prompt.charCodeAt(0) || 42;
+      const hue1 = (seed * 47) % 360;
+      const hue2 = (seed * 73 + 120) % 360;
+      
+      const grad = ctx.createLinearGradient(0, 0, 400, 400);
+      grad.addColorStop(0, 'hsl(' + hue1 + ', 70%, 40%)');
+      grad.addColorStop(0.5, 'hsl(' + ((hue1 + hue2)/2) + ', 80%, 30%)');
+      grad.addColorStop(1, 'hsl(' + hue2 + ', 70%, 40%)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 400, 400);
+      
+      // Random shapes
+      for (let i = 0; i < 20; i++) {
+        const x = Math.sin(seed + i * 100) * 200 + 200;
+        const y = Math.cos(seed + i * 50) * 200 + 200;
+        const r = 20 + Math.sin(seed + i * 30) * 40;
+        ctx.beginPath();
+        ctx.arc(x, y, Math.abs(r), 0, Math.PI * 2);
+        ctx.fillStyle = 'hsla(' + ((hue1 + i * 30) % 360) + ', 80%, 60%, 0.3)';
+        ctx.fill();
+        ctx.strokeStyle = 'hsla(' + ((hue2 + i * 20) % 360) + ', 90%, 70%, 0.5)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+      
+      result.innerHTML = '';
+      result.appendChild(canvas);
+    }, 1500 + Math.random() * 1000);
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML.replace(/\n/g, '<br>');
+  }
+
+  function getTime() {
+    const now = new Date();
+    return now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+  }
+
+  // Auto-resize textarea
+  document.getElementById('chatInput').addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+  });
+</script>
 </body>
 </html>
