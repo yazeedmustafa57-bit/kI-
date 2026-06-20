@@ -299,19 +299,20 @@
     <div class="sidebar-section">
       <div class="sidebar-label">KI Modelle</div>
       <div class="model-list">
-        <div class="model-item active" onclick="selectModel(this,'openai/gpt-4o')">
+        <div class="model-item active" onclick="selectModel(this,'openrouter/free')">
           <div class="model-dot" style="background:#10b981"></div>
-          <span class="model-name">GPT-4o</span>
-          <span class="model-badge">BEST</span>
+          <span class="model-name">Beste KI (Auto)</span>
+          <span class="model-badge">FREE</span>
         </div>
-        <div class="model-item" onclick="selectModel(this,'anthropic/claude-3.5-sonnet')">
+        <div class="model-item" onclick="selectModel(this,'meta-llama/llama-3.3-70b-instruct:free')">
           <div class="model-dot" style="background:#6366f1"></div>
-          <span class="model-name">Claude 3.5</span>
-          <span class="model-badge">PRO</span>
+          <span class="model-name">Llama 3.3 70B</span>
+          <span class="model-badge">FREE</span>
         </div>
-        <div class="model-item" onclick="selectModel(this,'google/gemini-pro')">
+        <div class="model-item" onclick="selectModel(this,'nvidia/nemotron-3-ultra-550b-a55b:free')">
           <div class="model-dot" style="background:#f97316"></div>
-          <span class="model-name">Gemini Pro</span>
+          <span class="model-name">Nemotron Ultra</span>
+          <span class="model-badge">FREE</span>
         </div>
       </div>
     </div>
@@ -434,8 +435,8 @@
   // =============================================
   // KONFIGURATION
   // =============================================
-  let currentModel = 'openai/gpt-4o';
-  let currentModelName = 'GPT-4o (OpenAI)';
+  let currentModel = 'openrouter/free';
+  let currentModelName = 'Beste KI (Auto)';
   let currentStyle = 'foto';
   let chatHistory = [];
 
@@ -449,9 +450,11 @@
   };
 
   const modelNames = {
-    'openai/gpt-4o': 'GPT-4o (OpenAI)',
-    'anthropic/claude-3.5-sonnet': 'Claude 3.5 Sonnet',
-    'google/gemini-pro': 'Gemini Pro'
+    'openrouter/free': 'Beste KI (Auto)',
+    'meta-llama/llama-3.3-70b-instruct:free': 'Llama 3.3 70B',
+    'nvidia/nemotron-3-ultra-550b-a55b:free': 'Nemotron Ultra',
+    'google/gemma-4-26b-a4b-it:free': 'Gemma 4',
+    'openai/gpt-oss-120b:free': 'GPT-OSS 120B'
   };
 
   // =============================================
