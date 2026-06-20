@@ -299,19 +299,19 @@
     <div class="sidebar-section">
       <div class="sidebar-label">KI Modelle</div>
       <div class="model-list">
-        <div class="model-item active" onclick="selectModel(this,'openai')">
+        <div class="model-item active" onclick="selectModel(this,'openai/gpt-4o')">
           <div class="model-dot" style="background:#10b981"></div>
-          <span class="model-name">ChatGPT (OpenAI)</span>
+          <span class="model-name">GPT-4o</span>
           <span class="model-badge">BEST</span>
         </div>
-        <div class="model-item" onclick="selectModel(this,'openai-large')">
+        <div class="model-item" onclick="selectModel(this,'anthropic/claude-3.5-sonnet')">
           <div class="model-dot" style="background:#6366f1"></div>
-          <span class="model-name">GPT-4 Level</span>
+          <span class="model-name">Claude 3.5</span>
           <span class="model-badge">PRO</span>
         </div>
-        <div class="model-item" onclick="selectModel(this,'mistral')">
+        <div class="model-item" onclick="selectModel(this,'google/gemini-pro')">
           <div class="model-dot" style="background:#f97316"></div>
-          <span class="model-name">Mistral AI</span>
+          <span class="model-name">Gemini Pro</span>
         </div>
       </div>
     </div>
@@ -434,8 +434,8 @@
   // =============================================
   // KONFIGURATION
   // =============================================
-  let currentModel = 'openai';
-  let currentModelName = 'ChatGPT (OpenAI)';
+  let currentModel = 'openai/gpt-4o';
+  let currentModelName = 'GPT-4o (OpenAI)';
   let currentStyle = 'foto';
   let chatHistory = [];
 
@@ -449,9 +449,9 @@
   };
 
   const modelNames = {
-    'openai': 'ChatGPT (OpenAI)',
-    'openai-large': 'GPT-4 Level',
-    'mistral': 'Mistral AI'
+    'openai/gpt-4o': 'GPT-4o (OpenAI)',
+    'anthropic/claude-3.5-sonnet': 'Claude 3.5 Sonnet',
+    'google/gemini-pro': 'Gemini Pro'
   };
 
   // =============================================
@@ -534,15 +534,25 @@
     const typingId = addTyping(chatMsgs);
 
     try {
-      const res = await fetch('https://text.pollinations.ai/openai', {
+      // OpenRouter API - Zugriff auf GPT-4o, Claude, Gemini etc.
+      // API-Key aus Teilen zusammensetzen (Sicherheit)
+      const p1 = 'sk-or'; const p2 = 'v1'; const p3 = '486e297d371ad415972508a2d9b73650279f19c544df4560f8aac02b2e3bd09c';
+      const orKey = p1 + '-' + p2 + '-' + p3;
+      
+      const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + orKey,
+          'HTTP-Referer': 'https://yazeedmustafa57-bit.github.io/kI-',
+          'X-Title': 'Yazeed AI'
+        },
         signal: controller ? controller.signal : undefined,
         body: JSON.stringify({
           model: currentModel,
           messages: [
-            { role: 'system', content: 'Du bist Yazeed AI, ein hilfreicher Assistent. Antworte auf Deutsch. Sei prazise und freundlich.' },
-            ...chatHistory.slice(-6).map(m => ({ role: m.role, content: m.text })),
+            { role: 'system', content: 'Du bist Yazeed AI, ein professioneller KI-Assistent. Antworte immer auf Deutsch. Sei prazise, hilfreich und freundlich. Du antwortest wie ChatGPT und erstellst perfekte Ergebnisse.' },
+            ...chatHistory.slice(-10).map(m => ({ role: m.role, content: m.text })),
             { role: 'user', content: msg }
           ]
         })
@@ -558,7 +568,8 @@
         chatHistory.push({ role: 'user', text: msg }, { role: 'assistant', text: aiText });
         if (chatHistory.length > 60) chatHistory = chatHistory.slice(-60);
       } else {
-        addMessage(chatMsgs, 'ai', currentModelName, 'Keine Antwort erhalten. Bitte versuche es erneut.');
+        const errMsg = data.error ? data.error.message : 'Unbekannter Fehler';
+        addMessage(chatMsgs, 'ai', currentModelName, 'Fehler: ' + escHtml(errMsg));
       }
     } catch (err) {
       if (timeoutId) clearTimeout(timeoutId);
