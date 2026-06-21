@@ -231,6 +231,58 @@
     }
     .send-btn:hover { background: var(--primary-light); transform: scale(1.05); }
     .send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+    .mic-btn {
+      width: 36px; height: 36px; border-radius: 50%; border: none;
+      background: transparent; color: var(--text3); cursor: pointer;
+      font-size: 1.1rem; transition: 0.2s; display: flex; align-items: center; justify-content: center;
+      position: relative; flex-shrink: 0;
+    }
+    .mic-btn:hover { background: var(--card); color: var(--text); }
+    .mic-btn.recording {
+      background: rgba(239,68,68,0.15); color: var(--danger);
+      animation: micPulse 1s ease-in-out infinite;
+    }
+    .mic-btn.recording::after {
+      content: ''; position: absolute; width: 48px; height: 48px;
+      border-radius: 50%; border: 2px solid rgba(239,68,68,0.3);
+      animation: micRing 1.2s ease-in-out infinite;
+    }
+    .mic-btn.mic-disabled { opacity: 0.4; cursor: not-allowed; }
+    @keyframes micPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); } 50% { box-shadow: 0 0 0 8px rgba(239,68,68,0); } }
+    @keyframes micRing { 0% { transform: scale(0.8); opacity: 0.6; } 100% { transform: scale(1.3); opacity: 0; } }
+
+    .speak-btn {
+      display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px;
+      border-radius: 20px; border: 1px solid var(--border); background: transparent;
+      color: var(--text3); cursor: pointer; font-size: 0.7rem; margin-top: 6px;
+      transition: 0.2s; font-family: var(--font);
+    }
+    .speak-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(6,182,212,0.08); }
+    .speak-btn.speaking { border-color: var(--danger); color: var(--danger); background: rgba(239,68,68,0.08); }
+    .speak-btn .wave { display: inline-flex; gap: 1px; align-items: center; height: 12px; }
+    .speak-btn .wave span {
+      width: 2px; background: currentColor; border-radius: 2px;
+      animation: waveAnim 0.5s ease-in-out infinite alternate;
+    }
+    .speak-btn .wave span:nth-child(1) { height: 6px; animation-delay: 0s; }
+    .speak-btn .wave span:nth-child(2) { height: 12px; animation-delay: 0.15s; }
+    .speak-btn .wave span:nth-child(3) { height: 8px; animation-delay: 0.3s; }
+    .speak-btn .wave span:nth-child(4) { height: 12px; animation-delay: 0.1s; }
+    .speak-btn .wave span:nth-child(5) { height: 6px; animation-delay: 0.2s; }
+    @keyframes waveAnim { from { transform: scaleY(0.5); } to { transform: scaleY(1); } }
+
+    .voice-toggle {
+      display: flex; align-items: center; gap: 6px; cursor: pointer;
+      font-size: 0.7rem; color: var(--text3); padding: 2px 8px;
+      border-radius: 6px; transition: 0.2s;
+    }
+    .voice-toggle:hover { background: var(--bg3); color: var(--text); }
+    .voice-toggle.active { color: var(--accent); }
+
+    .voice-not-supported {
+      font-size: 0.65rem; color: var(--text3); padding: 4px 8px;
+      display: inline-block;
+    }
 
     /* ===== IMAGE TAB ===== */
     .image-area { display: none; flex: 1; overflow-y: auto; padding: 24px; }
@@ -418,7 +470,7 @@
         <div class="input-box">
           <textarea id="chatInput" placeholder="Schreibe eine Nachricht..." rows="1"></textarea>
           <div class="input-actions">
-            <button class="send-btn" id="sendBtn" onclick="sendMessage()" title="Senden">➤</button>
+            <button class="mic-btn" id="micBtn" onclick="toggleMic()" title="Spracheingabe">🎤</button>
           </div>
         </div>
         <div id="statusBar" class="hidden status-msg"></div>
@@ -854,6 +906,246 @@
   function setSendBtnDisabled(d) {
     document.getElementById('sendBtn').disabled = d;
   }
+
+
+  // =============================================
+  // SPRACHE – Sprechen & Hören wie ChatGPT
+  // =============================================
+  let isRecording = false;
+  let recognition = null;
+  let autoSpeak = true;
+  let currentUtterance = null;
+
+  // Speech Recognition initialisieren
+  function initSpeechRecognition() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      document.getElementById('micBtn').classList.add('mic-disabled');
+      document.getElementById('micBtn').title = 'Spracheingabe nicht verfügbar';
+      return false;
+    }
+    recognition = new SpeechRecognition();
+    recognition.lang = 'de-DE';
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+
+    recognition.onresult = function(event) {
+      let transcript = '';
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        transcript += event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          document.getElementById('chatInput').value = transcript;
+        } else {
+          document.getElementById('chatInput').value = transcript + '...';
+        }
+      }
+      document.getElementById('chatInput').style.height = 'auto';
+      document.getElementById('chatInput').style.height = Math.min(document.getElementById('chatInput').scrollHeight, 140) + 'px';
+    };
+
+    recognition.onerror = function(event) {
+      console.error('Speech error:', event.error);
+      stopRecording();
+      if (event.error === 'no-speech') {
+        showStatus('🎤 Keine Sprache erkannt. Bitte versuche es erneut.', 'warning');
+      } else if (event.error === 'audio-capture') {
+        showStatus('🎤 Mikrofon nicht gefunden.', 'error');
+      } else if (event.error === 'not-allowed') {
+        showStatus('🎤 Mikrofon-Zugriff verweigert. Bitte erlaube das Mikrofon im Browser.', 'error');
+      } else {
+        showStatus('🎤 Fehler: ' + event.error, 'error');
+      }
+    };
+
+    recognition.onend = function() {
+      // Wenn noch aktiv, automatisch neu starten für kontinuierliches Sprechen
+      if (isRecording) {
+        try { recognition.start(); } catch(e) {}
+      }
+    };
+
+    return true;
+  }
+
+  // Mikrofon ein/aus
+  function toggleMic() {
+    if (!recognition) {
+      if (!initSpeechRecognition()) {
+        alert('Spracheingabe wird von deinem Browser nicht unterstützt. Bitte verwende Chrome oder Edge auf dem Handy oder Computer.');
+        return;
+      }
+    }
+
+    if (isRecording) {
+      stopRecording();
+    } else {
+      startRecording();
+    }
+  }
+
+  function startRecording() {
+    if (!recognition) return;
+    try {
+      recognition.start();
+      isRecording = true;
+      document.getElementById('micBtn').classList.add('recording');
+      document.getElementById('micBtn').textContent = '⏹';
+      document.getElementById('micBtn').title = 'Aufnahme beenden';
+      document.getElementById('chatInput').placeholder = '🎤 Sprich jetzt...';
+      showStatus('🎤 Ich höre zu... Sprich deutlich!', '');
+    } catch (e) {
+      console.error('Failed to start recording:', e);
+    }
+  }
+
+  function stopRecording() {
+    if (recognition) {
+      try { recognition.stop(); } catch(e) {}
+    }
+    isRecording = false;
+    document.getElementById('micBtn').classList.remove('recording');
+    document.getElementById('micBtn').textContent = '🎤';
+    document.getElementById('micBtn').title = 'Spracheingabe';
+    document.getElementById('chatInput').placeholder = 'Schreibe eine Nachricht...';
+    showStatus('', '');
+
+    // Automatisch senden wenn etwas eingegeben wurde
+    const val = document.getElementById('chatInput').value.trim();
+    if (val && val.length > 1) {
+      // Kurze Verzögerung damit das letzte Wort noch erfasst wird
+      setTimeout(() => sendMessage(), 300);
+    }
+  }
+
+  // =============================================
+  // TEXT ZU SPRACHE (TTS)
+  // =============================================
+  function speakText(text, btnEl) {
+    if (!window.speechSynthesis) {
+      showStatus('🔊 Sprachausgabe nicht verfügbar.', 'warning');
+      setTimeout(() => showStatus('', ''), 2000);
+      return;
+    }
+
+    // Wenn gerade gesprochen wird, stoppen
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+      if (currentUtterance) {
+        currentUtterance.onend = null;
+        currentUtterance = null;
+      }
+      // Alle speak-buttons zurücksetzen
+      document.querySelectorAll('.speak-btn').forEach(b => b.classList.remove('speaking'));
+      return;
+    }
+
+    // Text von HTML-Tags bereinigen
+    const cleanText = text.replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ');
+
+    if (!cleanText.trim()) return;
+
+    // Stimme konfigurieren
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = 'de-DE';
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
+
+    // Deutsche Stimme bevorzugen
+    const voices = window.speechSynthesis.getVoices();
+    const germanVoice = voices.find(v => v.lang.startsWith('de'));
+    if (germanVoice) utterance.voice = germanVoice;
+
+    currentUtterance = utterance;
+
+    if (btnEl) {
+      btnEl.classList.add('speaking');
+      btnEl.innerHTML = '🔊 <span class="wave"><span></span><span></span><span></span><span></span><span></span></span>';
+    }
+
+    utterance.onend = function() {
+      currentUtterance = null;
+      if (btnEl) {
+        btnEl.classList.remove('speaking');
+        btnEl.innerHTML = '🔊 Vorlesen';
+      }
+    };
+
+    utterance.onerror = function() {
+      currentUtterance = null;
+      if (btnEl) {
+        btnEl.classList.remove('speaking');
+        btnEl.innerHTML = '🔊 Vorlesen';
+      }
+    };
+
+    window.speechSynthesis.speak(utterance);
+  }
+
+  // Auto-Speak umschalten
+  function toggleAutoSpeak() {
+    autoSpeak = !autoSpeak;
+    const el = document.getElementById('autoSpeakToggle');
+    if (el) {
+      el.classList.toggle('active');
+      el.innerHTML = autoSpeak ? '🔊 Auto-Vorlesen an' : '🔇 Auto-Vorlesen aus';
+    }
+  }
+
+  // Beim Laden initialisieren
+  document.addEventListener('DOMContentLoaded', function() {
+    // Speech Recognition initialisieren
+    if (window.SpeechRecognition || window.webkitSpeechRecognition) {
+      initSpeechRecognition();
+    } else {
+      document.getElementById('micBtn').classList.add('mic-disabled');
+      document.getElementById('micBtn').title = 'Spracheingabe nicht verfügbar (Chrome/Edge empfohlen)';
+    }
+
+    // Stimmen laden (für Chrome nötig)
+    if (window.speechSynthesis) {
+      window.speechSynthesis.getVoices();
+      window.speechSynthesis.onvoiceschanged = function() {
+        window.speechSynthesis.getVoices();
+      };
+    }
+  });
+
+  // Auto-Speak nach AI-Antwort
+  const origAddMessage = addMessage;
+  addMessage = function(container, role, name, text) {
+    origAddMessage(container, role, name, text);
+
+    // "Vorlesen"-Button zu AI-Nachrichten hinzufügen
+    if (role === 'ai' && container.id === 'chatMessages') {
+      const msgs = container.querySelectorAll('.message');
+      const lastMsg = msgs[msgs.length - 1];
+      if (lastMsg) {
+        const contentDiv = lastMsg.querySelector('.message-content');
+        if (contentDiv) {
+          const speakBtn = document.createElement('button');
+          speakBtn.className = 'speak-btn';
+          speakBtn.innerHTML = '🔊 Vorlesen';
+          speakBtn.onclick = function() {
+            // Text aus der Nachricht holen (ohne HTML)
+            const textDiv = contentDiv.querySelector('.message-text');
+            if (textDiv) speakText(textDiv.innerHTML, speakBtn);
+          };
+          contentDiv.appendChild(speakBtn);
+
+          // Auto-Speak wenn aktiviert
+          if (autoSpeak) {
+            setTimeout(() => {
+              const textDiv = contentDiv.querySelector('.message-text');
+              if (textDiv) speakText(textDiv.innerHTML, speakBtn);
+            }, 300);
+          }
+        }
+      }
+    }
+  };
+
 
   // Enter zum Senden, Shift+Enter für neue Zeile
   document.getElementById('chatInput').addEventListener('keydown', function(e) {
