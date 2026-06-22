@@ -590,11 +590,11 @@
 
   // Prompt-Templates für fotorealistische Ergebnisse (auf Deutsch)
   const stylePrompts = {
-    'foto': 'professionelle Fotografie, hochdetailliert, scharfer Fokus, natürliches Licht, 8K, realistische Texturen, DSLR-Qualität, ultra-realistisch, Fotografie',
-    'cinematic': 'Kinematischer Film-Stil, dramatische Beleuchtung, Filmkörnung, Anamorphot-Linse, cineastische Komposition, Blockbuster-Qualität',
-    'portrait': 'Porträtfotografie, professionelles Studio-Licht, detaillierte Hauttextur, scharfer Fokus, Bokeh-Hintergrund, Editorial-Fotografie',
-    'nature': 'Naturfotografie, Makro-Details, natürliches Sonnenlicht, lebendige Farben, National Geographic-Stil, Tierfotografie',
-    'fantasy': 'Fantasy-Kunst, epische Szene, magische Atmosphäre, leuchtende Elemente, ätherisch, Concept Art, mythisch'
+    'foto': 'photorealistic, highly detailed texture, sharp focus, natural lighting, DSLR photography, 8K, ultra-realistic, real photograph',
+    'cinematic': 'cinematic movie still, dramatic lighting, film grain, anamorphic lens, cinematic composition, dramatic atmosphere, realistic',
+    'portrait': 'professional portrait photography, studio lighting, detailed skin texture, sharp focus, bokeh background, editorial quality',
+    'nature': 'nature photography, macro details, natural sunlight, vivid colors, wildlife photography, National Geographic style, realistic',
+    'fantasy': 'epic fantasy scene, magical atmosphere, glowing elements, ethereal, mythical, highly detailed, photorealistic rendering'
   };
 
   const modelList = { 'openai/gpt-oss-120b:free': { name: 'GPT-OSS 120B', icon: '✨' } };
@@ -949,21 +949,21 @@
     const styleAdd = stylePrompts[currentStyle] || stylePrompts['foto'];
 
     // Für realistische Fotos: deutsch-optimierten Prompt
-    const fullPrompt = prompt + ', ' + styleAdd + ', hochwertig, detailliert, 8K, ultra-realistisch';
+    const fullPrompt = prompt + ', ' + styleAdd + ', hochwertig, detailliert, 8K, ultra-realistisch, photograph, real';
 
     result.innerHTML = '<div class="loading">' +
       '<div class="spinner"></div>' +
       '<span>🎨 Erstelle KI-Foto...</span>' +
-      '<small style="color:var(--text3)">⚡ ' + getStyleLabel(currentStyle) + ' · 1024×1024 · Flux-Modell</small>' +
+      '<small style="color:var(--text3)">⚡ ' + getStyleLabel(currentStyle) + ' · 1024×1024 · KI-Foto</small>' +
       '</div>';
 
-    // Pollinations mit Flux-Modell für fotorealistische Ergebnisse
+    // Pollinations mit Sana-Modell für KI-Bilder
     const encoded = encodeURIComponent(fullPrompt.substring(0, 800));
     const timestamp = Date.now() + Math.floor(Math.random() * 100000);
 
-    // WICHTIG: model=flux-realism für fotorealistische Ergebnisse!
+    // Sana-Modell für Echtzeit-Bildgenerierung
     const imgUrl = 'https://image.pollinations.ai/prompt/' + encoded +
-      '?width=1024&height=1024&seed=' + timestamp + '&nologo=true&model=flux-realism';
+      '?width=1024&height=1024&seed=' + timestamp + '&nologo=true&model=sana';
 
     const img = new Image();
     let loaded = false;
