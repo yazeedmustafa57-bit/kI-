@@ -344,15 +344,20 @@
 
     <div class="sidebar-section">
       <div class="sidebar-label">KI-Modelle</div>
-      <div class="model-item active" onclick="selectModel(this,'google/gemma-4-26b-a4b-it:free')">
+      <div class="model-item" onclick="selectModel(this,'google/gemma-4-26b-a4b-it:free')">
         <span class="model-icon">🧠</span>
         <span class="model-name">Gemma 4 (schnell)</span>
         <span class="status-badge">Schnell</span>
       </div>
-      <div class="model-item" onclick="selectModel(this,'openai/gpt-oss-120b:free')">
+      <div class="model-item active" onclick="selectModel(this,'openai/gpt-oss-120b:free')">
         <span class="model-icon">✨</span>
         <span class="model-name">GPT-OSS 120B</span>
         <span class="status-badge">Smart</span>
+      </div>
+      <div class="model-item" onclick="selectModel(this,'nex-agi/nex-n2-pro:free')">
+        <span class="model-icon">🧪</span>
+        <span class="model-name">Nex AGI N2 Pro</span>
+        <span class="status-badge">Schnell</span>
       </div>
       <div class="model-item" onclick="selectModel(this,'openrouter/free')">
         <span class="model-icon">🤖</span>
@@ -388,7 +393,7 @@
     <!-- TOP BAR -->
     <div class="topbar">
       <div class="topbar-left">
-        <span class="topbar-title" id="activeModelDisplay">🧠 Gemma 4 (schnell)</span>
+        <span class="topbar-title" id="activeModelDisplay">✨ GPT-OSS 120B</span>
       </div>
       <div class="tab-bar">
         <button class="tab-btn active" onclick="switchTab('chat')">💬 Chat</button>
@@ -468,8 +473,8 @@
   // =============================================
   // KONFIGURATION
   // =============================================
-  let currentModel = 'google/gemma-4-26b-a4b-it:free';
-  let currentModelName = 'Gemma 4 (schnell)';
+  let currentModel = 'openai/gpt-oss-120b:free';
+  let currentModelName = 'GPT-OSS 120B';
   let currentStyle = 'foto';
   let chatHistory = [];
   let imageHistoryList = [];
@@ -488,7 +493,8 @@
     'google/gemma-4-26b-a4b-it:free': { name: 'Gemma 4 (schnell)', icon: '🧠' },
     'openai/gpt-oss-120b:free': { name: 'GPT-OSS 120B', icon: '✨' },
     'openrouter/free': { name: 'Auto (Beste KI)', icon: '🤖' },
-    'nvidia/nemotron-3-nano-30b-a3b:free': { name: 'Nemotron Nano', icon: '⚡' }
+    'nvidia/nemotron-3-nano-30b-a3b:free': { name: 'Nemotron Nano', icon: '⚡' },
+    'nex-agi/nex-n2-pro:free': { name: 'Nex AGI N2 Pro', icon: '🧪' }
   };
 
   // =============================================
