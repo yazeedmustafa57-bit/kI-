@@ -915,7 +915,9 @@
       const streamTextEl = document.getElementById('streamText');
       let fullContent = '';
 
-      if (res.ok && res.body) {
+      const canStream = typeof ReadableStream !== 'undefined' && res.body && typeof res.body.getReader === 'function';
+      
+      if (res.ok && canStream) {
         const reader = res.body.getReader();
         const decoder = new TextDecoder();
         let buffer = '';
@@ -937,7 +939,9 @@
                 const delta = chunk.choices && chunk.choices[0] && chunk.choices[0].delta;
                 if (delta && delta.content) {
                   fullContent += delta.content;
-                  streamTextEl.innerHTML = formatResponse(fullContent) + '<span class="cursor-blink">|</span>';
+                  try {
+                    streamTextEl.innerHTML = formatResponse(fullContent) + '<span class="cursor-blink">|</span>';
+                  } catch(e) {}
                   chatMsgs.scrollTop = chatMsgs.scrollHeight;
                 }
               } catch(e) {
@@ -947,28 +951,16 @@
           }
         }
         
-        // Stream complete - remove cursor
         streamTextEl.innerHTML = formatResponse(fullContent);
-        
-        if (fullContent) {
-          chatHistory.push({ role: 'user', text: msg }, { role: 'assistant', text: fullContent });
-          if (chatHistory.length > 60) chatHistory = chatHistory.slice(-60);
-          saveChat();
+      } else if (res.ok) {
+        // Fallback: Non-streaming for older browsers
+        showStatus('⏳ Antwort wird geladen...', '');
+        const data = await res.json();
+        if (data.choices && data.choices[0]) {
+          fullContent = data.choices[0].message.content || '';
+          streamTextEl.innerHTML = formatResponse(fullContent);
         } else {
-          streamMsgDiv.remove();
-          // If empty response on retry, try next model
-          if (retryCount < modelFallbackChain.length - 1) {
-            showStatus('🔄 ' + modelNameToUse + ' leer, versuche nächsten...', '');
-            setTimeout(() => {
-              removeTyping(typingId);
-              isSending = false;
-              setSendBtnDisabled(false);
-              sendMessage(retryCount + 1);
-            }, 500);
-            return;
-          }
-          addMessage(chatMsgs, 'ai', currentModelName, '⚠️ Keine Antwort erhalten. Bitte versuche es erneut.');
-          saveChat();
+          streamTextEl.innerHTML = '<p>⚠️ Keine Antwort erhalten.</p>';
         }
       } else {
         // Response not ok - try to parse error
