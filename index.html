@@ -188,6 +188,7 @@
     .chat-messages {
       flex: 1; overflow-y: auto; padding: 28px 28px 16px;
       display: flex; flex-direction: column; gap: 18px;
+      padding-bottom: 8px;
     }
 
     .welcome-screen {
@@ -305,6 +306,9 @@
 
     /* ===== INPUT ===== */
     .input-area {
+      position: sticky;
+      bottom: 0;
+      z-index: 20;
       padding: 16px 28px 22px;
       background: linear-gradient(0deg, var(--bg) 60%, transparent);
     }
@@ -435,7 +439,7 @@
     @media (max-width: 768px) {
       .sidebar { display: none; }
       .chat-messages { padding: 20px 16px 8px; }
-      .input-area { padding: 12px 16px 18px; }
+      .input-area { position: sticky; bottom: 0; padding: 12px 16px 18px; }
       .message { max-width: 92%; }
       .image-area { padding: 16px; }
       .image-box { flex-direction: column; }
@@ -490,9 +494,12 @@
       <div class="topbar-left">
         <span class="topbar-title" id="activeModelDisplay"><span class="dot"></span> ✨ GPT-OSS 120B</span>
       </div>
-      <div class="tab-bar">
-        <button class="tab-btn active" onclick="switchTab('chat')">💬 Chat</button>
-        <button class="tab-btn" onclick="switchTab('image')">🎨 Bilder</button>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="tab-bar">
+          <button class="tab-btn active" onclick="switchTab('chat')">💬 Chat</button>
+          <button class="tab-btn" onclick="switchTab('image')">🎨 Bilder</button>
+        </div>
+        <button id="langToggle" onclick="toggleLanguage()" style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--text2);cursor:pointer;font-size:0.75rem;font-family:var(--font);transition:0.2s">DE</button>
       </div>
     </div>
 
@@ -585,6 +592,9 @@
   };
 
   const modelList = { 'openai/gpt-oss-120b:free': { name: 'GPT-OSS 120B', icon: '✨' } };
+  let currentLang = localStorage.getItem('yazeed_lang') || 'de';
+  const STORAGE_KEY = 'yazeed_chat_history';
+  const IMAGE_STORAGE_KEY = 'yazeed_image_history';
 
   // =============================================
   // MODELL AUSWÄHLEN
@@ -621,6 +631,144 @@
     document.querySelectorAll('.style-chip').forEach(s => s.classList.remove('active'));
     el.classList.add('active');
     currentStyle = style;
+  }
+
+  // =============================================
+  // SPEICHERN & LADEN (localStorage)
+  // =============================================
+  function saveChat() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(chatHistory));
+    } catch(e) {}
+  }
+  function loadChat() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          chatHistory = parsed;
+          return true;
+        }
+      }
+    } catch(e) {}
+    return false;
+  }
+  function saveImages() {
+    try {
+      localStorage.setItem(IMAGE_STORAGE_KEY, JSON.stringify(imageHistoryList));
+    } catch(e) {}
+  }
+  function loadImages() {
+    try {
+      const saved = localStorage.getItem(IMAGE_STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          imageHistoryList = parsed;
+          return true;
+        }
+      }
+    } catch(e) {}
+    return false;
+  }
+  function restoreMessages() {
+    const chatMsgs = document.getElementById('chatMessages');
+    const welcome = document.getElementById('welcomeScreen');
+    if (!chatMsgs) return;
+    const saved = loadChat();
+    if (saved && chatHistory.length > 0) {
+      if (welcome) welcome.style.display = 'none';
+      chatMsgs.innerHTML = '';
+      for (const msg of chatHistory) {
+        if (msg.role === 'user') {
+          addMessage(chatMsgs, 'user', 'Du', escHtml(msg.text));
+        } else if (msg.role === 'assistant') {
+          addMessage(chatMsgs, 'ai', currentModelName, formatResponse(msg.text));
+        }
+      }
+    }
+    // Restore image gallery
+    if (loadImages() && imageHistoryList.length > 0) {
+      const container = document.getElementById('imageHistory');
+      const gallery = document.getElementById('imageGallery');
+      if (container && gallery) {
+        container.classList.remove('hidden');
+        gallery.innerHTML = '';
+        for (const img of imageHistoryList) {
+          const thumb = document.createElement('div');
+          const i = document.createElement('img');
+          i.src = img.url;
+          i.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
+          i.loading = 'lazy';
+          i.title = img.prompt;
+          i.alt = img.prompt;
+          thumb.appendChild(i);
+          thumb.onclick = function() {
+            document.getElementById('imagePrompt').value = img.prompt;
+            generateImage();
+          };
+          gallery.appendChild(thumb);
+        }
+      }
+    }
+  }
+
+  // =============================================
+  // SPRACHE UMSCHALTEN
+  // =============================================
+  function toggleLanguage() {
+    currentLang = currentLang === 'de' ? 'en' : 'de';
+    localStorage.setItem('yazeed_lang', currentLang);
+    updateLanguage();
+  }
+  function updateLanguage() {
+    const btn = document.getElementById('langToggle');
+    if (btn) btn.textContent = currentLang.toUpperCase();
+    document.documentElement.lang = currentLang;
+    // Translate UI elements
+    if (currentLang === 'en') {
+      document.title = 'Yazeed AI – Free AI like ChatGPT';
+      document.querySelector('meta[name="description"]').content = 'Yazeed AI – Your free AI platform. Chat like ChatGPT + real AI images, no signup.';
+      const welcomeH1 = document.querySelector('.welcome-screen h1');
+      const welcomeP = document.querySelector('.welcome-screen p');
+      if (welcomeH1) welcomeH1.textContent = 'Yazeed AI';
+      if (welcomeP) welcomeP.textContent = 'Your free AI like ChatGPT. Ask questions, write texts, develop ideas – all free, no signup needed.';
+      document.getElementById('chatInput').placeholder = 'Type a message...';
+      const sendBtn = document.getElementById('sendBtn');
+      if (sendBtn) sendBtn.title = 'Send';
+      // Image tab
+      const imgH2 = document.querySelector('.image-generator h2');
+      const imgP = document.querySelector('.image-generator > p');
+      if (imgH2) imgH2.textContent = '🎨 AI Image Generator';
+      if (imgP) imgP.textContent = 'Create photorealistic AI images – like DALL·E, but free';
+      const imgInput = document.getElementById('imagePrompt');
+      if (imgInput) imgInput.placeholder = 'Describe your image... e.g. "A lion in the savanna at sunset"';
+      const imgBtn = document.getElementById('imageGenBtn');
+      if (imgBtn) imgBtn.textContent = '✨ Create Photo';
+      const imgNote = document.querySelector('.image-note span');
+      if (imgNote) imgNote.innerHTML = '<strong>New:</strong> Improved model for realistic photos. Just describe what you want to see!';
+    } else {
+      document.title = 'Yazeed AI – Kostenlose KI wie ChatGPT';
+      document.querySelector('meta[name="description"]').content = 'Yazeed AI – Deine kostenlose KI-Plattform. Chat wie ChatGPT + echte KI-Bilder, ohne Anmeldung.';
+      const welcomeH1 = document.querySelector('.welcome-screen h1');
+      const welcomeP = document.querySelector('.welcome-screen p');
+      if (welcomeH1) welcomeH1.textContent = 'Yazeed AI';
+      if (welcomeP) welcomeP.textContent = 'Deine kostenlose KI wie ChatGPT. Stelle Fragen, lass Texte schreiben, Ideen entwickeln – alles kostenlos, ohne Anmeldung.';
+      document.getElementById('chatInput').placeholder = 'Schreibe eine Nachricht...';
+      const sendBtn = document.getElementById('sendBtn');
+      if (sendBtn) sendBtn.title = 'Senden';
+      const imgH2 = document.querySelector('.image-generator h2');
+      const imgP = document.querySelector('.image-generator > p');
+      if (imgH2) imgH2.textContent = '🎨 KI-Bildgenerator';
+      if (imgP) imgP.textContent = 'Erstelle fotorealistische KI-Bilder – wie DALL·E, aber kostenlos';
+      const imgInput = document.getElementById('imagePrompt');
+      if (imgInput) imgInput.placeholder = 'Beschreibe dein Bild... z.B. "Ein Löwe in der Savanne bei Sonnenuntergang"';
+      const imgBtn = document.getElementById('imageGenBtn');
+      if (imgBtn) imgBtn.textContent = '✨ Foto erstellen';
+      const imgNote = document.querySelector('.image-note span');
+      if (imgNote) imgNote.innerHTML = '<strong>Neu:</strong> Verbessertes Modell für realistische Fotos. Einfach beschreiben, was du sehen willst!';
+    }
   }
 
   function askSuggestion(text) {
@@ -729,6 +877,7 @@
         }
         addMessage(chatMsgs, 'ai', currentModelName, errMsg);
         isSending = false;
+        saveChat();
         setSendBtnDisabled(false);
         return;
       }
@@ -738,8 +887,10 @@
         addMessage(chatMsgs, 'ai', currentModelName, formatResponse(aiText || ''));
         chatHistory.push({ role: 'user', text: msg }, { role: 'assistant', text: aiText || '' });
         if (chatHistory.length > 60) chatHistory = chatHistory.slice(-60);
+        saveChat();
       } else {
         addMessage(chatMsgs, 'ai', currentModelName, '⚠️ Keine Antwort erhalten. Bitte versuche es erneut.');
+        saveChat();
       }
     } catch (err) {
       if (timeoutId) clearTimeout(timeoutId);
@@ -810,6 +961,7 @@
       btn.disabled = false;
       btn.textContent = '✨ Neues Foto';
       addToHistory(prompt, img.src);
+      saveImages();
     };
 
     img.onerror = function() {
@@ -944,6 +1096,13 @@
   function setSendBtnDisabled(d) {
     document.getElementById('sendBtn').disabled = d;
   }
+
+  // =============================================
+  // INIT: Sprache wiederherstellen + Chat laden
+  // =============================================
+  updateLanguage();
+  // Kurze Verzögerung damit DOM bereit ist
+  setTimeout(restoreMessages, 100);
 
   // Enter zum Senden, Shift+Enter für neue Zeile
   document.getElementById('chatInput').addEventListener('keydown', function(e) {
