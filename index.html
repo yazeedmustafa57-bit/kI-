@@ -466,25 +466,10 @@
 
     <div class="sidebar-section">
       <div class="sidebar-label">KI-Modell</div>
-      <div class="model-item active" onclick="selectModel(0)" style="cursor:pointer">
-        <span class="model-icon">💧</span>
-        <span class="model-name">Liquid 1.2B</span>
-        <span class="status-badge">⚡ Am schnellsten</span>
-      </div>
-      <div class="model-item" onclick="selectModel(1)" style="cursor:pointer">
+      <div class="model-item active" style="cursor:default">
         <span class="model-icon">✨</span>
         <span class="model-name">GPT-OSS 120B</span>
-        <span class="status-badge">⭐ Stark</span>
-      </div>
-      <div class="model-item" onclick="selectModel(2)" style="cursor:pointer">
-        <span class="model-icon">🧠</span>
-        <span class="model-name">Gemma 4 26B</span>
-        <span class="status-badge">🔋 Intelligent</span>
-      </div>
-      <div class="model-item" onclick="selectModel(3)" style="cursor:pointer">
-        <span class="model-icon">🔬</span>
-        <span class="model-name">Nemotron Nano</span>
-        <span class="status-badge">🛡️ Backup</span>
+        <span class="status-badge">⭐ Aktiv</span>
       </div>
     </div>
 
@@ -510,7 +495,7 @@
     <!-- TOP BAR -->
     <div class="topbar">
       <div class="topbar-left">
-        <span class="topbar-title" id="activeModelDisplay"><span class="dot"></span> 💧 Liquid 1.2B</span>
+        <span class="topbar-title" id="activeModelDisplay"><span class="dot"></span> ✨ GPT-OSS 120B</span>
       </div>
       <div style="display:flex;align-items:center;gap:12px">
         <div class="tab-bar">
@@ -593,14 +578,10 @@
   // =============================================
   // KONFIGURATION
   // =============================================
-  let currentModel = 'liquid/lfm-2.5-1.2b-instruct:free';
-  let currentModelName = 'Liquid 1.2B';
-  let currentModelId = 0;
+  let currentModel = 'openai/gpt-oss-120b:free';
+  let currentModelName = 'GPT-OSS 120B';
   const modelFallbackChain = [
-    { id: 'liquid/lfm-2.5-1.2b-instruct:free', name: 'Liquid 1.2B' },
-    { id: 'openai/gpt-oss-120b:free', name: 'GPT-OSS 120B' },
-    { id: 'google/gemma-4-26b-a4b-it:free', name: 'Gemma 4 26B' },
-    { id: 'nvidia/nemotron-3-nano-30b-a3b:free', name: 'Nemotron Nano' }
+    { id: 'openai/gpt-oss-120b:free', name: 'GPT-OSS 120B' }
   ];
   let currentStyle = 'foto';
   let chatHistory = [];
@@ -616,7 +597,7 @@
     'fantasy': 'Fantasy-Kunst, epische Szene, magische Atmosphäre, leuchtende Elemente, ätherisch, Concept Art, mythisch'
   };
 
-  const modelList = { 'liquid/lfm-2.5-1.2b-instruct:free': { name: 'Liquid 1.2B', icon: '💧' }, 'openai/gpt-oss-120b:free': { name: 'GPT-OSS 120B', icon: '✨' }, 'google/gemma-4-26b-a4b-it:free': { name: 'Gemma 4 26B', icon: '🧠' }, 'nvidia/nemotron-3-nano-30b-a3b:free': { name: 'Nemotron Nano', icon: '🔬' } };
+  const modelList = { 'openai/gpt-oss-120b:free': { name: 'GPT-OSS 120B', icon: '✨' } };
   let currentLang = localStorage.getItem('yazeed_lang') || 'de';
   const STORAGE_KEY = 'yazeed_chat_history';
   const IMAGE_STORAGE_KEY = 'yazeed_image_history';
@@ -625,16 +606,7 @@
   // MODELL AUSWÄHLEN
   // =============================================
   function selectModel(id) {
-    if (id >= 0 && id < modelFallbackChain.length) {
-      currentModelId = id;
-      currentModel = modelFallbackChain[id].id;
-      currentModelName = modelFallbackChain[id].name;
-      document.getElementById('activeModelDisplay').innerHTML = '<span class="dot"></span> ' + modelFallbackChain[id].icon + ' ' + modelFallbackChain[id].name;
-      // Update sidebar highlight
-      document.querySelectorAll('.model-item').forEach((el, i) => {
-        el.classList.toggle('active', i === id);
-      });
-    }
+    // Nur GPT-OSS 120B
   }
 
   // =============================================
@@ -864,15 +836,11 @@
       const p1 = 'sk-or'; const p2 = 'v1'; const p3 = '486e297d371ad415972508a2d9b73650279f19c544df4560f8aac02b2e3bd09c';
       const orKey = p1 + '-' + p2 + '-' + p3;
 
-      // Fallback chain: try models until one works
-      let triedModels = [];
-      let allModels = [currentModel, ...modelFallbackChain.filter(m => m.id !== currentModel).map(m => m.id)];
+      // GPT-OSS 120B
       let responseData = null;
       let lastError = '';
-      
-      for (let attempt = 0; attempt < allModels.length; attempt++) {
-        const modelId = allModels[attempt];
-        const modelName = modelFallbackChain.find(m => m.id === modelId)?.name || modelId;
+      const modelId = currentModel;
+      const modelName = currentModelName;
         
         if (attempt > 0) {
           showStatus('🔄 ' + modelName + ' wird probiert...', '');
@@ -909,10 +877,8 @@
             const data = await res.json();
             if (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) {
               responseData = data;
-              break; // Success!
             } else {
               lastError = 'Leere Antwort von ' + modelName;
-              continue;
             }
           } else {
             let errDetail = 'Fehler ' + res.status;
@@ -926,24 +892,10 @@
               }
             } catch(e) {}
             lastError = errDetail;
-            
-            // 429 or 5xx - try next model
-            if (res.status === 429 || res.status >= 500) {
-              continue;
-            }
-            // Other errors (4xx) - don't retry
-            break;
           }
         } catch (e) {
-          if (e.name === 'AbortError') {
-            lastError = '⏱️ Zeitüberschreitung bei ' + modelName;
-            continue; // Timeout - try next model
-          } else {
-            lastError = 'Fehler: ' + (e.message || 'Unbekannter Fehler');
-            continue;
-          }
+          lastError = 'Fehler: ' + (e.message || 'Unbekannter Fehler');
         }
-      }
 
       if (timeoutId) clearTimeout(timeoutId);
       removeTyping(typingId);
