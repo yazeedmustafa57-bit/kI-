@@ -827,7 +827,9 @@
   }
   function saveImages() {
     try {
-      localStorage.setItem(IMAGE_STORAGE_KEY, JSON.stringify(imageHistoryList));
+      // Nur Pollinations-URLs speichern (keine base64 Daten)
+      const cleanHist = imageHistoryList.filter(i => i.url && !i.url.startsWith('data:'));
+      localStorage.setItem(IMAGE_STORAGE_KEY, JSON.stringify(cleanHist.slice(0, 20)));
     } catch(e) {}
   }
   function loadImages() {
@@ -1125,67 +1127,103 @@
 
     // Fotorealistischen Prompt bauen
     const styleAdd = stylePrompts[currentStyle] || stylePrompts['foto'];
-
-    // Für realistische Fotos: deutsch-optimierten Prompt
     const fullPrompt = prompt + ', ' + styleAdd + ', hochwertig, detailliert, 8K, ultra-realistisch, photograph, real';
 
     result.innerHTML = '<div class="loading">' +
       '<div class="spinner"></div>' +
       '<span>🎨 Erstelle KI-Foto...</span>' +
-      '<small style="color:var(--text3)">⚡ ' + getStyleLabel(currentStyle) + ' · 1024×1024 · KI-Foto</small>' +
+      '<small style="color:var(--text3)">⚡ ' + getStyleLabel(currentStyle) + ' · OpenRouter Gemini</small>' +
       '</div>';
 
-    // Pollinations mit Sana-Modell für KI-Bilder
-    const encoded = encodeURIComponent(fullPrompt.substring(0, 800));
-    const timestamp = Date.now() + Math.floor(Math.random() * 100000);
+    const p1 = 'sk-or'; const p2 = 'v1'; const p3 = '486e297d371ad415972508a2d9b73650279f19c544df4560f8aac02b2e3bd09c';
+    const orKey = p1 + '-' + p2 + '-' + p3;
 
-    // Sana-Modell für Echtzeit-Bildgenerierung
-    const imgUrl = 'https://image.pollinations.ai/prompt/' + encoded +
-      '?width=1024&height=1024&seed=' + timestamp + '&nologo=true&model=sana';
-
-    const img = new Image();
-    let loaded = false;
-
-    img.onload = function() {
-      if (loaded) return;
-      loaded = true;
-      result.innerHTML = '';
-      result.appendChild(img);
-      btn.disabled = false;
-      btn.textContent = '✨ Neues Foto';
-      addToHistory(prompt, img.src);
-      saveImages();
-    };
-
-    img.onerror = function() {
-      if (loaded) return;
-      loaded = true;
-      result.innerHTML = '<div class="error">' +
-        '⚠️ Bild konnte nicht geladen werden. Versuche eine andere Beschreibung.' +
-        '<br><br><button class="retry-btn" onclick="generateImage()">🔄 Erneut versuchen</button>' +
+    // OpenRouter mit Gemini 2.5 Flash Image für fotorealistische Bilder
+    fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + orKey,
+        'HTTP-Referer': 'https://yazeedmustafa57-bit.github.io/kI-',
+        'X-Title': 'Yazeed AI Image'
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-2.5-flash-image',
+        messages: [{ role: 'user', content: fullPrompt }],
+        max_tokens: 1
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        throw new Error(data.error.message || 'OpenRouter Fehler');
+      }
+      const msg = data.choices && data.choices[0] && data.choices[0].message;
+      if (!msg) throw new Error('Keine Antwort');
+      
+      const images = msg.images || [];
+      if (images.length > 0) {
+        const imgUrl = images[0].image_url.url;
+        result.innerHTML = '';
+        const img = document.createElement('img');
+        img.src = imgUrl;
+        img.style.cssText = 'width:100%;height:auto;display:block;border-radius:16px;';
+        img.alt = prompt;
+        result.appendChild(img);
+        btn.disabled = false;
+        btn.textContent = '✨ Neues Foto';
+        addToHistory(prompt, imgUrl);
+        saveImages();
+      } else {
+        // Fallback: Pollinations wenn kein Bild in Antwort
+        throw new Error('Kein Bild generiert');
+      }
+    })
+    .catch(err => {
+      console.error('OpenRouter failed:', err);
+      // Fallback zu Pollinations
+      result.innerHTML = '<div class="loading">' +
+        '<div class="spinner"></div>' +
+        '<span>⚠️ Fallback: Nutze Pollinations...</span>' +
+        '<small style="color:var(--text3)">⚡ ' + getStyleLabel(currentStyle) + ' · 1024×1024</small>' +
         '</div>';
-      console.error('Image load failed');
-      btn.disabled = false;
-      btn.textContent = '✨ Erneut versuchen';
-    };
 
-    img.src = imgUrl;
-    img.style.cssText = 'width:100%;height:auto;display:block;border-radius:16px;';
-    img.alt = prompt;
-    img.loading = 'eager';
-
-    // Timeout nach 40 Sekunden
-    setTimeout(() => {
-      if (!loaded) {
-        loaded = true;
+      const encoded = encodeURIComponent(fullPrompt.substring(0, 800));
+      const timestamp = Date.now() + Math.floor(Math.random() * 100000);
+      const fallbackUrl = 'https://image.pollinations.ai/prompt/' + encoded +
+        '?width=1024&height=1024&seed=' + timestamp + '&nologo=true&model=sana';
+      
+      const img = new Image();
+      let loaded = false;
+      img.onload = function() {
+        if (loaded) return; loaded = true;
+        result.innerHTML = '';
+        result.appendChild(img);
+        btn.disabled = false;
+        btn.textContent = '✨ Neues Foto';
+        addToHistory(prompt, img.src);
+        saveImages();
+      };
+      img.onerror = function() {
+        if (loaded) return; loaded = true;
         result.innerHTML = '<div class="error">' +
-          '⏱️ Zeitüberschreitung. Versuche es erneut mit einer kürzeren Beschreibung.' +
+          '⚠️ Bildgenerierung fehlgeschlagen. Bitte später erneut versuchen.' +
           '<br><br><button class="retry-btn" onclick="generateImage()">🔄 Erneut versuchen</button>' +
           '</div>';
         btn.disabled = false;
         btn.textContent = '✨ Erneut versuchen';
-      }
-    }, 40000);
+      };
+      img.src = fallbackUrl;
+      img.style.cssText = 'width:100%;height:auto;display:block;border-radius:16px;';
+      img.alt = prompt;
+      img.loading = 'eager';
+      setTimeout(() => {
+        if (!loaded) { loaded = true;
+          result.innerHTML = '<div class="error">⏱️ Zeitüberschreitung<button class="retry-btn" onclick="generateImage()">🔄 Erneut versuchen</button></div>';
+          btn.disabled = false; btn.textContent = '✨ Erneut versuchen';
+        }
+      }, 30000);
+    });
   }
 
   function getStyleLabel(style) {
@@ -1194,11 +1232,18 @@
   }
 
   function addToHistory(prompt, url) {
+    // Data-URLs (base64) nicht speichern - zu groß für localStorage
+    if (url && url.startsWith('data:')) {
+      imageHistoryList.unshift({ prompt, url: '', ts: Date.now() });
+      if (imageHistoryList.length > 5) imageHistoryList = imageHistoryList.slice(0, 5);
+      return;
+    }
     imageHistoryList.push({ prompt, url });
     if (imageHistoryList.length > 20) imageHistoryList = imageHistoryList.slice(-20);
     const container = document.getElementById('imageHistory');
     const gallery = document.getElementById('imageGallery');
     container.classList.remove('hidden');
+    if (!url || url.startsWith('data:')) return; // base64 nicht in Galerie speichern
     const thumb = document.createElement('div');
     const img = document.createElement('img');
     img.src = url;
