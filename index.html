@@ -817,10 +817,16 @@
   // =============================================
   // CHAT – KOSTENLOS ÜBER OPENROUTER
   // =============================================
+  let lastUserMessage = ''; // For retry persistence
   async function sendMessage(retryCount) {
     if (retryCount === undefined) retryCount = 0;
     const input = document.getElementById('chatInput');
-    const msg = input.value.trim();
+    let msg;
+    if (retryCount > 0) {
+      msg = lastUserMessage;
+    } else {
+      msg = input.value.trim();
+    }
     if (!msg || isSending) return;
 
     // Auto-detect: Wenn Nutzer nach Bild fragt, zum Bild-Tab wechseln
@@ -842,6 +848,7 @@
     // Only add user message on first attempt
     if (retryCount === 0) {
       addMessage(chatMsgs, 'user', 'Du', escHtml(msg));
+      lastUserMessage = msg;
       input.value = '';
       input.style.height = 'auto';
     }
