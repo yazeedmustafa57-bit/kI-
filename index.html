@@ -633,11 +633,11 @@
 
       let errMsg;
       if (err.name === 'AbortError') {
-        errMsg = '⏱️ Die KI braucht zu lange. Bitte versuche es erneut oder wähle ein schnelleres Modell (links: Gemma 4).';
+        errMsg = '⏱️ Die KI braucht zu lange. Bitte versuche es erneut.';
       } else if (err.message && err.message.includes('Failed to fetch')) {
         errMsg = '📡 Netzwerkfehler. Bitte überprüfe deine Internetverbindung.';
       } else if (err.message && err.message.includes('429')) {
-        errMsg = '⚠️ Modell ist ausgelastet. Versuche "Gemma 4" oder "GPT-OSS" in der Seitenleiste.';
+        errMsg = '⚠️ Modell ist ausgelastet. Bitte versuche es erneut.';
       } else {
         errMsg = '❌ Fehler: ' + (err.message || 'Unbekannter Fehler');
       }
