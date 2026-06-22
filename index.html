@@ -295,6 +295,9 @@
     .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
     @keyframes dotPulse { 0%,60%,100% { opacity: 0.2; transform: scale(0.8); } 30% { opacity: 1; transform: scale(1); } }
 
+    .cursor-blink { animation: blink 1s step-end infinite; color: var(--primary-light); font-weight: 700; }
+    @keyframes blink { 50% { opacity: 0; } }
+
     .status-msg {
       text-align: center; padding: 8px 16px; font-size: 0.72rem;
       color: var(--text3); background: var(--surface);
@@ -463,10 +466,20 @@
 
     <div class="sidebar-section">
       <div class="sidebar-label">KI-Modell</div>
-      <div class="model-item active" style="cursor:default">
+      <div class="model-item active" onclick="selectModel(0)" style="cursor:pointer">
+        <span class="model-icon">🧠</span>
+        <span class="model-name">Gemma 4 26B</span>
+        <span class="status-badge">⚡ Blitzschnell</span>
+      </div>
+      <div class="model-item" onclick="selectModel(1)" style="cursor:pointer">
         <span class="model-icon">✨</span>
         <span class="model-name">GPT-OSS 120B</span>
-        <span class="status-badge">⭐ Beste Wahl</span>
+        <span class="status-badge">⭐ Stark</span>
+      </div>
+      <div class="model-item" onclick="selectModel(2)" style="cursor:pointer">
+        <span class="model-icon">💧</span>
+        <span class="model-name">Liquid 1.2B</span>
+        <span class="status-badge">🔋 Klein & schnell</span>
       </div>
     </div>
 
@@ -492,7 +505,7 @@
     <!-- TOP BAR -->
     <div class="topbar">
       <div class="topbar-left">
-        <span class="topbar-title" id="activeModelDisplay"><span class="dot"></span> ✨ GPT-OSS 120B</span>
+        <span class="topbar-title" id="activeModelDisplay"><span class="dot"></span> 🧠 Gemma 4 26B</span>
       </div>
       <div style="display:flex;align-items:center;gap:12px">
         <div class="tab-bar">
@@ -575,8 +588,14 @@
   // =============================================
   // KONFIGURATION
   // =============================================
-  let currentModel = 'openai/gpt-oss-120b:free';
-  let currentModelName = 'GPT-OSS 120B';
+  let currentModel = 'google/gemma-4-26b-a4b-it:free';
+  let currentModelName = 'Gemma 4 26B';
+  let currentModelId = 0;
+  const modelFallbackChain = [
+    { id: 'google/gemma-4-26b-a4b-it:free', name: 'Gemma 4 26B' },
+    { id: 'openai/gpt-oss-120b:free', name: 'GPT-OSS 120B' },
+    { id: 'liquid/lfm-2.5-1.2b-instruct:free', name: 'Liquid 1.2B' }
+  ];
   let currentStyle = 'foto';
   let chatHistory = [];
   let imageHistoryList = [];
@@ -591,7 +610,7 @@
     'fantasy': 'Fantasy-Kunst, epische Szene, magische Atmosphäre, leuchtende Elemente, ätherisch, Concept Art, mythisch'
   };
 
-  const modelList = { 'openai/gpt-oss-120b:free': { name: 'GPT-OSS 120B', icon: '✨' } };
+  const modelList = { 'google/gemma-4-26b-a4b-it:free': { name: 'Gemma 4 26B', icon: '🧠' }, 'openai/gpt-oss-120b:free': { name: 'GPT-OSS 120B', icon: '✨' }, 'liquid/lfm-2.5-1.2b-instruct:free': { name: 'Liquid 1.2B', icon: '💧' } };
   let currentLang = localStorage.getItem('yazeed_lang') || 'de';
   const STORAGE_KEY = 'yazeed_chat_history';
   const IMAGE_STORAGE_KEY = 'yazeed_image_history';
@@ -599,8 +618,17 @@
   // =============================================
   // MODELL AUSWÄHLEN
   // =============================================
-  function selectModel(el, model) {
-    // Nur GPT-OSS 120B Modell
+  function selectModel(id) {
+    if (id >= 0 && id < modelFallbackChain.length) {
+      currentModelId = id;
+      currentModel = modelFallbackChain[id].id;
+      currentModelName = modelFallbackChain[id].name;
+      document.getElementById('activeModelDisplay').innerHTML = '<span class="dot"></span> ' + modelFallbackChain[id].icon + ' ' + modelFallbackChain[id].name;
+      // Update sidebar highlight
+      document.querySelectorAll('.model-item').forEach((el, i) => {
+        el.classList.toggle('active', i === id);
+      });
+    }
   }
 
   // =============================================
@@ -789,7 +817,8 @@
   // =============================================
   // CHAT – KOSTENLOS ÜBER OPENROUTER
   // =============================================
-  async function sendMessage() {
+  async function sendMessage(retryCount) {
+    if (retryCount === undefined) retryCount = 0;
     const input = document.getElementById('chatInput');
     const msg = input.value.trim();
     if (!msg || isSending) return;
@@ -809,26 +838,37 @@
     if (welcome && welcome.style.display !== 'none') welcome.style.display = 'none';
 
     const chatMsgs = document.getElementById('chatMessages');
-    addMessage(chatMsgs, 'user', 'Du', escHtml(msg));
-    input.value = '';
-    input.style.height = 'auto';
+    
+    // Only add user message on first attempt
+    if (retryCount === 0) {
+      addMessage(chatMsgs, 'user', 'Du', escHtml(msg));
+      input.value = '';
+      input.style.height = 'auto';
+    }
+    
     isSending = true;
     setSendBtnDisabled(true);
+    showStatus('⏳ ' + currentModelName + ' denkt nach...', '');
 
+    const typingId = addTyping(chatMsgs);
     let controller, timeoutId;
     if (typeof AbortController !== 'undefined') {
       controller = new AbortController();
-      // Free models können langsam sein - 35s Timeout
-      timeoutId = setTimeout(() => controller.abort(), 35000);
+      timeoutId = setTimeout(() => controller.abort(), 20000);
     }
 
-    const typingId = addTyping(chatMsgs);
-    showStatus('⏳ KI denkt nach...', '');
-
     try {
-      // OpenRouter API Key (aus Sicherheitsgründen geteilt)
       const p1 = 'sk-or'; const p2 = 'v1'; const p3 = '486e297d371ad415972508a2d9b73650279f19c544df4560f8aac02b2e3bd09c';
       const orKey = p1 + '-' + p2 + '-' + p3;
+
+      // Use current model; on retry try next model in chain
+      let modelToUse = currentModel;
+      let modelNameToUse = currentModelName;
+      if (retryCount > 0) {
+        const nextIdx = (currentModelId + retryCount) % modelFallbackChain.length;
+        modelToUse = modelFallbackChain[nextIdx].id;
+        modelNameToUse = modelFallbackChain[nextIdx].name;
+      }
 
       const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
@@ -840,16 +880,15 @@
         },
         signal: controller ? controller.signal : undefined,
         body: JSON.stringify({
-          model: currentModel,
+          model: modelToUse,
+          stream: true,
           messages: [
             {
               role: 'system',
-              content: 'Du bist Yazeed AI, ein professioneller KI-Assistent, der wie ChatGPT arbeitet. ' +
-                'Antworte immer auf Deutsch. Sei präzise, hilfreich und freundlich. ' +
-                'Wenn der Nutzer nach einem Bild fragt (z.B. "Erstelle ein Bild von..."), ' +
-                'dann beschreibe das Bild detailliert in Worten, da du selbst keine Bilder generieren kannst. ' +
-                'Antworte immer vollständig und genau auf die Frage. ' +
-                'Formatiere Antworten mit **fett** für Wichtiges und Codeblöcke für Programmcode.'
+              content: 'Du bist Yazeed AI, ein professioneller KI-Assistent wie ChatGPT. ' +
+                'Antworte auf Deutsch. Sei präzise, hilfreich und freundlich. ' +
+                'Wenn der Nutzer nach einem Bild fragt, beschreibe es detailliert in Worten. ' +
+                'Formatiere Antworten mit **fett** und Codeblöcke.'
             },
             ...chatHistory.slice(-8).map(m => ({ role: m.role, content: m.text })),
             { role: 'user', content: msg }
@@ -857,55 +896,138 @@
         })
       });
 
-      const data = await res.json();
       if (timeoutId) clearTimeout(timeoutId);
       removeTyping(typingId);
-      showStatus('', '');
+      showStatus('📝 ' + modelNameToUse + ' schreibt...', '');
 
-      if (!res.ok) {
-        let errMsg = 'Fehler bei der Anfrage';
-        if (data.error) {
-          errMsg = data.error.message || data.error.code || '';
-          if (data.error.metadata && data.error.metadata.raw) {
-            errMsg = data.error.metadata.raw;
+      // Create AI message element for streaming
+      const streamMsgDiv = document.createElement('div');
+      streamMsgDiv.className = 'message ai';
+      streamMsgDiv.innerHTML =
+        '<div class="message-avatar" style="background:var(--gradient-btn)">AI</div>' +
+        '<div class="message-content">' +
+        '<div class="message-name">' + escHtml(modelNameToUse) + '</div>' +
+        '<div class="message-text" id="streamText"><span class="cursor-blink">|</span></div>' +
+        '</div>';
+      chatMsgs.appendChild(streamMsgDiv);
+      chatMsgs.scrollTop = chatMsgs.scrollHeight;
+
+      const streamTextEl = document.getElementById('streamText');
+      let fullContent = '';
+
+      if (res.ok && res.body) {
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const jsonStr = line.slice(6).trim();
+              if (jsonStr === '[DONE]') continue;
+              try {
+                const chunk = JSON.parse(jsonStr);
+                const delta = chunk.choices && chunk.choices[0] && chunk.choices[0].delta;
+                if (delta && delta.content) {
+                  fullContent += delta.content;
+                  streamTextEl.innerHTML = formatResponse(fullContent) + '<span class="cursor-blink">|</span>';
+                  chatMsgs.scrollTop = chatMsgs.scrollHeight;
+                }
+              } catch(e) {
+                console.warn('Stream parse error:', e);
+              }
+            }
           }
         }
-        if (res.status === 429) {
-          errMsg = '⚠️ Dieses Modell ist gerade ausgelastet. Versuche ein anderes Modell (links in der Seitenleiste) oder warte kurz.';
-        } else if (res.status === 503) {
-          errMsg = '⚠️ Dienst vorübergehend nicht verfügbar. Bitte versuche es erneut.';
+        
+        // Stream complete - remove cursor
+        streamTextEl.innerHTML = formatResponse(fullContent);
+        
+        if (fullContent) {
+          chatHistory.push({ role: 'user', text: msg }, { role: 'assistant', text: fullContent });
+          if (chatHistory.length > 60) chatHistory = chatHistory.slice(-60);
+          saveChat();
+        } else {
+          streamMsgDiv.remove();
+          // If empty response on retry, try next model
+          if (retryCount < modelFallbackChain.length - 1) {
+            showStatus('🔄 ' + modelNameToUse + ' leer, versuche nächsten...', '');
+            setTimeout(() => {
+              removeTyping(typingId);
+              isSending = false;
+              setSendBtnDisabled(false);
+              sendMessage(retryCount + 1);
+            }, 500);
+            return;
+          }
+          addMessage(chatMsgs, 'ai', currentModelName, '⚠️ Keine Antwort erhalten. Bitte versuche es erneut.');
+          saveChat();
         }
-        addMessage(chatMsgs, 'ai', currentModelName, errMsg);
-        isSending = false;
-        saveChat();
-        setSendBtnDisabled(false);
-        return;
-      }
-
-      if (data.choices && data.choices[0]) {
-        const aiText = data.choices[0].message.content;
-        addMessage(chatMsgs, 'ai', currentModelName, formatResponse(aiText || ''));
-        chatHistory.push({ role: 'user', text: msg }, { role: 'assistant', text: aiText || '' });
-        if (chatHistory.length > 60) chatHistory = chatHistory.slice(-60);
-        saveChat();
       } else {
-        addMessage(chatMsgs, 'ai', currentModelName, '⚠️ Keine Antwort erhalten. Bitte versuche es erneut.');
+        // Response not ok - try to parse error
+        let errMsg = 'Fehler ' + res.status;
+        try {
+          const errData = await res.json();
+          if (errData.error) {
+            errMsg = errData.error.message || errData.error.code || '';
+            if (errData.error.metadata && errData.error.metadata.raw) {
+              errMsg = errData.error.metadata.raw;
+            }
+          }
+        } catch(e) {}
+        
+        streamMsgDiv.remove();
+        showStatus('', '');
+        
+        // 429 or 5xx - try fallback
+        if ((res.status === 429 || res.status >= 500) && retryCount < modelFallbackChain.length - 1) {
+          showStatus('🔄 ' + modelNameToUse + ' ausgelastet, versuche nächsten...', '');
+          removeTyping(typingId);
+          isSending = false;
+          setSendBtnDisabled(false);
+          setTimeout(() => sendMessage(retryCount + 1), 500);
+          return;
+        }
+        
+        addMessage(chatMsgs, 'ai', currentModelName, '⚠️ ' + errMsg);
         saveChat();
       }
     } catch (err) {
       if (timeoutId) clearTimeout(timeoutId);
       removeTyping(typingId);
       showStatus('', '');
+      console.error('Request error:', err);
+
+      // Remove any partial streaming message
+      const streamEl = document.getElementById('streamText');
+      if (streamEl) {
+        const parentMsg = streamEl.closest('.message');
+        if (parentMsg) parentMsg.remove();
+      }
+
+      // Timeout or network error - try fallback model
+      if (retryCount < modelFallbackChain.length - 1) {
+        showStatus('🔄 ' + currentModelName + ' reagiert nicht, versuche anderen...', '');
+        isSending = false;
+        setSendBtnDisabled(false);
+        setTimeout(() => sendMessage(retryCount + 1), 500);
+        return;
+      }
 
       let errMsg;
       if (err.name === 'AbortError') {
-        errMsg = '⏱️ Die KI braucht zu lange. Bitte versuche es erneut.';
+        errMsg = '⏱️ Alle Modelle reagieren nicht. Bitte versuche es später erneut.';
       } else if (err.message && err.message.includes('Failed to fetch')) {
         errMsg = '📡 Netzwerkfehler. Bitte überprüfe deine Internetverbindung.';
-      } else if (err.message && err.message.includes('429')) {
-        errMsg = '⚠️ Modell ist ausgelastet. Bitte versuche es erneut.';
       } else {
-        errMsg = '❌ Fehler: ' + (err.message || 'Unbekannter Fehler');
+        errMsg = '❌ Fehler: ' + (err.message || 'Bitte versuche es erneut');
       }
       addMessage(chatMsgs, 'ai', currentModelName, errMsg);
     }
