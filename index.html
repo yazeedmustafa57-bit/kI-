@@ -1132,7 +1132,7 @@
     result.innerHTML = '<div class="loading">' +
       '<div class="spinner"></div>' +
       '<span>🎨 Erstelle KI-Foto...</span>' +
-      '<small style="color:var(--text3)">⚡ ' + getStyleLabel(currentStyle) + ' · OpenRouter Gemini</small>' +
+      '<small style="color:var(--text3)">⚡ ' + getStyleLabel(currentStyle) + ' · FLUX Schnell</small>' +
       '</div>';
 
     const p1 = 'sk-or'; const p2 = 'v1'; const p3 = '486e297d371ad415972508a2d9b73650279f19c544df4560f8aac02b2e3bd09c';
@@ -1148,9 +1148,8 @@
         'X-Title': 'Yazeed AI Image'
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash-image',
-        messages: [{ role: 'user', content: fullPrompt }],
-        max_tokens: 1
+        model: 'black-forest-labs/flux-schnell',
+        messages: [{ role: 'user', content: fullPrompt }]
       })
     })
     .then(res => res.json())
@@ -1161,9 +1160,11 @@
       const msg = data.choices && data.choices[0] && data.choices[0].message;
       if (!msg) throw new Error('Keine Antwort');
       
-      const images = msg.images || [];
-      if (images.length > 0) {
-        const imgUrl = images[0].image_url.url;
+      // Extract image URL from response content (markdown image syntax)
+      const content = msg.content || '';
+      const imgMatch = content.match(/!\[.*?\]\((https?:\/\/[^\s\)]+)\)/);
+      if (imgMatch) {
+        const imgUrl = imgMatch[1];
         result.innerHTML = '';
         const img = document.createElement('img');
         img.src = imgUrl;
@@ -1191,7 +1192,7 @@
       const encoded = encodeURIComponent(fullPrompt.substring(0, 800));
       const timestamp = Date.now() + Math.floor(Math.random() * 100000);
       const fallbackUrl = 'https://image.pollinations.ai/prompt/' + encoded +
-        '?width=1024&height=1024&seed=' + timestamp + '&nologo=true&model=sana';
+        '?width=1024&height=1024&seed=' + timestamp + '&nologo=true&model=flux&private=true';
       
       const img = new Image();
       let loaded = false;
