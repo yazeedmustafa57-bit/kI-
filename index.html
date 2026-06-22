@@ -842,9 +842,6 @@
       const modelId = currentModel;
       const modelName = currentModelName;
         
-        if (attempt > 0) {
-          showStatus('🔄 ' + modelName + ' wird probiert...', '');
-        }
         
         try {
           const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
