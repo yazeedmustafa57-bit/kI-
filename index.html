@@ -503,11 +503,7 @@
 
     <div class="sidebar-section">
       <div class="sidebar-label">KI-Modell</div>
-      <div class="model-item active" style="cursor:default">
-        <span class="model-icon">✨</span>
-        <span class="model-name">GPT-OSS 120B</span>
-        <span class="status-badge">⭐ Aktiv</span>
-      </div>
+      <div id="modelListContainer"></div>
     </div>
 
     <div class="sidebar-section">
@@ -625,10 +621,12 @@
   // =============================================
   // KONFIGURATION
   // =============================================
-  let currentModel = 'openai/gpt-oss-120b:free';
-  let currentModelName = 'GPT-OSS 120B';
+  let currentModel = 'openrouter/free';
+  let currentModelName = 'Auto (Free)';
   const modelFallbackChain = [
-    { id: 'openai/gpt-oss-120b:free', name: 'GPT-OSS 120B' }
+    { id: 'openrouter/free', name: 'Auto (Free)' },
+    { id: 'openai/gpt-oss-120b:free', name: 'GPT-OSS 120B' },
+    { id: 'openai/gpt-oss-20b:free', name: 'GPT-OSS 20B' }
   ];
   let currentStyle = 'foto';
   let conversations = [];
@@ -647,7 +645,11 @@
     'fantasy': 'epic fantasy scene, magical atmosphere, glowing elements, ethereal, mythical, highly detailed, photorealistic rendering'
   };
 
-  const modelList = { 'openai/gpt-oss-120b:free': { name: 'GPT-OSS 120B', icon: '✨' } };
+  const modelList = { 
+    'openrouter/free': { name: 'Auto (Free)', icon: '🤖' },
+    'openai/gpt-oss-120b:free': { name: 'GPT-OSS 120B', icon: '✨' },
+    'openai/gpt-oss-20b:free': { name: 'GPT-OSS 20B', icon: '⚡' }
+  };
   let currentLang = localStorage.getItem('yazeed_lang') || 'de';
   const STORAGE_KEY = 'yazeed_conversations_v2';
   const IMAGE_STORAGE_KEY = 'yazeed_image_history';
@@ -1016,12 +1018,14 @@
       const p1 = 'sk-or'; const p2 = 'v1'; const p3 = '486e297d371ad415972508a2d9b73650279f19c544df4560f8aac02b2e3bd09c';
       const orKey = p1 + '-' + p2 + '-' + p3;
 
-      // GPT-OSS 120B
+      // Modelle mit Fallback durchprobieren
       let responseData = null;
       let lastError = '';
-      const modelId = currentModel;
-      const modelName = currentModelName;
-        
+      const modelsToTry = [currentModel, ...modelFallbackChain.map(m => m.id).filter(id => id !== currentModel)];
+      
+      for (const tryModelId of modelsToTry) {
+        const tryModelName = modelList[tryModelId]?.name || tryModelId;
+        showStatus('⏳ ' + tryModelName + ' denkt nach...', '');
         
         try {
           const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
@@ -1034,7 +1038,7 @@
             },
             signal: controller ? controller.signal : undefined,
             body: JSON.stringify({
-              model: modelId,
+              model: tryModelId,
               stream: false,
               messages: [
                 {
@@ -1054,8 +1058,9 @@
             const data = await res.json();
             if (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) {
               responseData = data;
+              break; // Erfolg, Fallback beenden
             } else {
-              lastError = 'Leere Antwort von ' + modelName;
+              lastError = 'Leere Antwort von ' + tryModelName;
             }
           } else {
             let errDetail = 'Fehler ' + res.status;
@@ -1071,8 +1076,10 @@
             lastError = errDetail;
           }
         } catch (e) {
-          lastError = 'Fehler: ' + (e.message || 'Unbekannter Fehler');
+          lastError = 'Fehler bei ' + tryModelName + ': ' + (e.message || 'Unbekannter Fehler');
+          continue; // Nächstes Modell versuchen
         }
+      } // Ende der for-Schleife
 
       if (timeoutId) clearTimeout(timeoutId);
       removeTyping(typingId);
@@ -1337,9 +1344,44 @@
   }
 
   // =============================================
+  // MODELL-AUSWAHL RENDERN
+  // =============================================
+  function renderModelList() {
+    const container = document.getElementById('modelListContainer');
+    if (!container) return;
+    container.innerHTML = Object.entries(modelList).map(([id, info]) => {
+      const active = id === currentModel ? ' active' : '';
+      return '<div class="model-item' + active + '" onclick="selectModel(\'' + id + '\')">' +
+        '<span class="model-icon">' + info.icon + '</span>' +
+        '<span class="model-name">' + info.name + '</span>' +
+        (id === currentModel ? '<span class="status-badge">⭐ Aktiv</span>' : '') +
+        '</div>';
+    }).join('');
+  }
+
+  function selectModel(id) {
+    if (id === currentModel) return;
+    currentModel = id;
+    currentModelName = modelList[id]?.name || id;
+    localStorage.setItem('yazeed_model', id);
+    renderModelList();
+    showStatus('✅ ' + currentModelName, '');
+    setTimeout(() => showStatus('', ''), 2000);
+  }
+
+  // =============================================
   // INIT: Sprache wiederherstellen + Chat laden
   // =============================================
   updateLanguage();
+  // Gespeichertes Modell wiederherstellen
+  const savedModel = localStorage.getItem('yazeed_model');
+  if (savedModel && modelList[savedModel]) {
+    currentModel = savedModel;
+    currentModelName = modelList[savedModel].name;
+  }
+  // Modelle rendern
+  renderModelList();
+  
   // Kurze Verzögerung damit DOM bereit ist
   setTimeout(restoreMessages, 100);
 
