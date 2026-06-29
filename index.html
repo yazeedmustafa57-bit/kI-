@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Yazeed AI – Kostenlose KI wie ChatGPT</title>
-  <meta name="description" content="Yazeed AI – Deine kostenlose KI-Plattform. Chat wie ChatGPT + echte KI-Bilder, ohne Anmeldung.">
+  <meta name="description" content="Yazeed AI – Deine kostenlose KI-Plattform. Chat wie ChatGPT, kostenlos und ohne Anmeldung.">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -131,7 +131,6 @@
       color: var(--text); border: 1px solid rgba(124,58,237,0.15);
     }
     .tool-icon { font-size: 1.1rem; width: 28px; text-align: center; }
-
 
     /* ===== Conversation History ===== */
     .conv-section { flex: 1; overflow-y: auto; padding: 0 20px 12px; }
@@ -377,95 +376,6 @@
     .send-btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px var(--primary-glow); }
     .send-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; box-shadow: none; }
 
-    /* ===== IMAGE TAB ===== */
-    .image-area { display: none; flex: 1; overflow-y: auto; padding: 28px; }
-    .image-area.active { display: flex; }
-    .image-generator { max-width: 800px; margin: 0 auto; width: 100%; }
-    .image-generator h2 {
-      font-size: 1.5rem; margin-bottom: 6px; font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-    .image-generator > p { color: var(--text2); font-size: 0.9rem; margin-bottom: 20px; }
-    .image-note {
-      background: linear-gradient(135deg, rgba(124,58,237,0.08), rgba(6,182,212,0.05));
-      border: 1px solid rgba(124,58,237,0.12); border-radius: var(--radius);
-      padding: 12px 16px; margin-bottom: 20px; font-size: 0.75rem;
-      color: var(--text2); display: flex; align-items: center; gap: 10px;
-    }
-
-    .image-styles { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
-    .style-chip {
-      padding: 7px 16px; border-radius: 20px;
-      background: rgba(26,26,46,0.5); border: 1px solid var(--border);
-      font-size: 0.75rem; color: var(--text2); cursor: pointer;
-      transition: all 0.25s ease; font-family: var(--font);
-    }
-    .style-chip:hover { border-color: var(--border-hover); color: var(--text); }
-    .style-chip.active {
-      background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(6,182,212,0.08));
-      border-color: rgba(124,58,237,0.25); color: var(--primary-light);
-    }
-
-    .image-box {
-      display: flex; gap: 10px; margin-bottom: 20px;
-    }
-    .image-box input {
-      flex: 1; background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 13px 18px; color: var(--text);
-      font-size: 0.88rem; font-family: var(--font); transition: 0.3s;
-    }
-    .image-box input:focus { border-color: rgba(124,58,237,0.3); outline: none; box-shadow: 0 0 20px rgba(124,58,237,0.05); }
-    .image-box button {
-      background: var(--gradient-btn); border: none; border-radius: var(--radius);
-      padding: 13px 28px; color: white; font-weight: 600; cursor: pointer;
-      transition: all 0.25s ease; font-family: var(--font); white-space: nowrap;
-      box-shadow: 0 4px 16px var(--primary-glow);
-    }
-    .image-box button:hover { transform: translateY(-2px); box-shadow: 0 8px 28px var(--primary-glow); }
-    .image-box button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
-
-    .image-result {
-      background: var(--surface); border-radius: var(--radius-xl);
-      border: 1px solid var(--border); min-height: 300px;
-      display: flex; align-items: center; justify-content: center;
-      overflow: hidden; position: relative;
-    }
-    .image-result img { width: 100%; height: auto; display: block; border-radius: var(--radius-xl); }
-    .image-result .placeholder { color: var(--text3); text-align: center; padding: 60px 20px; }
-    .image-result .placeholder p { font-size: 0.9rem; }
-    .image-result .loading {
-      text-align: center; padding: 60px 20px;
-      display: flex; flex-direction: column; align-items: center; gap: 14px;
-    }
-    .image-result .loading .spinner {
-      width: 44px; height: 44px; border: 3px solid rgba(124,58,237,0.1);
-      border-top-color: var(--primary); border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .image-result .error { padding: 40px 20px; color: #fca5a5; text-align: center; }
-    .image-result .retry-btn {
-      margin-top: 12px; padding: 10px 24px; border-radius: var(--radius-sm);
-      border: 1px solid var(--border); background: var(--bg3);
-      color: var(--text); cursor: pointer; font-family: var(--font);
-      transition: 0.2s;
-    }
-    .image-result .retry-btn:hover { border-color: var(--primary-glow); }
-
-    .image-history { margin-top: 20px; }
-    .image-history h3 { font-size: 0.85rem; color: var(--text2); margin-bottom: 12px; }
-    .image-gallery {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-      gap: 8px;
-    }
-    .image-gallery div {
-      border-radius: var(--radius-sm); overflow: hidden;
-      border: 1px solid var(--border); cursor: pointer;
-      transition: 0.25s ease; aspect-ratio: 1;
-    }
-    .image-gallery div:hover { border-color: var(--primary-glow); transform: scale(1.03); box-shadow: 0 4px 16px rgba(124,58,237,0.1); }
-    .image-gallery img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
     /* ===== HIDDEN ===== */
     .hidden { display: none !important; }
 
@@ -480,10 +390,10 @@
       .chat-messages { padding: 20px 16px 8px; }
       .input-area { position: sticky; bottom: 0; padding: 12px 16px 18px; }
       .message { max-width: 92%; }
-      .image-area { padding: 16px; }
-      .image-box { flex-direction: column; }
-      .image-box input { min-width: 100%; }
-      .image-box button { width: 100%; }
+
+  
+  
+  
       .topbar-title { font-size: 0.8rem; }
       .welcome-logo { width: 80px; height: 80px; font-size: 2.2rem; }
       .welcome-screen h1 { font-size: 1.4rem; }
@@ -512,10 +422,7 @@
         <span class="tool-icon">💬</span>
         <span class="model-name">Chat</span>
       </div>
-      <div class="tool-item" onclick="switchTab('image')">
-        <span class="tool-icon">🎨</span>
-        <span class="model-name">Bildgenerierung</span>
-      </div>
+
     </div>
 
     <div class="conv-section">
@@ -543,7 +450,7 @@
       <div style="display:flex;align-items:center;gap:12px">
         <div class="tab-bar">
           <button class="tab-btn active" onclick="switchTab('chat')">💬 Chat</button>
-          <button class="tab-btn" onclick="switchTab('image')">🎨 Bilder</button>
+
         </div>
         <button id="langToggle" onclick="toggleLanguage()" style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--text2);cursor:pointer;font-size:0.75rem;font-family:var(--font);transition:0.2s">DE</button>
       </div>
@@ -560,7 +467,7 @@
             <span class="suggestion-chip" onclick="askSuggestion('Was ist künstliche Intelligenz?')">🧠 Was ist KI?</span>
             <span class="suggestion-chip" onclick="askSuggestion('Schreibe eine E-Mail an meinen Chef')">📧 E-Mail schreiben</span>
             <span class="suggestion-chip" onclick="askSuggestion('Erkläre Quantenphysik einfach')">🔬 Quantenphysik</span>
-            <span class="suggestion-chip" onclick="switchTab('image');document.getElementById('imagePrompt').value='Ein Löwe in der Savanne, professionelle Wildlife-Fotografie, ultra-realistisch';setTimeout(generateImage,300)">🦁 Löwe (Bild)</span>
+
             <span class="suggestion-chip" onclick="askSuggestion('Erzähle einen Witz')">😄 Witz erzählen</span>
             <span class="suggestion-chip" onclick="askSuggestion('Hilf mir beim Programmieren in Python')">💻 Python Code</span>
           </div>
@@ -578,81 +485,28 @@
       </div>
     </div>
 
-    <!-- IMAGE TAB -->
-    <div id="imageTab" class="image-area">
-      <div class="image-generator">
-        <h2>🎨 KI-Bildgenerator</h2>
-        <p>Erstelle fotorealistische KI-Bilder – wie DALL·E, aber kostenlos</p>
-
-        <div class="image-note">
-          ⚡ <span><strong>Neu:</strong> Verbessertes Modell für realistische Fotos. Einfach beschreiben, was du sehen willst!</span>
-        </div>
-
-        <div class="image-styles" id="styleChips">
-          <span class="style-chip active" onclick="selectStyle(this,'foto')">📸 Fotorealistisch</span>
-          <span class="style-chip" onclick="selectStyle(this,'cinematic')">🎬 Kinematisch</span>
-          <span class="style-chip" onclick="selectStyle(this,'portrait')">👤 Porträt</span>
-          <span class="style-chip" onclick="selectStyle(this,'nature')">🌿 Natur</span>
-          <span class="style-chip" onclick="selectStyle(this,'fantasy')">🧙 Fantasy</span>
-        </div>
-
-        <div class="image-box">
-          <input type="text" id="imagePrompt" placeholder="Beschreibe dein Bild... z.B. 'Ein Löwe in der Savanne bei Sonnenuntergang'" />
-          <button id="imageGenBtn" onclick="generateImage()">✨ Foto erstellen</button>
-        </div>
-
-        <div class="image-result" id="imageResult">
-          <div class="placeholder">
-            <p>📸 Dein Foto erscheint hier</p>
-            <small style="color:var(--text3)">Gib eine Beschreibung ein und klicke auf "Foto erstellen"</small>
-          </div>
-        </div>
-
-        <div class="image-history hidden" id="imageHistory">
-          <h3>📂 Verlauf</h3>
-          <div class="image-gallery" id="imageGallery"></div>
-        </div>
-      </div>
-    </div>
-  </div>
+</div>
 </div>
 
 <script>
   // =============================================
   // KONFIGURATION
   // =============================================
-  let currentModel = 'openrouter/free';
-  let currentModelName = 'Auto (Free)';
-  const modelFallbackChain = [
-    { id: 'openrouter/free', name: 'Auto (Free)' },
-    { id: 'openai/gpt-oss-120b:free', name: 'GPT-OSS 120B' },
-    { id: 'openai/gpt-oss-20b:free', name: 'GPT-OSS 20B' }
-  ];
-  let currentStyle = 'foto';
+  let currentModel = 'openai/gpt-oss-120b:free';
+  let currentModelName = 'GPT-OSS 120B';
+  const modelFallbackChain = [{ id: 'openai/gpt-oss-120b:free', name: 'GPT-OSS 120B' }];
   let conversations = [];
   let currentConvId = null;
   let chatHistory = [];
-  let imageHistoryList = [];
+
   let isSending = false;
   let nextConvId = 1;
 
-  // Prompt-Templates für fotorealistische Ergebnisse (auf Deutsch)
-  const stylePrompts = {
-    'foto': 'photorealistic, highly detailed texture, sharp focus, natural lighting, DSLR photography, 8K, ultra-realistic, real photograph',
-    'cinematic': 'cinematic movie still, dramatic lighting, film grain, anamorphic lens, cinematic composition, dramatic atmosphere, realistic',
-    'portrait': 'professional portrait photography, studio lighting, detailed skin texture, sharp focus, bokeh background, editorial quality',
-    'nature': 'nature photography, macro details, natural sunlight, vivid colors, wildlife photography, National Geographic style, realistic',
-    'fantasy': 'epic fantasy scene, magical atmosphere, glowing elements, ethereal, mythical, highly detailed, photorealistic rendering'
-  };
-
   const modelList = { 
-    'openrouter/free': { name: 'Auto (Free)', icon: '🤖' },
-    'openai/gpt-oss-120b:free': { name: 'GPT-OSS 120B', icon: '✨' },
-    'openai/gpt-oss-20b:free': { name: 'GPT-OSS 20B', icon: '⚡' }
+    'openai/gpt-oss-120b:free': { name: 'GPT-OSS 120B', icon: '✨' }
   };
   let currentLang = localStorage.getItem('yazeed_lang') || 'de';
   const STORAGE_KEY = 'yazeed_conversations_v2';
-  const IMAGE_STORAGE_KEY = 'yazeed_image_history';
 
   // =============================================
   // MODELL AUSWÄHLEN
@@ -667,7 +521,13 @@
   }
 
   function selectModel(id) {
-    // Nur GPT-OSS 120B
+    if (id === currentModel) return;
+    currentModel = id;
+    currentModelName = modelList[id]?.name || id;
+    localStorage.setItem('yazeed_model', id);
+    renderModelList();
+    showStatus('✅ ' + currentModelName, '');
+    setTimeout(() => showStatus('', ''), 2000);
   }
 
   // =============================================
@@ -676,28 +536,11 @@
   function switchTab(tab) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('chatTab').style.display = tab === 'chat' ? 'flex' : 'none';
-    document.getElementById('imageTab').style.display = tab === 'image' ? 'flex' : 'none';
     document.getElementById('inputArea').style.display = tab === 'chat' ? 'block' : 'none';
-
-    document.querySelectorAll('.tab-btn')[tab === 'chat' ? 0 : 1].classList.add('active');
-
-    // Sidebar active state
-    document.querySelectorAll('.sidebar-section:last-child .tool-item').forEach((item, i) => {
-      item.classList.toggle('active', (tab === 'chat' && i === 0) || (tab === 'image' && i === 1));
-    });
-
     if (tab === 'chat') {
+      document.querySelectorAll('.tab-btn')[0].classList.add('active');
       setTimeout(() => document.getElementById('chatInput').focus(), 100);
     }
-  }
-
-  // =============================================
-  // STYLE AUSWÄHLEN
-  // =============================================
-  function selectStyle(el, style) {
-    document.querySelectorAll('.style-chip').forEach(s => s.classList.remove('active'));
-    el.classList.add('active');
-    currentStyle = style;
   }
 
   // =============================================
@@ -827,26 +670,7 @@
   function loadChat() {
     return chatHistory.length > 0;
   }
-  function saveImages() {
-    try {
-      // Nur Pollinations-URLs speichern (keine base64 Daten)
-      const cleanHist = imageHistoryList.filter(i => i.url && !i.url.startsWith('data:'));
-      localStorage.setItem(IMAGE_STORAGE_KEY, JSON.stringify(cleanHist.slice(0, 20)));
-    } catch(e) {}
-  }
-  function loadImages() {
-    try {
-      const saved = localStorage.getItem(IMAGE_STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) {
-          imageHistoryList = parsed;
-          return true;
-        }
-      }
-    } catch(e) {}
-    return false;
-  }
+
   function restoreMessages() {
     const chatMsgs = document.getElementById('chatMessages');
     const welcome = document.getElementById('welcomeScreen');
@@ -876,30 +700,7 @@
       newConversation();
     }
     renderConversations();
-    // Restore image gallery
-    if (loadImages() && imageHistoryList.length > 0) {
-      const container = document.getElementById('imageHistory');
-      const gallery = document.getElementById('imageGallery');
-      if (container && gallery) {
-        container.classList.remove('hidden');
-        gallery.innerHTML = '';
-        for (const img of imageHistoryList) {
-          const thumb = document.createElement('div');
-          const i = document.createElement('img');
-          i.src = img.url;
-          i.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
-          i.loading = 'lazy';
-          i.title = img.prompt;
-          i.alt = img.prompt;
-          thumb.appendChild(i);
-          thumb.onclick = function() {
-            document.getElementById('imagePrompt').value = img.prompt;
-            generateImage();
-          };
-          gallery.appendChild(thumb);
-        }
-      }
-    }
+
   }
 
   // =============================================
@@ -925,17 +726,7 @@
       document.getElementById('chatInput').placeholder = 'Type a message...';
       const sendBtn = document.getElementById('sendBtn');
       if (sendBtn) sendBtn.title = 'Send';
-      // Image tab
-      const imgH2 = document.querySelector('.image-generator h2');
-      const imgP = document.querySelector('.image-generator > p');
-      if (imgH2) imgH2.textContent = '🎨 AI Image Generator';
-      if (imgP) imgP.textContent = 'Create photorealistic AI images – like DALL·E, but free';
-      const imgInput = document.getElementById('imagePrompt');
-      if (imgInput) imgInput.placeholder = 'Describe your image... e.g. "A lion in the savanna at sunset"';
-      const imgBtn = document.getElementById('imageGenBtn');
-      if (imgBtn) imgBtn.textContent = '✨ Create Photo';
-      const imgNote = document.querySelector('.image-note span');
-      if (imgNote) imgNote.innerHTML = '<strong>New:</strong> Improved model for realistic photos. Just describe what you want to see!';
+
     } else {
       document.title = 'Yazeed AI – Kostenlose KI wie ChatGPT';
       document.querySelector('meta[name="description"]').content = 'Yazeed AI – Deine kostenlose KI-Plattform. Chat wie ChatGPT + echte KI-Bilder, ohne Anmeldung.';
@@ -946,16 +737,7 @@
       document.getElementById('chatInput').placeholder = 'Schreibe eine Nachricht...';
       const sendBtn = document.getElementById('sendBtn');
       if (sendBtn) sendBtn.title = 'Senden';
-      const imgH2 = document.querySelector('.image-generator h2');
-      const imgP = document.querySelector('.image-generator > p');
-      if (imgH2) imgH2.textContent = '🎨 KI-Bildgenerator';
-      if (imgP) imgP.textContent = 'Erstelle fotorealistische KI-Bilder – wie DALL·E, aber kostenlos';
-      const imgInput = document.getElementById('imagePrompt');
-      if (imgInput) imgInput.placeholder = 'Beschreibe dein Bild... z.B. "Ein Löwe in der Savanne bei Sonnenuntergang"';
-      const imgBtn = document.getElementById('imageGenBtn');
-      if (imgBtn) imgBtn.textContent = '✨ Foto erstellen';
-      const imgNote = document.querySelector('.image-note span');
-      if (imgNote) imgNote.innerHTML = '<strong>Neu:</strong> Verbessertes Modell für realistische Fotos. Einfach beschreiben, was du sehen willst!';
+
     }
   }
 
@@ -982,16 +764,8 @@
     const msg = input.value.trim();
     if (!msg || isSending) return;
 
-    // Auto-detect: Wenn Nutzer nach Bild fragt, zum Bild-Tab wechseln
-    const lower = msg.toLowerCase();
-    const wantsAction = lower.includes('erstelle') || lower.includes('generiere') || lower.includes('erzeuge') || lower.includes('zeichne') || lower.includes('male') || lower.includes('mach mir');
-    const wantsMedia = lower.includes('bild') || lower.includes('foto') || lower.includes('photo') || lower.includes('image');
-    if (wantsAction && wantsMedia) {
-      switchTab('image');
-      document.getElementById('imagePrompt').value = msg;
-      setTimeout(generateImage, 300);
-      return;
-    }
+    // Bild-Wünsche werden im Chat beantwortet (kein eigener Bild-Tab mehr)
+    //
 
     const welcome = document.getElementById('welcomeScreen');
     if (welcome && welcome.style.display !== 'none') welcome.style.display = 'none';
@@ -1117,157 +891,7 @@
     chatMsgs.scrollTop = chatMsgs.scrollHeight;
   }
 
-  // =============================================
-  // BILD – FOTOREALISTISCH MIT FLUX-MODELL
-  // =============================================
-  function generateImage() {
-    const prompt = document.getElementById('imagePrompt').value.trim();
-    if (!prompt) {
-      alert('Bitte gib eine Bildbeschreibung ein!');
-      return;
-    }
-
-    const result = document.getElementById('imageResult');
-    const btn = document.getElementById('imageGenBtn');
-    btn.disabled = true;
-    btn.textContent = '⏳ Erstelle Foto...';
-
-    // Fotorealistischen Prompt bauen
-    const styleAdd = stylePrompts[currentStyle] || stylePrompts['foto'];
-    const fullPrompt = prompt + ', ' + styleAdd + ', hochwertig, detailliert, 8K, ultra-realistisch, photograph, real';
-
-    result.innerHTML = '<div class="loading">' +
-      '<div class="spinner"></div>' +
-      '<span>🎨 Erstelle KI-Foto...</span>' +
-      '<small style="color:var(--text3)">⚡ ' + getStyleLabel(currentStyle) + ' · FLUX Schnell</small>' +
-      '</div>';
-
-    const p1 = 'sk-or'; const p2 = 'v1'; const p3 = '486e297d371ad415972508a2d9b73650279f19c544df4560f8aac02b2e3bd09c';
-    const orKey = p1 + '-' + p2 + '-' + p3;
-
-    // OpenRouter mit Gemini 2.5 Flash Image für fotorealistische Bilder
-    fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + orKey,
-        'HTTP-Referer': 'https://yazeedmustafa57-bit.github.io/kI-',
-        'X-Title': 'Yazeed AI Image'
-      },
-      body: JSON.stringify({
-        model: 'black-forest-labs/flux-schnell',
-        messages: [{ role: 'user', content: fullPrompt }]
-      })
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.error) {
-        throw new Error(data.error.message || 'OpenRouter Fehler');
-      }
-      const msg = data.choices && data.choices[0] && data.choices[0].message;
-      if (!msg) throw new Error('Keine Antwort');
-      
-      // Extract image URL from response content (markdown image syntax)
-      const content = msg.content || '';
-      const imgMatch = content.match(/!\[.*?\]\((https?:\/\/[^\s\)]+)\)/);
-      if (imgMatch) {
-        const imgUrl = imgMatch[1];
-        result.innerHTML = '';
-        const img = document.createElement('img');
-        img.src = imgUrl;
-        img.style.cssText = 'width:100%;height:auto;display:block;border-radius:16px;';
-        img.alt = prompt;
-        result.appendChild(img);
-        btn.disabled = false;
-        btn.textContent = '✨ Neues Foto';
-        addToHistory(prompt, imgUrl);
-        saveImages();
-      } else {
-        // Fallback: Pollinations wenn kein Bild in Antwort
-        throw new Error('Kein Bild generiert');
-      }
-    })
-    .catch(err => {
-      console.error('OpenRouter failed:', err);
-      // Fallback zu Pollinations
-      result.innerHTML = '<div class="loading">' +
-        '<div class="spinner"></div>' +
-        '<span>⚠️ Fallback: Nutze Pollinations...</span>' +
-        '<small style="color:var(--text3)">⚡ ' + getStyleLabel(currentStyle) + ' · 1024×1024</small>' +
-        '</div>';
-
-      const encoded = encodeURIComponent(fullPrompt.substring(0, 800));
-      const timestamp = Date.now() + Math.floor(Math.random() * 100000);
-      const fallbackUrl = 'https://image.pollinations.ai/prompt/' + encoded +
-        '?width=1024&height=1024&seed=' + timestamp + '&nologo=true&model=flux&private=true';
-      
-      const img = new Image();
-      let loaded = false;
-      img.onload = function() {
-        if (loaded) return; loaded = true;
-        result.innerHTML = '';
-        result.appendChild(img);
-        btn.disabled = false;
-        btn.textContent = '✨ Neues Foto';
-        addToHistory(prompt, img.src);
-        saveImages();
-      };
-      img.onerror = function() {
-        if (loaded) return; loaded = true;
-        result.innerHTML = '<div class="error">' +
-          '⚠️ Bildgenerierung fehlgeschlagen. Bitte später erneut versuchen.' +
-          '<br><br><button class="retry-btn" onclick="generateImage()">🔄 Erneut versuchen</button>' +
-          '</div>';
-        btn.disabled = false;
-        btn.textContent = '✨ Erneut versuchen';
-      };
-      img.src = fallbackUrl;
-      img.style.cssText = 'width:100%;height:auto;display:block;border-radius:16px;';
-      img.alt = prompt;
-      img.loading = 'eager';
-      setTimeout(() => {
-        if (!loaded) { loaded = true;
-          result.innerHTML = '<div class="error">⏱️ Zeitüberschreitung<button class="retry-btn" onclick="generateImage()">🔄 Erneut versuchen</button></div>';
-          btn.disabled = false; btn.textContent = '✨ Erneut versuchen';
-        }
-      }, 30000);
-    });
-  }
-
-  function getStyleLabel(style) {
-    const labels = { 'foto': 'Fotorealistisch', 'cinematic': 'Kinematisch', 'portrait': 'Porträt', 'nature': 'Natur', 'fantasy': 'Fantasy' };
-    return labels[style] || 'Fotorealistisch';
-  }
-
-  function addToHistory(prompt, url) {
-    // Data-URLs (base64) nicht speichern - zu groß für localStorage
-    if (url && url.startsWith('data:')) {
-      imageHistoryList.unshift({ prompt, url: '', ts: Date.now() });
-      if (imageHistoryList.length > 5) imageHistoryList = imageHistoryList.slice(0, 5);
-      return;
-    }
-    imageHistoryList.push({ prompt, url });
-    if (imageHistoryList.length > 20) imageHistoryList = imageHistoryList.slice(-20);
-    const container = document.getElementById('imageHistory');
-    const gallery = document.getElementById('imageGallery');
-    container.classList.remove('hidden');
-    if (!url || url.startsWith('data:')) return; // base64 nicht in Galerie speichern
-    const thumb = document.createElement('div');
-    const img = document.createElement('img');
-    img.src = url;
-    img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
-    img.loading = 'lazy';
-    img.title = prompt;
-    img.alt = prompt;
-    thumb.appendChild(img);
-    thumb.onclick = function() {
-      document.getElementById('imagePrompt').value = prompt;
-      generateImage();
-    };
-    gallery.insertBefore(thumb, gallery.firstChild);
-  }
-
-  // =============================================
+    // =============================================
   // HELPERS
   // =============================================
   function addMessage(container, role, name, text) {
