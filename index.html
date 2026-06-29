@@ -783,7 +783,7 @@
     let controller, timeoutId;
     if (typeof AbortController !== 'undefined') {
       controller = new AbortController();
-      timeoutId = setTimeout(() => controller.abort(), 30000);
+      timeoutId = setTimeout(() => controller.abort(), 120000);
     }
 
     try {
@@ -848,7 +848,11 @@
             lastError = errDetail;
           }
         } catch (e) {
-          lastError = 'Fehler bei ' + tryModelName + ': ' + (e.message || 'Unbekannter Fehler');
+          if (e.name === 'AbortError') {
+            lastError = '⏱️ ' + tryModelName + ' braucht zu lange. Versuche erneut...';
+          } else {
+            lastError = 'Fehler bei ' + tryModelName + ': ' + (e.message || 'Unbekannter Fehler');
+          }
           continue; // Nächstes Modell versuchen
         }
       } // Ende der for-Schleife
