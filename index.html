@@ -80,9 +80,7 @@
     }
     .sidebar-logo {
       width: 40px; height: 40px; border-radius: var(--radius);
-      background: var(--gradient);
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 800; color: white; font-size: 1.15rem;
+      object-fit: cover;
       box-shadow: 0 4px 12px var(--primary-glow);
     }
     .sidebar-title { font-weight: 700; font-size: 1.1rem; letter-spacing: -0.01em; }
@@ -395,7 +393,7 @@
   
   
       .topbar-title { font-size: 0.8rem; }
-      .welcome-logo { width: 80px; height: 80px; font-size: 2.2rem; }
+      .welcome-logo { width: 80px; height: 80px; }
       .welcome-screen h1 { font-size: 1.4rem; }
       .topbar { padding: 10px 16px; }
       .tab-btn { padding: 6px 14px; font-size: 0.75rem; }
@@ -407,7 +405,7 @@
   <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
   <div class="sidebar">
     <div class="sidebar-header">
-      <div class="sidebar-logo">Y</div>
+      <img class="sidebar-logo" src="logo.jpg" alt="Yazeed AI">
       <div class="sidebar-title">Yazeed <span>AI</span></div>
     </div>
 
@@ -460,7 +458,7 @@
     <div id="chatTab" class="chat-area">
       <div class="chat-messages" id="chatMessages">
         <div class="welcome-screen" id="welcomeScreen">
-          <div class="welcome-logo">✨</div>
+          <img class="welcome-logo" src="logo.jpg" alt="Yazeed AI">
           <h1>Yazeed AI</h1>
           <p>Deine kostenlose KI wie ChatGPT. Stelle Fragen, lass Texte schreiben, Ideen entwickeln – alles kostenlos, ohne Anmeldung.</p>
           <div class="suggestions">
@@ -789,7 +787,7 @@
     }
 
     try {
-      const p1 = 'sk-or'; const p2 = 'v1'; const p3 = '486e297d371ad415972508a2d9b73650279f19c544df4560f8aac02b2e3bd09c';
+      const p1 = 'sk-or'; const p2 = 'v1'; const p3 = '6452c911b411406b4602952ebce5fa079ee97f3e5805ea338699ad5516c8a4b2';
       const orKey = p1 + '-' + p2 + '-' + p3;
 
       // Modelle mit Fallback durchprobieren
