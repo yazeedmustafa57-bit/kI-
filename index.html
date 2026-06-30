@@ -299,6 +299,18 @@
       font-size: 0.55rem; color: var(--text3); margin-top: 5px;
       opacity: 0.6;
     }
+    .message-actions {
+      display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap;
+    }
+    .msg-action-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 10px; border-radius: 6px; border: 1px solid var(--border);
+      background: var(--bg3); color: var(--text3); font-size: 0.65rem;
+      cursor: pointer; transition: all 0.2s; font-family: var(--font);
+    }
+    .msg-action-btn:hover {
+      background: var(--surface); color: var(--text); border-color: var(--primary-glow);
+    }
     .message-text p { margin-bottom: 8px; }
     .message-text p:last-child { margin-bottom: 0; }
     .message-text pre {
@@ -398,6 +410,7 @@
       .topbar { padding: 10px 16px; }
       .tab-btn { padding: 6px 14px; font-size: 0.75rem; }
     }</style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 <div class="app">
@@ -588,7 +601,7 @@
         if (msg.role === 'user') {
           addMessage(chatMsgs, 'user', 'Du', escHtml(msg.text));
         } else if (msg.role === 'assistant') {
-          addMessage(chatMsgs, 'ai', currentModelName, formatResponse(msg.text));
+          addMessage(chatMsgs, 'ai', currentModelName, formatResponse(msg.text), msg.text);
         }
       }
     }
@@ -695,7 +708,7 @@
           if (msg.role === 'user') {
             addMessage(chatMsgs, 'user', 'Du', escHtml(msg.text));
           } else if (msg.role === 'assistant') {
-            addMessage(chatMsgs, 'ai', currentModelName, formatResponse(msg.text));
+            addMessage(chatMsgs, 'ai', currentModelName, formatResponse(msg.text), msg.text);
           }
         }
       }
@@ -869,7 +882,7 @@
 
       if (responseData) {
         const aiText = responseData.choices[0].message.content;
-        addMessage(chatMsgs, 'ai', currentModelName, formatResponse(aiText || ''));
+        addMessage(chatMsgs, 'ai', currentModelName, formatResponse(aiText || ''), aiText || '');
         chatHistory.push({ role: 'user', text: msg }, { role: 'assistant', text: aiText || '' });
         if (chatHistory.length > 60) chatHistory = chatHistory.slice(-60);
         saveChat();
@@ -902,20 +915,25 @@
     // =============================================
   // HELPERS
   // =============================================
-  function addMessage(container, role, name, text) {
+  function addMessage(container, role, name, text, rawText) {
     const div = document.createElement('div');
     div.className = 'message ' + (role === 'ai' ? 'ai' : role);
     const initial = role === 'user' ? 'Y' : 'AI';
     const color = role === 'user' ? 'linear-gradient(135deg, #f97316, #ea580c)' : 'var(--gradient-btn)';
+    const htmlText = text;
+    const plainText = rawText || text.replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"');
+    const msgId = 'msg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
     div.innerHTML =
       '<div class="message-avatar" style="background:' + color + '">' + initial + '</div>' +
       '<div class="message-content">' +
       '<div class="message-name">' + escHtml(name) + '</div>' +
-      '<div class="message-text">' + text + '</div>' +
+      '<div class="message-text" id="' + msgId + '">' + htmlText + '</div>' +
       '<div class="message-time">' + getTime() + '</div>' +
+      (role === 'ai' ? '<div class="message-actions"><button class="msg-action-btn" onclick="downloadPDF('' + msgId + '')">📄 PDF herunterladen</button></div>' : '') +
       '</div>';
     container.appendChild(div);
     container.scrollTop = container.scrollHeight;
+    return msgId;
   }
 
   function addTyping(container) {
