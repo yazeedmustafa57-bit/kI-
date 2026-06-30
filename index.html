@@ -929,7 +929,7 @@
       '<div class="message-name">' + escHtml(name) + '</div>' +
       '<div class="message-text" id="' + msgId + '">' + htmlText + '</div>' +
       '<div class="message-time">' + getTime() + '</div>' +
-      (role === 'ai' ? '<div class="message-actions"><button class="msg-action-btn" onclick="downloadPDF('' + msgId + '')">📄 PDF herunterladen</button></div>' : '') +
+      (role === 'ai' ? '<div class="message-actions"><button class="msg-action-btn" onclick="downloadPDF(\'' + msgId + '\')">📄 PDF herunterladen</button></div>' : '') +
       '</div>';
     container.appendChild(div);
     container.scrollTop = container.scrollHeight;
